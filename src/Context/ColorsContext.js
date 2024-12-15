@@ -14,6 +14,7 @@ export const ColorsProvider = ({children}) => {
     overlay: 'rgba(255, 255, 255, 0.1)', // Şeffaf katman
     textLight: '#FFF', // Açık metin rengi
     textDark: '#000', // Koyu metin rengi
+    login:"#57a7b2",
   });
 
   return (

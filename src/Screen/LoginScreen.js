@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ImageBackground,
+  Image,
 } from 'react-native';
 import MyTextInput from '../Components/MyTextInput';
 import MyButton from '../Components/MyButton';
@@ -30,8 +31,34 @@ export default function LoginScreen({ navigation }) {
   const { setToken, token } = useContext(TokenContext);
   const { fetchSubscriptions } = useContext(SubscriptionsContext);
 
+  const fetchUserData = async () => {
+    try {
+      const currentUser = auth().currentUser;
+      if (currentUser) {
+        const value = currentUser.uid;
+        setUserToken(value);
+        const userDocRef = firestore().collection('users').doc(value);
+
+        // Belge anlık görüntüsünü alıyoruz
+        const userDoc = await userDocRef.get();
+
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          updateUser({ ...userData });
+          setFlag(false)
+          console.log(user, "heyyyy");
+        } else {
+          console.log('Belge bulunamadı.');
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
   useEffect(() => {
     const performAutoLogin = async () => {
+      
       try {
         const currentUser = auth().currentUser;
 
@@ -50,13 +77,15 @@ export default function LoginScreen({ navigation }) {
 
             // Abonelik bilgilerini çek
             await fetchSubscriptions();
-
+           
             const userData = userDoc.data();
 
             if (userData.admin === true) {
+              await fetchUserData();
               Alert.alert('Başarılı', 'Admin olarak giriş yapıldı!');
               navigation.navigate('Admin');
             } else {
+              await fetchUserData();
               Alert.alert('Başarılı', 'Kullanıcı olarak giriş yapıldı!');
               navigation.navigate('MyTabs', { screen: 'Home' });
             }
@@ -75,6 +104,7 @@ export default function LoginScreen({ navigation }) {
         console.error('AutoLogin sırasında hata:', error);
         Alert.alert('Hata', 'Otomatik giriş sırasında bir sorun oluştu.');
       }
+    
     };
 
     performAutoLogin();
@@ -118,9 +148,11 @@ export default function LoginScreen({ navigation }) {
 
         // 'admin' alanını kontrol eder
         if (userData.admin === true) {
+          await fetchUserData();
           console.log('Kullanıcı admin, AdminHomeScreen\'e yönlendiriliyor.');
           navigation.navigate('Admin');
         } else {
+          await fetchUserData();
           console.log('Kullanıcı normal, HomeScreen\'e yönlendiriliyor.');
           navigation.navigate('MyTabs', {
             screen: 'HomeScreen',
@@ -148,11 +180,15 @@ export default function LoginScreen({ navigation }) {
       resizeMode="cover"
     >
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Text
-          style={[styles.title, { fontFamily: fonts.bold, color: colors.primary }]}
-        >
-          Merhaba
-        </Text>
+       
+      <Image
+  source={require('../assets/img//merhaba.png')} // Görsel yolu
+  style={{
+    width: width * 0.9,   // Ekran genişliğinin %90'ı
+    height: height * 0.2, // Ekran yüksekliğinin %20'si
+    resizeMode: 'contain', // Görselin oranlarını bozmadan boyutlandırır
+  }}
+/>
         <MyTextInput
           placeholder="Email"
           value={email}
@@ -166,26 +202,30 @@ export default function LoginScreen({ navigation }) {
           secureTextEntry={true}
           iconName="lock-closed-outline"
         />
+       
+        <View style={styles.textContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('register')}>
+            <Text style={[styles.text, { color: colors.login,fontFamily:fonts.heavy }]}>
+              Hesabın yok mu?{' '}
+              <Text style={{ color: colors.login, textDecorationLine: 'underline' }}>
+                Kayıt Ol
+              </Text>
+            </Text>
+          </TouchableOpacity>
+           <View style={{borderLeftWidth:1,height:12,borderColor:colors.login}}></View>
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text style={[styles.text, { color: colors.login }]}>
+              Şifremi Unuttum
+            </Text>
+          </TouchableOpacity>
+          
+        </View>
+        <View style={{alignItems:"center"}}>
         <MyButton
           title="Login"
           onPress={handleLogin}
           backgroundColor={colors.login}
         />
-        <View style={styles.textContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('register')}>
-            <Text style={[styles.text, { color: colors.primary }]}>
-              Hesabın yok mu?{' '}
-              <Text style={{ color: colors.secondary, textDecorationLine: 'underline' }}>
-                Kayıt Ol
-              </Text>
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-            <Text style={[styles.text, { color: colors.primary }]}>
-              Şifremi Unuttum
-            </Text>
-          </TouchableOpacity>
         </View>
       </View>
     </ImageBackground>

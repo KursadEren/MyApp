@@ -33,7 +33,7 @@ const HomeProfil = () => {
           marginTop: 3,
           marginRight: 2,
           height:height*0.07,
-          justifyContent:"center"
+          justifyContent:"center",
         }}>
           <Text style={{
             fontSize: 18,
@@ -41,11 +41,12 @@ const HomeProfil = () => {
             textAlign: 'center',
             fontFamily:fonts.baby,
             // Metne gölgelendirme
-            textShadowColor: 'rgba(0,0,0,0.1)',
-            textShadowOffset: { width: 1, height: 1 },
-            textShadowRadius: 1
+          
+            margin:10,
+            paddingTop:width*0.02
+            
           }}>
-            Merhaba {user.username} !
+            Merhaba !
           </Text>
         </View>
       </View>

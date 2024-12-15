@@ -9,6 +9,7 @@ import {
   ImageBackground,
   TextInput,
   Modal,
+  Image
 } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import firestore from '@react-native-firebase/firestore';
@@ -42,10 +43,13 @@ export default function SubscriptionCalendar() {
   const [modalContent, setModalContent] = useState('');
   const { Background } = useContext(BackgroundContext);
 
-  // Bugün'ü belirle
-  const todayDate = moment().format('YYYY-MM-DD');
-  // Takvimde gösterilecek başlangıç tarihi (ayar: bugün)
-  const [currentDate, setCurrentDate] = useState(todayDate);
+// Bugün'ü belirle
+const todayDate = moment().format('YYYY-MM-DD');
+
+// Takvimde gösterilecek başlangıç tarihi (moment nesnesi ile ayarlanmalı)
+const [currentDate, setCurrentDate] = useState(moment());
+
+
 
   useEffect(() => {
     const fetchChildren = async () => {
@@ -331,207 +335,235 @@ export default function SubscriptionCalendar() {
     );
   };
 
-  const goToToday = () => {
-    setCurrentDate(todayDate);
+ const goToNextMonth = () => {
+    setCurrentDate(currentDate.clone().add(1, 'month'));
   };
 
-  return (
-    <ImageBackground
-      source={Background.primary}
-      style={styles.imageBackground}
-      resizeMode="cover"
+  // Ayı geri taşı
+  const goToPreviousMonth = () => {
+    setCurrentDate(currentDate.clone().subtract(1, 'month'));
+  };
+
+ 
+
+   // Çocuğun adını almak için
+   
+   const monthAndYear = currentDate.format('MMMM YYYY').toUpperCase();
+ 
+   const generateCalendarDays = () => {
+    const startDay = currentDate.clone().startOf('month'); // Ayın ilk günü
+    const startOfWeek = startDay.clone().startOf('week'); // Haftanın başı (Pazar)
+  
+    const endDay = currentDate.clone().endOf('month');
+    const endOfWeek = endDay.clone().endOf('week'); // Haftanın sonu
+  
+    const days = [];
+    const day = startOfWeek.clone();
+  
+    while (day.isBefore(endOfWeek, 'day') || day.isSame(endOfWeek, 'day')) {
+      days.push(day.clone());
+      day.add(1, 'day');
+    }
+    return days;
+  };
+  
+ 
+   const days = generateCalendarDays();
+ 
+   // Hafta isimleri
+   const weekDays = ['Pa', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'];
+
+
+   // çocuk ekleme kısmı 
+   const handleDateChange = (event, selectedDate) => {
+    setShowDatePicker(false);
+    if (selectedDate) setBirthDate(selectedDate);
+  };
+
+  const addChild = () => {
+    if (!childName) {
+      Alert.alert('Hata', 'İsim alanı boş olamaz.');
+      return;
+    }
+    const newChild = {
+      name: childName,
+      birthDate: moment(birthDate).format('YYYY-MM-DD'),
+    };
+
+    // Örnek ekleme işlemi
+    setChildren([...children, newChild]);
+    setModalVisible(false);
+    setChildName('');
+    setBirthDate(new Date());
+  };
+ 
+   return (
+     <View style={styles.container}>
+       {/* Bulut görünümlü zemin */}
+      
+       <ImageBackground
+      source={require('../assets/img/HomeContent/takvimbackgrond.png')} // Arka plan resmi
+      style={styles.cloudContainer}
+      resizeMode="cover" // Resmi kapsayacak şekilde ayarla
     >
-      <View style={styles.container}>
-        {renderHeader()}
-
-        
-
-        {isAddingChild ? (
-          <View style={styles.formContainer}>
-            <Text style={styles.header}>Çocuğunuzun Adını Girin</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Çocuğun İsmi"
-              value={childName}
-              onChangeText={setChildName}
-              textAlign="right"
-            />
-            <Text style={styles.header}>Doğum Günü Seçin</Text>
-            <Calendar
-              current={currentDate}
-              onDayPress={(day) => setSelectedDate(day.dateString)}
-              markedDates={
-                selectedDate
-                  ? { [selectedDate]: { selected: true, selectedColor: '#4A00E0' } }
-                  : {}
-              }
-            />
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.saveButtonText}>Kaydet</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => setIsAddingChild(false)}
-            >
-              <Text style={styles.cancelButtonText}>Geri</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <Calendar
-            current={currentDate}
-            onDayPress={handleDayPress}
-            markedDates={markedDates}
-          />
-        )}
-
-        <Modal
-          visible={modalVisible}
-          transparent
-          animationType="slide"
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalText}>{modalContent}</Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalButton}>
-                <Text style={styles.modalButtonText}>Kapat</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      </View>
-    </ImageBackground>
-  );
-}
-
-const styles = StyleSheet.create({
-  imageBackground: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
+         {/* Üst başlık - Çocuğun adı ve sağ-sol arrow ikonları */}
+         <View style={styles.topHeader}>
+           <TouchableOpacity onPress={() => {/* Başka çocuğa geçebilirsiniz */}}>
+             <Image source={require('../assets/img/HomeContent/takvimgeri.png')} style={styles.arrowTop} />
+           </TouchableOpacity>
+           <Text style={styles.childName}>{childName}</Text>
+           <TouchableOpacity onPress={() => {/* Başka çocuğa ya da bir sonraki child */}}>
+             <Image source={require('../assets/img/HomeContent/takvimileri.png')} style={styles.arrowTop} />
+           </TouchableOpacity>
+         </View>
+ 
+         {/* Günlerin Başlıkları */}
+         <View style={styles.weekHeader}>
+           {weekDays.map((day, index) => (
+             <Text key={index} style={styles.weekDay}>
+               {day}
+             </Text>
+           ))}
+         </View>
+ 
+         {/* Tarihlerin Gösterimi */}
+         <View style={styles.daysContainer}>
+           {days.map((day, index) => {
+             const isCurrentMonth = day.month() === currentDate.month();
+             const isToday = day.isSame(moment(), 'day');
+             return (
+               <View key={index} style={styles.dayWrapper}>
+                 <Text
+                   style={[
+                     styles.dayText,
+                     !isCurrentMonth && styles.notCurrentMonth,
+                     isToday && styles.today
+                   ]}
+                 >
+                   {day.date()}
+                 </Text>
+               </View>
+             );
+           })}
+         </View>
+ 
+         {/* Alt başlık - Ay-Yıl bilgisi ve sağ-sol arrow ikonları */}
+         <View style={styles.bottomHeader}>
+           <TouchableOpacity onPress={goToPreviousMonth}>
+             <Image source={require('../assets/img/HomeContent/takvimgeri.png')} style={styles.arrowBottom} />
+           </TouchableOpacity>
+           <Text style={styles.monthText}>{monthAndYear}</Text>
+           <TouchableOpacity onPress={goToNextMonth}>
+             <Image source={require('../assets/img/HomeContent/takvimileri.png')} style={styles.arrowBottom} />
+           </TouchableOpacity>
+         </View>
+         </ImageBackground>
+      
+     </View>
+   );
+ }
+ const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderRadius: 15,
-    overflow: 'hidden',
-    paddingHorizontal: 10,
+    marginTop:10,
+    alignItems: 'center',
+    justifyContent: 'center', 
+     // arka plan rengi (isteğe göre değiştirebilirsiniz)
   },
-  headerContainer: {
+  cloudContainer: {
+    width: width * 0.9,
+     height:height*0.45,
+    borderRadius: 50,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // gölge efekti istiyorsanız:
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  topHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: '#4A00E0',
+    width: '80%',
+    marginBottom: 10,
   },
   childName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFF',
-    textAlign: 'center',
-    flex: 1,
-    marginHorizontal: 10,
-  },
-  formContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    fontSize: 16,
+    fontWeight: '600',
     color: '#4A00E0',
     textAlign: 'center',
-    width: '100%',
   },
-  input: {
-    width: '100%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 15,
-    textAlign: 'center',
+  arrowTop: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
   },
-  saveButton: {
-    backgroundColor: '#4A00E0',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'flex-end',
-    width: '100%',
+  weekHeader: {
+    width: '92%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+     // Tam genişlik
+    marginBottom: 5,
+    paddingHorizontal: 10, // Sağ ve sol boşluk
   },
-  saveButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  
+  daysContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     width: '100%',
+    justifyContent: 'space-between',
+    paddingHorizontal: 5,
   },
-  cancelButton: {
-    marginTop: 15,
-    padding: 15,
-    backgroundColor: '#CCC',
-    borderRadius: 8,
-    alignItems: 'flex-end',
-    width: '100%',
-  },
-  cancelButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    width: '100%',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  
+  dayWrapper: {
+    width: '14.285%', // 100 / 7 = 14.285%
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    marginVertical: 5,
   },
-  modalContent: {
-    width: width * 0.8,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'flex-end',
-  },
-  modalText: {
-    fontSize: 16,
-    marginBottom: 20,
-    textAlign: 'left',
-    width: '100%',
-  },
-  modalButton: {
-    backgroundColor: '#4A00E0',
-    padding: 10,
-    borderRadius: 8,
-    width: '100%',
-    alignItems: 'flex-end',
-  },
-  modalButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+  
+  
+  
+  dayText: {
+    fontSize: 12,
+    color: '#4A00E0',
     textAlign: 'center',
-    width: '100%',
   },
-  todayButtonContainer: {
-    alignItems: 'flex-end',
-    marginVertical: 10,
-    marginRight: 10,
+  notCurrentMonth: {
+    color: '#ccc',
   },
-  todayButton: {
+  today: {
     backgroundColor: '#4A00E0',
-    padding: 10,
-    borderRadius: 8,
-  },
-  todayButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: 'white',
+    borderRadius: 15,
+    width: 24,
+    height: 24,
     textAlign: 'center',
+    lineHeight: 24,
+    overflow: 'hidden',
+  },
+  bottomHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginTop: 10,
+  },
+  monthText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#4A00E0',
+    textAlign: 'center',
+  },
+  arrowBottom: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
   },
 });
+
