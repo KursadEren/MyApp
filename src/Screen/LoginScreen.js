@@ -87,7 +87,7 @@ export default function LoginScreen({ navigation }) {
             } else {
               await fetchUserData();
               Alert.alert('Başarılı', 'Kullanıcı olarak giriş yapıldı!');
-              navigation.navigate('MyTabs', { screen: 'Home' });
+              navigation.navigate("Home");
             }
 
             // Token'ı güncelle (gerekirse)

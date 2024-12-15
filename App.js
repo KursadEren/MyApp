@@ -35,7 +35,7 @@ import OnboardingScreen from './src/Screen/OnboardingScreen';
 
 const { width } = Dimensions.get("window");
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+
 
 async function createNotificationChannel() {
   if (Platform.OS === 'android') {
@@ -83,52 +83,7 @@ async function displayNotification() {
   });
 }
 
-function MyTabs() {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarStyle: {
-          height: width * 0.15,
-          backgroundColor: '#8E2DE2',
-          borderTopWidth: 0,
-          elevation: 5,
-          paddingBottom: 5,
-          borderRadius: 15,
-          marginHorizontal: 10,
-          position: 'absolute',
-          bottom: 10,
-          left: 10,
-          right: 10,
-        },
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
 
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
-          }
-
-          return (
-            <Ionicons name={iconName} size={size} color={color} />
-          );
-        },
-        tabBarActiveTintColor: '#FFF',
-        tabBarInactiveTintColor: '#AAA',
-        tabBarLabelStyle: {
-          fontSize: 14,
-          fontWeight: '600',
-          textTransform: 'capitalize',
-          marginTop: -5,
-        },
-      })}
-    >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-    </Tab.Navigator>
-  );
-}
 
 function App() {
   useEffect(() => {
@@ -158,7 +113,8 @@ function App() {
                         <Stack.Screen name="login" component={LoginScreen} />
                         <Stack.Screen name="register" component={RegisterScreen} />
                         <Stack.Screen name="SetSubscription" component={SetSubscription} />
-                        <Stack.Screen name="MyTabs" component={MyTabs} />
+                        <Stack.Screen name="Home" component={HomeScreen} />
+                        <Stack.Screen name="Profile" component={ProfileScreen} />
                         <Stack.Screen name="DashBoard" component={DashBoard} />
                         <Stack.Screen name="Payment" component={Payment} />
                         <Stack.Screen name="Admin" component={AdminHomeScreen} />
@@ -177,10 +133,6 @@ function App() {
           </UserProvider>
         </PaymentFlagProvider>
       </TransactionProvider>
-
-      <View style={{ position: 'absolute', bottom: 50, right: 20 }}>
-        <Button title="Bildirim Gönder" onPress={displayNotification} />
-      </View>
     </NavigationContainer>
   );
 }

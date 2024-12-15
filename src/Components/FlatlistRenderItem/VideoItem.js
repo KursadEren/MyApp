@@ -9,6 +9,7 @@ const VideoItem = ({ item, fonts, setSelectedVideo }) => (
       flexDirection: 'row',
       alignItems: 'center',
       marginVertical: 10,
+      marginHorizontal: 10,
       paddingVertical: 10,
       paddingHorizontal: 15,
       backgroundColor: '#FFFFFF',
@@ -24,23 +25,19 @@ const VideoItem = ({ item, fonts, setSelectedVideo }) => (
     onPress={() => setSelectedVideo(item)}
   >
     {/* Sol taraftaki simge */}
-    <View
-      style={{
-        backgroundColor: '#F8EAF4',
-        borderRadius: 50,
-        padding: 10,
-        marginRight: 15,
-      }}
-    >
+    
       <Image
-        source={require('../../assets/img/HomeContent/click2.png')}
+        source={require('../../assets/img/HomeContent/clickTers.png')}
         style={{
           width: 30,
           height: 30,
           resizeMode: 'contain',
+          right:-10,
+          bottom:-10,
+          position:"absolute"
         }}
       />
-    </View>
+    
 
     {/* Metin Alanı */}
     <View style={{ flex: 1 }}>
@@ -48,7 +45,7 @@ const VideoItem = ({ item, fonts, setSelectedVideo }) => (
         style={{
           fontFamily: fonts.Bold,
           fontSize: 16,
-          color: '#8A6D98',
+          color: '#5a8387',
           marginBottom: 5,
         }}
         numberOfLines={1}
@@ -59,7 +56,7 @@ const VideoItem = ({ item, fonts, setSelectedVideo }) => (
         style={{
           fontFamily: fonts.Regular,
           fontSize: 14,
-          color: '#6B7280',
+          color: '#5a8387',
         }}
       >
         {item.duration} | {item.description}

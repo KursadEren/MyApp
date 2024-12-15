@@ -44,13 +44,11 @@ import HomeProfil from '../Components/HomeProfil';
 const { height, width } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }) {
-  const { colors } = useContext(ColorsContext);
+
   const { fonts } = useContext(FontsContext);
   const { Background } = useContext(BackgroundContext);
-  const [userToken, setUserToken] = useState();
   const { flag, setFlag } = useContext(PaymentFlagContext);
   const { updateUser, user } = useContext(UserContext);
-  const [currentDay, setCurrentDay] = useState();
   const [currentMONTH, setCurrentMONTH] = useState();
   const [currentDayNumber, setCurrentDayNumber] = useState();
   const [currentYear, setCurrentYear] = useState();
@@ -109,7 +107,7 @@ export default function HomeScreen({ navigation }) {
         const currentUser = auth().currentUser;
         if (currentUser) {
           const value = currentUser.uid;
-          setUserToken(value);
+        
           const userDocRef = firestore().collection('users').doc(value);
 
           // Belge anlık görüntüsünü alıyoruz
@@ -146,7 +144,7 @@ export default function HomeScreen({ navigation }) {
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <MyNavbar navigation={navigation} />
+          
 
           <ScrollView contentContainerStyle={styles.scrollContainer}>
 
@@ -166,13 +164,10 @@ export default function HomeScreen({ navigation }) {
               <MyFlatlist type="catalog" sharedAnimationValue={sharedAnimationValue} navigation={navigation} />
             </View>
             <View style={styles.sectionContainer}>
-              <Text style={[styles.sectionTitle, { fontFamily: fonts.bold }]}>
+              <Text style={[styles.sectionTitle, { fontFamily: fonts.Winter }]}>
                 Motivasyon Videoları
               </Text>
-              <Text style={[styles.sectionTitletwo, { fontFamily: fonts.thin }]}>
-                <Icon name="power-sleep" size={20} color="#003366" style={styles.icon} />
-                En iyi Ücretsiz Videolar
-              </Text>
+              
               <MyFlatlist sharedAnimationValue={sharedAnimationValue} type="youtube" navigation={navigation} />
             </View>
 
@@ -209,6 +204,7 @@ export default function HomeScreen({ navigation }) {
 
           </ScrollView>
         </View>
+        <MyNavbar navigation={navigation} />
       </SafeAreaView>
     </ImageBackground>
   );
@@ -234,11 +230,14 @@ const styles = StyleSheet.create({
   sectionContainer: {
     marginVertical: height * 0.02,
     paddingLeft: width * 0.04,
+   
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#004085',
+    color: '#b865b6',
+    alignSelf:"center",
+    marginVertical:height*0.02
   },
   sectionTitletwo: {
     fontSize: 15,

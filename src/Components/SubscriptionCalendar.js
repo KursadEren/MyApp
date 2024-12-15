@@ -17,7 +17,10 @@ import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import 'moment/locale/tr';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { BackgroundContext } from '../Context/BackGround';
+import { FontsContext } from '../Context/FontsContext';
+import { ColorsContext } from '../Context/ColorsContext';
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,34 +29,35 @@ LocaleConfig.locales['tr'] = {
     'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
     'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
   ],
-  monthNamesShort: ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'],
-  dayNames: ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'],
-  dayNamesShort: ['Paz','Pts','Sal','Çar','Per','Cum','Cts'],
+  monthNamesShort: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+  dayNames: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
+  dayNamesShort: ['Paz', 'Pts', 'Sal', 'Çar', 'Per', 'Cum', 'Cts'],
   today: 'Bugün',
 };
 LocaleConfig.defaultLocale = 'tr';
 
 export default function SubscriptionCalendar() {
   const [children, setChildren] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0); 
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [childName, setChildName] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
-  const [isAddingChild, setIsAddingChild] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false); // Çocuk ekleme modal
   const [modalContent, setModalContent] = useState('');
+  const [infoModalVisible, setInfoModalVisible] = useState(false); // Bilgi modalının görünürlüğü
+  const [birthDate, setBirthDate] = useState(new Date());
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
   const { Background } = useContext(BackgroundContext);
 
-// Bugün'ü belirle
-const todayDate = moment().format('YYYY-MM-DD');
+  const todayDate = moment().format('YYYY-MM-DD');
+  const [currentDate, setCurrentDate] = useState(moment());
 
-// Takvimde gösterilecek başlangıç tarihi (moment nesnesi ile ayarlanmalı)
-const [currentDate, setCurrentDate] = useState(moment());
-
-
-
+  const { fonts } = useContext(FontsContext)
+  const { colors } = useContext(ColorsContext)
   useEffect(() => {
     const fetchChildren = async () => {
       const currentUser = auth().currentUser;
+      if (!currentUser) return;
       const userId = currentUser.uid;
       const userRef = firestore().collection('users').doc(userId);
       const userSnapshot = await userRef.get();
@@ -65,57 +69,24 @@ const [currentDate, setCurrentDate] = useState(moment());
     fetchChildren();
   }, []);
 
-  const handleSave = async () => {
-    if (!childName || !selectedDate) {
-      Alert.alert('Hata', 'Lütfen tüm alanları doldurun.');
-      return;
-    }
-
-    const currentUser = auth().currentUser;
-    const userId = currentUser.uid;
-
-    const isDuplicate = children.some(
-      (child) => child.name === childName && child.birthDate === selectedDate
-    );
-
-    if (isDuplicate) {
-      Alert.alert('Hata', 'Bu çocuk zaten eklenmiş.');
-      return;
-    }
-
-    try {
-      const userRef = firestore().collection('users').doc(userId);
-      const updatedChildren = [...children, { name: childName, birthDate: selectedDate }];
-      await userRef.update({ children: updatedChildren });
-
-      setChildren(updatedChildren);
-      setChildName('');
-      setSelectedDate(null);
-      setCurrentIndex(updatedChildren.length - 1);
-      setIsAddingChild(false);
-    } catch (error) {
-      console.error('Kayıt hatası:', error);
-      Alert.alert('Hata', 'Bilgiler kaydedilemedi. Lütfen tekrar deneyin.');
-    }
-  };
-
-  const currentChild = children[currentIndex] || {};
+  const currentChild = children.length > 0 ? children[currentIndex] : null;
 
   // Haftalar için değişkenler
   let markedDates = {};
   let firstAttackStart, firstAttackEnd, seventhWeekStart, eleventhWeekStart,
-      fourthMonthStart, fourthMonthEnd, twentyTwoWeekStart, twentyThreeWeekEnd,
-      twentySixWeekStart, twentySixWeekEnd,
-      twentyNineWeekStart, twentyNineWeekEnd,
-      eighthMonthStart, eighthMonthEnd,
-      thirtySixWeekStart, thirtySixWeekEnd,
-      fortyFortyOneStart, fortyFortyOneEnd,
-      fortyFourWeekStart, fortyFourWeekEnd,
-      fortyEightWeekStart, fortyEightWeekEnd;
+    fourthMonthStart, fourthMonthEnd, twentyTwoWeekStart, twentyThreeWeekEnd,
+    twentySixWeekStart, twentySixWeekEnd,
+    twentyNineWeekStart, twentyNineWeekEnd,
+    eighthMonthStart, eighthMonthEnd,
+    thirtySixWeekStart, thirtySixWeekEnd,
+    fortyFortyOneStart, fortyFortyOneEnd,
+    fortyFourWeekStart, fortyFourWeekEnd,
+    fortyEightWeekStart, fortyEightWeekEnd;
 
-  if (currentChild.birthDate) {
-    const birthDate = moment(currentChild.birthDate, 'YYYY-MM-DD');
-    const birthDateString = birthDate.format('YYYY-MM-DD');
+  if (currentChild && currentChild.birthDate) {
+    const birthDateMoment = moment(currentChild.birthDate, 'YYYY-MM-DD');
+    const birthDateString = birthDateMoment.format('YYYY-MM-DD');
+
     // Doğum tarihi (yeşil)
     markedDates[birthDateString] = { selected: true, selectedColor: 'green' };
 
@@ -127,178 +98,170 @@ const [currentDate, setCurrentDate] = useState(moment());
       }
     };
 
-    // 4.-5. hafta (red)
-    firstAttackStart = birthDate.clone().add(4, 'weeks');
-    firstAttackEnd = birthDate.clone().add(5, 'weeks');
+    // Haftalık aralıklar
+    firstAttackStart = birthDateMoment.clone().add(4, 'weeks');
+    firstAttackEnd = birthDateMoment.clone().add(5, 'weeks');
     addWeekRange(firstAttackStart, firstAttackEnd, 'red');
 
-    // 7. hafta (blue)
-    seventhWeekStart = birthDate.clone().add(7, 'weeks');
+    seventhWeekStart = birthDateMoment.clone().add(7, 'weeks');
     const seventhWeekEnd = seventhWeekStart.clone().add(6, 'days');
     addWeekRange(seventhWeekStart, seventhWeekEnd, 'blue');
 
-    // 11. hafta (purple)
-    eleventhWeekStart = birthDate.clone().add(11, 'weeks');
+    eleventhWeekStart = birthDateMoment.clone().add(11, 'weeks');
     const eleventhWeekEnd = eleventhWeekStart.clone().add(6, 'days');
     addWeekRange(eleventhWeekStart, eleventhWeekEnd, 'purple');
 
-    // 14-17. haftalar (4. ay) (orange)
-    fourthMonthStart = birthDate.clone().add(14, 'weeks');
-    fourthMonthEnd = birthDate.clone().add(17, 'weeks').add(6, 'days');
+    fourthMonthStart = birthDateMoment.clone().add(14, 'weeks');
+    fourthMonthEnd = birthDateMoment.clone().add(17, 'weeks').add(6, 'days');
     addWeekRange(fourthMonthStart, fourthMonthEnd, 'orange');
 
-    // 22-23. haftalar (grey)
-    twentyTwoWeekStart = birthDate.clone().add(22, 'weeks');
-    twentyThreeWeekEnd = birthDate.clone().add(23, 'weeks').add(6, 'days');
+    twentyTwoWeekStart = birthDateMoment.clone().add(22, 'weeks');
+    twentyThreeWeekEnd = birthDateMoment.clone().add(23, 'weeks').add(6, 'days');
     addWeekRange(twentyTwoWeekStart, twentyThreeWeekEnd, 'grey');
 
-    // 26. hafta (brown)
-    twentySixWeekStart = birthDate.clone().add(26, 'weeks');
+    twentySixWeekStart = birthDateMoment.clone().add(26, 'weeks');
     twentySixWeekEnd = twentySixWeekStart.clone().add(6, 'days');
     addWeekRange(twentySixWeekStart, twentySixWeekEnd, 'brown');
 
-    // 29.hafta (pink)
-    twentyNineWeekStart = birthDate.clone().add(29, 'weeks');
+    twentyNineWeekStart = birthDateMoment.clone().add(29, 'weeks');
     twentyNineWeekEnd = twentyNineWeekStart.clone().add(6, 'days');
     addWeekRange(twentyNineWeekStart, twentyNineWeekEnd, 'pink');
 
-    // 8.ay (33-36 haftalar) (yellow)
-    eighthMonthStart = birthDate.clone().add(33, 'weeks');
-    eighthMonthEnd = birthDate.clone().add(36, 'weeks').add(6, 'days');
+    eighthMonthStart = birthDateMoment.clone().add(33, 'weeks');
+    eighthMonthEnd = birthDateMoment.clone().add(36, 'weeks').add(6, 'days');
     addWeekRange(eighthMonthStart, eighthMonthEnd, 'yellow');
 
-    // 36.hafta (lightblue)
-    thirtySixWeekStart = birthDate.clone().add(36, 'weeks');
+    thirtySixWeekStart = birthDateMoment.clone().add(36, 'weeks');
     thirtySixWeekEnd = thirtySixWeekStart.clone().add(6, 'days');
     addWeekRange(thirtySixWeekStart, thirtySixWeekEnd, 'lightblue');
 
-    // 40-41. haftalar (cornflowerblue)
-    fortyFortyOneStart = birthDate.clone().add(40, 'weeks');
-    fortyFortyOneEnd = birthDate.clone().add(41, 'weeks').add(6, 'days');
+    fortyFortyOneStart = birthDateMoment.clone().add(40, 'weeks');
+    fortyFortyOneEnd = fortyFortyOneStart.clone().add(1, 'weeks').add(6, 'days');
     addWeekRange(fortyFortyOneStart, fortyFortyOneEnd, 'cornflowerblue');
 
-    // 44.hafta (darkgrey)
-    fortyFourWeekStart = birthDate.clone().add(44, 'weeks');
+    fortyFourWeekStart = birthDateMoment.clone().add(44, 'weeks');
     fortyFourWeekEnd = fortyFourWeekStart.clone().add(6, 'days');
     addWeekRange(fortyFourWeekStart, fortyFourWeekEnd, 'darkgrey');
 
-    // 48.hafta (limegreen)
-    fortyEightWeekStart = birthDate.clone().add(48, 'weeks');
+    fortyEightWeekStart = birthDateMoment.clone().add(48, 'weeks');
     fortyEightWeekEnd = fortyEightWeekStart.clone().add(6, 'days');
     addWeekRange(fortyEightWeekStart, fortyEightWeekEnd, 'limegreen');
   }
 
-  // Bugün'ü farklı bir renk ile göster
-  // Eğer bugün başka bir haftanın içerisinde ise buradaki ayar onu "override" edebilir
-  // Bu nedenle en sonda ekliyoruz
+  // Bugün
   markedDates[todayDate] = {
     ...markedDates[todayDate],
     selected: true,
-    selectedColor: 'indigo', // Bugün için farklı renk
+    selectedColor: 'indigo',
   };
 
   const handleDayPress = (day) => {
+    if (!currentChild || !currentChild.birthDate) {
+      Alert.alert('Uyarı', 'Lütfen önce bir çocuk ekleyiniz.');
+      return;
+    }
+
     const dayMoment = moment(day.dateString, 'YYYY-MM-DD');
 
-    // Sıra:
-    // 48. hafta
-    if (fortyEightWeekStart && fortyEightWeekEnd && dayMoment.isSameOrAfter(fortyEightWeekStart) && dayMoment.isSameOrBefore(fortyEightWeekEnd)) {
+    // 48.hafta
+    if (fortyEightWeekStart && fortyEightWeekEnd && dayMoment.isBetween(fortyEightWeekStart, fortyEightWeekEnd, null, '[]')) {
       setModalContent(
         '48. Hafta:\n\n' +
-        '- tek kademeli emirlere basit sorulara tepki verir\n' +
+        '- Tek kademeli emirlere basit sorulara tepki verir\n' +
         '- Sınırları zorlar\n' +
         '- Ağlayarak tepki verir\n' +
         '- Gözünün önünden anne ayrılırsa büyük tepki verir\n' +
         '- Ayrılık kaygısı yaşar\n' +
         '- Uykuya direnir\n' +
-        '- gece sık uyanma'
+        '- Gece sık uyanma'
       );
-      setModalVisible(true);
+      setInfoModalVisible(true);
       return;
     }
 
     // 44.hafta
-    if (fortyFourWeekStart && fortyFourWeekEnd && dayMoment.isSameOrAfter(fortyFourWeekStart) && dayMoment.isSameOrBefore(fortyFourWeekEnd)) {
+    if (fortyFourWeekStart && fortyFourWeekEnd && dayMoment.isBetween(fortyFourWeekStart, fortyFourWeekEnd, null, '[]')) {
       setModalContent('44. Hafta:\n\niçerik eklenecek');
-      setModalVisible(true);
+      setInfoModalVisible(true);
       return;
     }
 
     // 40-41. haftalar
-    if (fortyFortyOneStart && fortyFortyOneEnd && dayMoment.isSameOrAfter(fortyFortyOneStart) && dayMoment.isSameOrBefore(fortyFortyOneEnd)) {
+    if (fortyFortyOneStart && fortyFortyOneEnd && dayMoment.isBetween(fortyFortyOneStart, fortyFortyOneEnd, null, '[]')) {
       setModalContent('40 - 41. Haftalar:\n\niçerik eklenecek');
-      setModalVisible(true);
+      setInfoModalVisible(true);
       return;
     }
 
     // 22-23. hafta
-    if (twentyTwoWeekStart && twentyThreeWeekEnd && dayMoment.isSameOrAfter(twentyTwoWeekStart) && dayMoment.isSameOrBefore(twentyThreeWeekEnd)) {
+    if (twentyTwoWeekStart && twentyThreeWeekEnd && dayMoment.isBetween(twentyTwoWeekStart, twentyThreeWeekEnd, null, '[]')) {
       setModalContent('22 - 23. Hafta:\n\niçerik eksik');
-      setModalVisible(true);
+      setInfoModalVisible(true);
       return;
     }
 
     // 14-17. haftalar (4. Ay)
-    if (fourthMonthStart && fourthMonthEnd && dayMoment.isSameOrAfter(fourthMonthStart) && dayMoment.isSameOrBefore(fourthMonthEnd)) {
-      setModalContent('4. AY\n\n- uyku gerilemesi ayı\n- İlgili videoları ücretsiz kısımda bulabilirsiniz');
-      setModalVisible(true);
+    if (fourthMonthStart && fourthMonthEnd && dayMoment.isBetween(fourthMonthStart, fourthMonthEnd, null, '[]')) {
+      setModalContent('4. AY\n\n- Uyku gerilemesi ayı\n- İlgili videoları ücretsiz kısımda bulabilirsiniz');
+      setInfoModalVisible(true);
       return;
     }
 
     // 36.hafta
-    if (thirtySixWeekStart && thirtySixWeekEnd && dayMoment.isSameOrAfter(thirtySixWeekStart) && dayMoment.isSameOrBefore(thirtySixWeekEnd)) {
+    if (thirtySixWeekStart && thirtySixWeekEnd && dayMoment.isBetween(thirtySixWeekStart, thirtySixWeekEnd, null, '[]')) {
       setModalContent('36. Hafta:\n\n- Ayrılık kaygısı yoğunlaşır\n- Uzun Süreli atak başlangıcı !!\n- Emekler tutunup kalkabilir\n- Kendi kendine yemek yer\n- El çırpabilir\n- Gece uykularından sık sık uyanır');
-      setModalVisible(true);
+      setInfoModalVisible(true);
       return;
     }
 
     // 8.ay (33-36 haftalar)
-    if (eighthMonthStart && eighthMonthEnd && dayMoment.isSameOrAfter(eighthMonthStart) && dayMoment.isSameOrBefore(eighthMonthEnd)) {
+    if (eighthMonthStart && eighthMonthEnd && dayMoment.isBetween(eighthMonthStart, eighthMonthEnd, null, '[]')) {
       setModalContent('8. Ay (33-36 Haftalar):\n\n- Uyku gerilemesi\n- İlgili videolar ücretsiz kısımda mevcut');
-      setModalVisible(true);
+      setInfoModalVisible(true);
       return;
     }
 
     // 29.hafta
-    if (twentyNineWeekStart && twentyNineWeekEnd && dayMoment.isSameOrAfter(twentyNineWeekStart) && dayMoment.isSameOrBefore(twentyNineWeekEnd)) {
+    if (twentyNineWeekStart && twentyNineWeekEnd && dayMoment.isBetween(twentyNineWeekStart, twentyNineWeekEnd, null, '[]')) {
       setModalContent('29. Hafta:\n\n- Desteksiz Oturur\n- Emeklemeye geçme çabası\n- Hızlı hareket eden nesneyi gözle takip eder\n- Sınırları ve kısıtlamaları zorlama');
-      setModalVisible(true);
+      setInfoModalVisible(true);
       return;
     }
 
     // 26.hafta
-    if (twentySixWeekStart && twentySixWeekEnd && dayMoment.isSameOrAfter(twentySixWeekStart) && dayMoment.isSameOrBefore(twentySixWeekEnd)) {
+    if (twentySixWeekStart && twentySixWeekEnd && dayMoment.isBetween(twentySixWeekStart, twentySixWeekEnd, null, '[]')) {
       setModalContent('26. Hafta:\n\n- Oturma kabiliyeti gelişir\n- Oyuncakları ağza götürür\n- Tek heceli ses çıkarır');
-      setModalVisible(true);
+      setInfoModalVisible(true);
       return;
     }
 
     // 11. hafta
-    if (eleventhWeekStart && dayMoment.isSameOrAfter(eleventhWeekStart)) {
-      setModalContent('11. Hafta:\n\n- Gözlerini ve ellerini koordine kullanır.\n- Elini ağzına sokar.\n- Bacakları esnetip tekme atar.\n- Göz teması kurar.\n- Uzak mesafe görme başlar.');
-      setModalVisible(true);
+    if (eleventhWeekStart && dayMoment.isSameOrAfter(eleventhWeekStart) && (!fourthMonthStart || dayMoment.isBefore(fourthMonthStart))) {
+      setModalContent('11. Hafta:\n\n- Gözlerini ve ellerini koordine kullanır\n- Elini ağzına sokar\n- Bacakları esnetip tekme atar\n- Göz teması kurar\n- Uzak mesafe görme başlar');
+      setInfoModalVisible(true);
       return;
     }
 
     // 7. hafta
     if (seventhWeekStart && dayMoment.isSameOrAfter(seventhWeekStart) && (!eleventhWeekStart || dayMoment.isBefore(eleventhWeekStart))) {
-      setModalContent('7. Hafta:\n\nİsimlere odaklanabilir,\nKavrama refleksi güçlenir,\nParmaklarının farkına varır.');
-      setModalVisible(true);
+      setModalContent('7. Hafta:\n\n- İsimlere odaklanabilir\n- Kavrama refleksi güçlenir\n- Parmaklarının farkına varır');
+      setInfoModalVisible(true);
       return;
     }
 
-    // 4.-5. hafta
-    if (firstAttackStart && firstAttackEnd && dayMoment.isSameOrAfter(firstAttackStart) && dayMoment.isSameOrBefore(firstAttackEnd)) {
-      setModalContent('İlk Farkındalık Atağı:\n\nUykuya direnme,\nNedensiz ağlama,\nİşitsel uyarılara duyarlılık,\nDaha sık beslenme isteği.');
-      setModalVisible(true);
+    // 4.-5. hafta (ilk farkındalık atağı)
+    if (firstAttackStart && firstAttackEnd && dayMoment.isBetween(firstAttackStart, firstAttackEnd, null, '[]')) {
+      setModalContent('İlk Farkındalık Atağı:\n\n- Uykuya direnme\n- Nedensiz ağlama\n- İşitsel uyarılara duyarlılık\n- Daha sık beslenme isteği');
+      setInfoModalVisible(true);
       return;
     }
-     // Doğum günü kontrolü
-     if (currentChild.birthDate) {
-      const birthDate = moment(currentChild.birthDate, 'YYYY-MM-DD');
-      if (dayMoment.isSame(birthDate, 'day')) {
+
+    // Doğum günü kontrolü
+    if (currentChild && currentChild.birthDate) {
+      const birthDateMoment = moment(currentChild.birthDate, 'YYYY-MM-DD');
+      if (dayMoment.isSame(birthDateMoment, 'day')) {
         setModalContent(`İyiki Doğdun ${currentChild.name}!`);
-        setModalVisible(true);
+        setInfoModalVisible(true);
         return;
       }
     }
@@ -308,262 +271,282 @@ const [currentDate, setCurrentDate] = useState(moment());
     Alert.alert('Bilgi', `${day.dateString} tarihine erişebilirsiniz.`);
   };
 
-  const renderHeader = () => {
-    const currentChildData = children[currentIndex] || {};
-    return (
-      <View style={styles.headerContainer}>
-        {currentIndex > 0 && (
-          <TouchableOpacity onPress={() => setCurrentIndex(prev => prev - 1)}>
-            <Icon name="chevron-back" size={24} color="#FFF" />
-          </TouchableOpacity>
-        )}
-        <Text style={styles.childName} numberOfLines={1}>
-          {isAddingChild ? 'Yeni Çocuk Ekle' : currentChildData.name || 'Çocuk Eklenmedi'}
-        </Text>
-        <TouchableOpacity
-          onPress={() => {
-            if (currentIndex < children.length - 1) {
-              setCurrentIndex(prev => prev + 1);
-            } else {
-              setIsAddingChild(true);
-            }
-          }}
-        >
-          <Icon name="chevron-forward" size={24} color="#FFF" />
-        </TouchableOpacity>
-      </View>
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    setBirthDate(date);
+    hideDatePicker();
+  };
+
+  const addChild = async () => {
+    if (!childName) {
+      Alert.alert('Hata', 'İsim alanı boş olamaz.');
+      return;
+    }
+    if (!birthDate) {
+      Alert.alert('Hata', 'Lütfen doğum tarihi seçin.');
+      return;
+    }
+
+    const formattedBirthDate = moment(birthDate).format('YYYY-MM-DD');
+
+    const isDuplicate = children.some(
+      (child) => child.name === childName && child.birthDate === formattedBirthDate
     );
+    if (isDuplicate) {
+      Alert.alert('Hata', 'Bu çocuk zaten eklenmiş.');
+      return;
+    }
+
+    const newChild = {
+      name: childName.trim(),
+      birthDate: formattedBirthDate,
+    };
+
+    const currentUser = auth().currentUser;
+    const userId = currentUser?.uid;
+
+    try {
+      const userRef = firestore().collection('users').doc(userId);
+      const updatedChildren = [...children, newChild];
+      await userRef.update({ children: updatedChildren });
+      setChildren(updatedChildren);
+      setModalVisible(false);
+      setChildName('');
+      setBirthDate(new Date());
+      setCurrentIndex(updatedChildren.length - 1);
+      Alert.alert('Başarılı', 'Çocuk eklendi ve bilgiler kaydedildi.');
+    } catch (error) {
+      Alert.alert('Hata', 'Çocuk eklenirken bir sorun oluştu.');
+      console.error(error);
+    }
   };
 
- const goToNextMonth = () => {
-    setCurrentDate(currentDate.clone().add(1, 'month'));
-  };
-
-  // Ayı geri taşı
-  const goToPreviousMonth = () => {
-    setCurrentDate(currentDate.clone().subtract(1, 'month'));
-  };
-
- 
-
-   // Çocuğun adını almak için
-   
-   const monthAndYear = currentDate.format('MMMM YYYY').toUpperCase();
- 
-   const generateCalendarDays = () => {
-    const startDay = currentDate.clone().startOf('month'); // Ayın ilk günü
-    const startOfWeek = startDay.clone().startOf('week'); // Haftanın başı (Pazar)
-  
-    const endDay = currentDate.clone().endOf('month');
-    const endOfWeek = endDay.clone().endOf('week'); // Haftanın sonu
-  
+  const daysInMonth = () => {
+    const startDay = currentDate.clone().startOf('month').startOf('week');
+    const endDay = currentDate.clone().endOf('month').endOf('week');
     const days = [];
-    const day = startOfWeek.clone();
-  
-    while (day.isBefore(endOfWeek, 'day') || day.isSame(endOfWeek, 'day')) {
+    const day = startDay.clone();
+    while (day.isBefore(endDay, 'day') || day.isSame(endDay, 'day')) {
       days.push(day.clone());
       day.add(1, 'day');
     }
     return days;
   };
-  
- 
-   const days = generateCalendarDays();
- 
-   // Hafta isimleri
-   const weekDays = ['Pa', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'];
 
+  const generateCalendarDays = () => {
+    const startDay = currentDate.clone().startOf('month');
+    const startOfWeek = startDay.clone().startOf('week');
+    const endDay = currentDate.clone().endOf('month').endOf('week');
 
-   // çocuk ekleme kısmı 
-   const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(false);
-    if (selectedDate) setBirthDate(selectedDate);
-  };
+    const days = [];
+    const day = startOfWeek.clone();
 
-  const addChild = () => {
-    if (!childName) {
-      Alert.alert('Hata', 'İsim alanı boş olamaz.');
-      return;
+    while (day.isBefore(endDay, 'day') || day.isSame(endDay, 'day')) {
+      days.push(day.clone());
+      day.add(1, 'day');
     }
-    const newChild = {
-      name: childName,
-      birthDate: moment(birthDate).format('YYYY-MM-DD'),
-    };
-
-    // Örnek ekleme işlemi
-    setChildren([...children, newChild]);
-    setModalVisible(false);
-    setChildName('');
-    setBirthDate(new Date());
+    return days;
   };
- 
-   return (
-     <View style={styles.container}>
-       {/* Bulut görünümlü zemin */}
-      
-       <ImageBackground
-      source={require('../assets/img/HomeContent/takvimbackgrond.png')} // Arka plan resmi
-      style={styles.cloudContainer}
-      resizeMode="cover" // Resmi kapsayacak şekilde ayarla
-    >
-         {/* Üst başlık - Çocuğun adı ve sağ-sol arrow ikonları */}
-         <View style={styles.topHeader}>
-           <TouchableOpacity onPress={() => {/* Başka çocuğa geçebilirsiniz */}}>
-             <Image source={require('../assets/img/HomeContent/takvimgeri.png')} style={styles.arrowTop} />
-           </TouchableOpacity>
-           <Text style={styles.childName}>{childName}</Text>
-           <TouchableOpacity onPress={() => {/* Başka çocuğa ya da bir sonraki child */}}>
-             <Image source={require('../assets/img/HomeContent/takvimileri.png')} style={styles.arrowTop} />
-           </TouchableOpacity>
-         </View>
- 
-         {/* Günlerin Başlıkları */}
-         <View style={styles.weekHeader}>
-           {weekDays.map((day, index) => (
-             <Text key={index} style={styles.weekDay}>
-               {day}
-             </Text>
-           ))}
-         </View>
- 
-         {/* Tarihlerin Gösterimi */}
-         <View style={styles.daysContainer}>
-           {days.map((day, index) => {
-             const isCurrentMonth = day.month() === currentDate.month();
-             const isToday = day.isSame(moment(), 'day');
-             return (
-               <View key={index} style={styles.dayWrapper}>
-                 <Text
-                   style={[
-                     styles.dayText,
-                     !isCurrentMonth && styles.notCurrentMonth,
-                     isToday && styles.today
-                   ]}
-                 >
-                   {day.date()}
-                 </Text>
-               </View>
-             );
-           })}
-         </View>
- 
-         {/* Alt başlık - Ay-Yıl bilgisi ve sağ-sol arrow ikonları */}
-         <View style={styles.bottomHeader}>
-           <TouchableOpacity onPress={goToPreviousMonth}>
-             <Image source={require('../assets/img/HomeContent/takvimgeri.png')} style={styles.arrowBottom} />
-           </TouchableOpacity>
-           <Text style={styles.monthText}>{monthAndYear}</Text>
-           <TouchableOpacity onPress={goToNextMonth}>
-             <Image source={require('../assets/img/HomeContent/takvimileri.png')} style={styles.arrowBottom} />
-           </TouchableOpacity>
-         </View>
-         </ImageBackground>
-      
-     </View>
-   );
- }
- const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop:10,
-    alignItems: 'center',
-    justifyContent: 'center', 
-     // arka plan rengi (isteğe göre değiştirebilirsiniz)
-  },
+
+  const days = generateCalendarDays();
+  const weekDays = ['Pa', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'];
+
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        source={require('../assets/img/HomeContent/takvimbackgrond.png')}
+        style={styles.cloudContainer}
+        resizeMode="cover"
+      >
+        {/* Üst Header */}
+        <View style={styles.topHeader}>
+          <TouchableOpacity onPress={() => setCurrentIndex((prev) => Math.max(prev - 1, 0))}>
+            <Image source={require('../assets/img/HomeContent/takvimgeri.png')} style={styles.arrowTop} />
+          </TouchableOpacity>
+          <Text style={styles.childName}>
+            {currentChild ? currentChild.name : 'Çocuk Eklenmedi'}
+          </Text>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <Image source={require('../assets/img/HomeContent/takvimileri.png')} style={styles.arrowTop} />
+          </TouchableOpacity>
+        </View>
+
+        {children.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Henüz çocuk eklenmedi.</Text>
+            <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+              <Text style={styles.addButtonText}>Çocuk Ekle</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            <View style={styles.weekHeader}>
+              {weekDays.map((day, index) => (
+                <Text key={index} style={styles.weekDay}>
+                  {day}
+                </Text>
+              ))}
+            </View>
+
+            <View style={styles.daysContainer}>
+              {days.map((day, index) => {
+                const isCurrentMonth = day.month() === currentDate.month();
+                const isToday = day.isSame(moment(), 'day');
+                const dateStr = day.format('YYYY-MM-DD');
+                const dayStyle = markedDates[dateStr]
+                  ? { backgroundColor: markedDates[dateStr].selectedColor, color: '#fff', borderRadius: 12, width: 24, height: 24, textAlign: 'center' }
+                  : (isToday ? styles.today : (isCurrentMonth ? {} : styles.notCurrentMonth));
+
+                return (
+                  <TouchableOpacity key={index} style={styles.dayWrapper} onPress={() => handleDayPress({ dateString: dateStr })}>
+                    <Text style={[styles.dayText, dayStyle]}>
+                      {day.date()}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </>
+        )}
+
+        <View style={styles.bottomHeader}>
+          <TouchableOpacity onPress={() => setCurrentDate(currentDate.clone().subtract(1, 'month'))}>
+            <Image source={require('../assets/img/HomeContent/takvimgeri.png')} style={styles.arrowBottom} />
+          </TouchableOpacity>
+          <Text style={styles.monthText}>{currentDate.format('MMMM YYYY').toUpperCase()}</Text>
+          <TouchableOpacity onPress={() => setCurrentDate(currentDate.clone().add(1, 'month'))}>
+            <Image source={require('../assets/img/HomeContent/takvimileri.png')} style={styles.arrowBottom} />
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+
+      {/* Modal - Yeni Çocuk Ekle */}
+      <Modal animationType="slide" transparent visible={modalVisible}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Yeni Çocuk Ekle</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Çocuk Adı"
+              placeholderTextColor="#666"
+              value={childName}
+              onChangeText={setChildName}
+            />
+            <TouchableOpacity onPress={showDatePicker} style={styles.datePickerButton}>
+              <Text style={styles.datePickerText}>
+                {moment(birthDate).format('DD MMMM YYYY')}
+              </Text>
+            </TouchableOpacity>
+
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="date"
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+            />
+
+            <TouchableOpacity style={styles.saveButton} onPress={addChild}>
+              <Text style={styles.saveButtonText}>Kaydet</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setModalVisible(false)}>
+              <Text style={styles.cancelText}>Vazgeç</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Bilgi Modalı (Gün üzerine tıklanınca açılan) */}
+      <Modal style={{
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+
+        backgroundColor: "#e3e3e3",
+      }} visible={infoModalVisible} transparent animationType="fade" onRequestClose={() => setInfoModalVisible(false)}>
+        {modalContent ? (
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <View style={{ backgroundColor: "white", height: height * 0.4, borderTopRightRadius:30,borderBottomLeftRadius:30, marginTop: 5, marginRight: 3, alignItems: "center", justifyContent: "space-evenly" }}>
+                <Text style={{ marginVertical: 10, fontSize: 16, textAlign: 'left', fontFamily: fonts.bold, color: colors.login }}>{modalContent}</Text>
+                <TouchableOpacity style={{
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: 30,
+                  backgroundColor: "#e3e3e3",
+                  height: height * 0.07,
+                  width: width * 0.3,
+                }} onPress={() => { setModalContent(''); setInfoModalVisible(false); }}>
+                  <View style={{ borderWidth: 1, borderColor: "#e3e3e3", backgroundColor: "white", height: height * 0.07, borderRadius:30, marginTop: 3, marginRight: 1, alignItems: "center", justifyContent: "space-evenly" }}>
+                    <Text style={[styles.cancelText,{fontFamily:fonts.baby,color:colors.login}]}>Kapat</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        ) : null}
+      </Modal>
+
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   cloudContainer: {
     width: width * 0.9,
-     height:height*0.45,
+    height: height * 0.45,
     borderRadius: 50,
     paddingVertical: 20,
     paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    // gölge efekti istiyorsanız:
+    // gölge efekti:
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 5,
   },
-  topHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '80%',
-    marginBottom: 10,
-  },
-  childName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#4A00E0',
-    textAlign: 'center',
-  },
-  arrowTop: {
-    width: 20,
-    height: 20,
-    resizeMode: 'contain',
-  },
-  weekHeader: {
-    width: '92%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-     // Tam genişlik
-    marginBottom: 5,
-    paddingHorizontal: 10, // Sağ ve sol boşluk
-  },
-  
-  daysContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: '100%',
-    justifyContent: 'space-between',
-    paddingHorizontal: 5,
-  },
-  
-  dayWrapper: {
-    width: '14.285%', // 100 / 7 = 14.285%
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 5,
-  },
-  
-  
-  
-  dayText: {
-    fontSize: 12,
-    color: '#4A00E0',
-    textAlign: 'center',
-  },
-  notCurrentMonth: {
-    color: '#ccc',
-  },
-  today: {
-    backgroundColor: '#4A00E0',
-    color: 'white',
-    borderRadius: 15,
-    width: 24,
-    height: 24,
-    textAlign: 'center',
-    lineHeight: 24,
-    overflow: 'hidden',
-  },
-  bottomHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '80%',
-    marginTop: 10,
-  },
-  monthText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#4A00E0',
-    textAlign: 'center',
-  },
-  arrowBottom: {
-    width: 20,
-    height: 20,
-    resizeMode: 'contain',
-  },
-});
+  topHeader: { flexDirection: 'row', justifyContent: 'space-between', width: '80%', marginBottom: 10 },
+  childName: { fontSize: 18, fontWeight: '600', color: '#4A00E0' },
+  arrowTop: { width: 20, height: 20, resizeMode: 'contain' },
+  arrowBottom: { width: 20, height: 20, resizeMode: 'contain' },
+  weekHeader: { flexDirection: 'row', justifyContent: 'space-between', width: '90%' },
+  weekDay: { fontSize: 14, fontWeight: 'bold', color: '#4A00E0' },
+  daysContainer: { flexDirection: 'row', flexWrap: 'wrap', width: '100%', justifyContent: 'space-between' },
+  dayWrapper: { width: '14.285%', alignItems: 'center', marginVertical: 5 },
+  dayText: { fontSize: 14, color: '#4A00E0' },
+  notCurrentMonth: { color: '#ccc' },
+  today: { backgroundColor: '#4A00E0', color: '#fff', borderRadius: 12, width: 24, height: 24, textAlign: 'center' },
+  bottomHeader: { flexDirection: 'row', justifyContent: 'space-between', width: '80%', marginTop: 10 },
+  monthText: { fontSize: 16, fontWeight: 'bold', color: '#4A00E0' },
+  emptyContainer: { alignItems: 'center', marginTop: 20 },
+  emptyText: { fontSize: 16, color: '#4A00E0', marginBottom: 10 },
+  addButton: { backgroundColor: '#4A00E0', padding: 10, borderRadius: 5 },
+  addButtonText: { color: '#fff', fontSize: 16 },
+  modalContainer: {
+    flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)',
 
+
+
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderTopRightRadius:30,borderBottomLeftRadius:30,
+    backgroundColor: "#e3e3e3",
+    height: height * 0.406,
+    width: width * 0.8
+  },
+  modalTitle: { fontSize: 18, fontWeight: 'bold', color: '#4A00E0', textAlign: 'center', marginBottom: 10 },
+  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5, padding: 10, marginBottom: 10 },
+  datePickerButton: { backgroundColor: '#f0f0f0', padding: 10, borderRadius: 5, alignItems: 'center' },
+  datePickerText: { fontSize: 16 },
+  saveButton: { backgroundColor: '#4A00E0', padding: 10, borderRadius: 5, alignItems: 'center', marginTop: 10 },
+  saveButtonText: { color: '#fff', fontSize: 16 },
+  cancelText: { color: '#4A00E0', textAlign: 'center', marginTop: 10, fontSize:20},
+});

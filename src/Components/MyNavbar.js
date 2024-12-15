@@ -72,7 +72,7 @@ export default function MyNavbar({ navigation }) {
       {/* Mesaj İkonu */}
       <TouchableOpacity
         style={[styles.iconButton, { backgroundColor: '#FFECB3' }]} // Mesaj için özelleştirilmiş stil
-        onPress={() => navigation.navigate('Mesaj')}
+        onPress={() => navigation.navigate('ChatScreen')}
       >
         <Image
           source={require('../assets/img/navbar/mesaj.png')}
@@ -83,7 +83,7 @@ export default function MyNavbar({ navigation }) {
       {/* Profil İkonu */}
       <TouchableOpacity
         style={styles.iconButton}
-        onPress={() => navigation.navigate('ChatScreen')}
+        onPress={() => navigation.navigate('Profile')}
       >
         <Image
           source={require('../assets/img/navbar/profil.png')}
