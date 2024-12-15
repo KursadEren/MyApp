@@ -1,57 +1,151 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   Dimensions,
   TouchableOpacity,
-  Animated,
+  Image,
+  Text,
   Modal,
-  Alert,
+  Animated,
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ColorsContext } from '../Context/ColorsContext';
-import { FontsContext } from '../Context/FontsContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LinearGradient } from 'react-native-linear-gradient';
-
-
-import SearchInput from './SearchInput'; // Arama çubuğu bileşeni
 
 const { width, height } = Dimensions.get('window');
 
 export default function MyNavbar({ navigation }) {
   const { colors = { text: '#FFF' } } = useContext(ColorsContext) || {};
-  const { fonts } = useContext(FontsContext);
- 
- 
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+  const slideAnim = useState(new Animated.Value(0))[0];
 
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+    Animated.timing(slideAnim, {
+      toValue: menuVisible ? 0 : 100,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
 
+  const handleLogoutPress = () => {
+    setLogoutModalVisible(false);
+    // Çıkış işlemini burada gerçekleştirin
+  };
 
- 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#8E2DE2', '#8E2DE2']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.background}
-      />
-      <View style={styles.welcomeSection}>
-        <View style={styles.welcomeTextBorder}>
-          <Text style={styles.welcomeText}>Merhaba, Güzel Anne</Text>
+      {/* Ayarlar İkonu */}
+      <TouchableOpacity
+        style={[styles.iconButton, { backgroundColor: '#C5CAE9' }]} // Ayarlar için özelleştirilmiş stil
+        onPress={toggleMenu}
+      >
+        <Image
+          source={require('../assets/img/navbar/ayarlar.png')}
+          style={styles.iconImage}
+        />
+      </TouchableOpacity>
 
+      {/* Bildirim İkonu */}
+      <TouchableOpacity
+        style={[styles.iconButton, { backgroundColor: '#B2EBF2' }]} // Bildirim için özelleştirilmiş stil
+        onPress={() => navigation.navigate('Bildirim')}
+      >
+        <Image
+          source={require('../assets/img/navbar/bildirim.png')}
+          style={styles.iconImage}
+        />
+      </TouchableOpacity>
+
+      {/* Home İkonu */}
+      <TouchableOpacity
+        style={styles.iconButton}
+        onPress={() => navigation.navigate('Home')}
+      >
+        <Image
+          source={require('../assets/img/navbar/home.png')}
+          style={styles.iconImage}
+        />
+      </TouchableOpacity>
+
+      {/* Mesaj İkonu */}
+      <TouchableOpacity
+        style={[styles.iconButton, { backgroundColor: '#FFECB3' }]} // Mesaj için özelleştirilmiş stil
+        onPress={() => navigation.navigate('Mesaj')}
+      >
+        <Image
+          source={require('../assets/img/navbar/mesaj.png')}
+          style={styles.iconImage}
+        />
+      </TouchableOpacity>
+
+      {/* Profil İkonu */}
+      <TouchableOpacity
+        style={styles.iconButton}
+        onPress={() => navigation.navigate('ChatScreen')}
+      >
+        <Image
+          source={require('../assets/img/navbar/profil.png')}
+          style={styles.iconImage}
+        />
+      </TouchableOpacity>
+
+      {/* Menü */}
+      {menuVisible && (
+        <Animated.View
+          style={[
+            styles.menu,
+            {
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
+          <TouchableOpacity
+            onPress={() => setLogoutModalVisible(true)}
+            style={styles.menuItem}
+          >
+            <Ionicons name="exit-outline" size={width * 0.06} color="#4A00E0" />
+            <Text style={styles.menuItemText}>Çıkış Yap</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      )}
+
+      {/* Çıkış Modal */}
+      <Modal
+        visible={logoutModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setLogoutModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Ionicons
+              name="alert-circle-outline"
+              size={width * 0.15}
+              color="#FF5722"
+              style={{ marginBottom: 15 }}
+            />
+            <Text style={styles.modalText}>Çıkış yapmak istediğinize emin misiniz?</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setLogoutModalVisible(false)}
+              >
+                <Ionicons name="close-circle" size={width * 0.05} color="#FFF" />
+                <Text style={styles.cancelButtonText}>Vazgeç</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.confirmButton]}
+                onPress={handleLogoutPress}
+              >
+                <Ionicons name="checkmark-circle" size={width * 0.05} color="#FFF" />
+                <Text style={styles.confirmButtonText}>Çıkış Yap</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
-        {/* Arama Çubuğu */}
-
-        <View style={styles.searchContainer}>
-          <SearchInput />
-        </View>
-
-      </View>
-
-
-
-
+      </Modal>
     </View>
   );
 }
@@ -59,55 +153,94 @@ export default function MyNavbar({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: height * 0.22, // Navbar yüksekliği artırıldı
-    position: 'relative',
-    justifyContent: 'space-between',
+    height: height * 0.1,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 10,
-    paddingTop: height * 0.02, // Üst boşluk eklendi
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
   },
-  background: {
-    position: 'absolute',
+  iconButton: {
+    width: width * 0.12,
+    height: width * 0.12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: width * 0.03,
+    borderRadius: 50,
+  },
+  iconImage: {
     width: '100%',
     height: '100%',
-    borderBottomLeftRadius: width * 0.08,
-    borderBottomRightRadius: width * 0.08,
+    resizeMode: 'contain',
   },
-  welcomeSection: {
+  menu: {
+    position: 'absolute',
+    bottom: height * 0.12,
+    left: 0,
+    right: 0,
+    backgroundColor: '#FFF',
+    padding: 15,
+    borderRadius: 10,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+  },
+  menuItem: {
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 10,
+  },
+  menuItemText: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: '#4A00E0',
+  },
+  modalContainer: {
+    flex: 1,
     justifyContent: 'center',
-    zIndex: 1,
-    marginBottom: height * 0.02, // Merhaba yazısı ve arama çubuğu arası boşluk
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  welcomeTextBorder: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#FFF',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
   },
-  welcomeText: {
-    fontSize: width * 0.045,
-    color: '#FFF',
-    fontWeight: 'bold',
+  modalText: {
+    fontSize: 16,
+    marginBottom: 15,
+    color: '#333',
     textAlign: 'center',
   },
-  searchContainer: {
-    marginTop: height * 0.001, // Daha iyi hizalama için üst boşluk
-  },
-  circleButton: {
-    width: width * 0.1, // Daha küçük boyut
-    height: width * 0.1,
-    borderRadius: width * 0.05,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: width * 0.02,
-  },
-  rightActions: {
+  modalButtons: {
     flexDirection: 'row',
-    marginTop: height * 0.01, // Arama çubuğu ile ikonlar arası boşluk
+    justifyContent: 'space-between',
+    width: '100%',
   },
- 
-  
+  modalButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  cancelButton: {
+    backgroundColor: '#FF5722',
+  },
+  confirmButton: {
+    backgroundColor: '#4CAF50',
+  },
+  cancelButtonText: {
+    color: '#FFF',
+    marginLeft: 5,
+  },
+  confirmButtonText: {
+    color: '#FFF',
+    marginLeft: 5,
+  },
 });

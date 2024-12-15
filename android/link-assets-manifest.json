@@ -1,0 +1,33 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/BlenderPro-Bold.ttf",
+      "sha1": "6117a38274b7da93ee7e08eb4ebcedcaba2ec944"
+    },
+    {
+      "path": "src/assets/fonts/BlenderPro-Book.ttf",
+      "sha1": "d4003499a2ae7d27573c7e78e69116c17a94b95c"
+    },
+    {
+      "path": "src/assets/fonts/BlenderPro-Heavy.ttf",
+      "sha1": "0230819ac637d75da4e45361168efc35be23c759"
+    },
+    {
+      "path": "src/assets/fonts/BlenderPro-Medium.ttf",
+      "sha1": "ef9278b7c247c4eb87c4e80b42d2929a833cf4da"
+    },
+    {
+      "path": "src/assets/fonts/BlenderPro-Thin.ttf",
+      "sha1": "c5b0ab58a97636dbf89050b5dc0e4b3969c484d5"
+    },
+    {
+      "path": "src/assets/fonts/Hellobaby.ttf",
+      "sha1": "4390bb9178d572859fbda6aa3235c58f941e41dc"
+    },
+    {
+      "path": "src/assets/fonts/Winter Minie.otf",
+      "sha1": "f4fa78ffe9fc1eb421a4492220acbc37a8bb87fe"
+    }
+  ]
+}

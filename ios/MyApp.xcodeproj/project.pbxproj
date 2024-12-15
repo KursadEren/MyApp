@@ -17,6 +17,13 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		C3B7A2A32D0BA09F0075D52B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C3B7A2A22D0BA09F0075D52B /* GoogleService-Info.plist */; };
 		C3B7A2A42D0BA09F0075D52B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C3B7A2A22D0BA09F0075D52B /* GoogleService-Info.plist */; };
+		2073E02198DB4985873D94E7 /* Winter Minie.otf in Resources */ = {isa = PBXBuildFile; fileRef = 9ED7DF44A2024DB192B970AB /* Winter Minie.otf */; };
+		0FA427CF68894535A22B898B /* BlenderPro-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EB172846DA774CA88D18060C /* BlenderPro-Bold.ttf */; };
+		51C8646604194CAB881EE519 /* BlenderPro-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 644ED137422143318306C038 /* BlenderPro-Book.ttf */; };
+		C5AE713472E34DEBBEA75E64 /* BlenderPro-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D47E1E5E4303431395184668 /* BlenderPro-Heavy.ttf */; };
+		B8CA6895AB934D1DB6515E68 /* BlenderPro-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2521F42A82C84BF2858F8585 /* BlenderPro-Medium.ttf */; };
+		A44738478B5245E5B1888BC0 /* BlenderPro-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDEF5E959EC74482A66B17ED /* BlenderPro-Thin.ttf */; };
+		7C16083825FB4127B9523F46 /* Hellobaby.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 409B386D228E4BA882604DAE /* Hellobaby.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +58,13 @@
 		B15BFD65E3D0F0A8B4B4F723 /* Pods_MyApp_MyAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyApp_MyAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3B7A2A22D0BA09F0075D52B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		9ED7DF44A2024DB192B970AB /* Winter Minie.otf */ = {isa = PBXFileReference; name = "Winter Minie.otf"; path = "../src/assets/fonts/Winter Minie.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		EB172846DA774CA88D18060C /* BlenderPro-Bold.ttf */ = {isa = PBXFileReference; name = "BlenderPro-Bold.ttf"; path = "../src/assets/fonts/BlenderPro-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		644ED137422143318306C038 /* BlenderPro-Book.ttf */ = {isa = PBXFileReference; name = "BlenderPro-Book.ttf"; path = "../src/assets/fonts/BlenderPro-Book.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D47E1E5E4303431395184668 /* BlenderPro-Heavy.ttf */ = {isa = PBXFileReference; name = "BlenderPro-Heavy.ttf"; path = "../src/assets/fonts/BlenderPro-Heavy.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2521F42A82C84BF2858F8585 /* BlenderPro-Medium.ttf */ = {isa = PBXFileReference; name = "BlenderPro-Medium.ttf"; path = "../src/assets/fonts/BlenderPro-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CDEF5E959EC74482A66B17ED /* BlenderPro-Thin.ttf */ = {isa = PBXFileReference; name = "BlenderPro-Thin.ttf"; path = "../src/assets/fonts/BlenderPro-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		409B386D228E4BA882604DAE /* Hellobaby.ttf */ = {isa = PBXFileReference; name = "Hellobaby.ttf"; path = "../src/assets/fonts/Hellobaby.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +145,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				586E731B8A1C41E7905E3B49 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -158,6 +173,21 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		586E731B8A1C41E7905E3B49 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				9ED7DF44A2024DB192B970AB /* Winter Minie.otf */,
+				EB172846DA774CA88D18060C /* BlenderPro-Bold.ttf */,
+				644ED137422143318306C038 /* BlenderPro-Book.ttf */,
+				D47E1E5E4303431395184668 /* BlenderPro-Heavy.ttf */,
+				2521F42A82C84BF2858F8585 /* BlenderPro-Medium.ttf */,
+				CDEF5E959EC74482A66B17ED /* BlenderPro-Thin.ttf */,
+				409B386D228E4BA882604DAE /* Hellobaby.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -261,6 +291,13 @@
 				C3B7A2A42D0BA09F0075D52B /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				4112D0433439C17347B92234 /* PrivacyInfo.xcprivacy in Resources */,
+				2073E02198DB4985873D94E7 /* Winter Minie.otf in Resources */,
+				0FA427CF68894535A22B898B /* BlenderPro-Bold.ttf in Resources */,
+				51C8646604194CAB881EE519 /* BlenderPro-Book.ttf in Resources */,
+				C5AE713472E34DEBBEA75E64 /* BlenderPro-Heavy.ttf in Resources */,
+				B8CA6895AB934D1DB6515E68 /* BlenderPro-Medium.ttf in Resources */,
+				A44738478B5245E5B1888BC0 /* BlenderPro-Thin.ttf in Resources */,
+				7C16083825FB4127B9523F46 /* Hellobaby.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
