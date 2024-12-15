@@ -14,8 +14,11 @@ import {
   ImageBackground,
   Alert,
   Modal,
-  Button
+  Button,
+  Image
 } from 'react-native';
+import CustomBackground from "../Components/CustomBackGround"
+import Svg, { Path, Defs, LinearGradient, Stop, Filter, FeDropShadow } from 'react-native-svg';
 import { ColorsContext } from '../Context/ColorsContext';
 import MyNavbar from '../Components/MyNavbar';
 import MyFlatlist from '../Components/MyFlatlist';
@@ -34,7 +37,9 @@ import { PaymentFlagContext } from '../Context/PaymentFlag';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { TokenContext } from '../Context/UserToken';
+import HomeProfil from '../Components/HomeProfil';
 
 const { height, width } = Dimensions.get('window');
 
@@ -44,48 +49,33 @@ export default function HomeScreen({ navigation }) {
   const { Background } = useContext(BackgroundContext);
   const [userToken, setUserToken] = useState();
   const { flag, setFlag } = useContext(PaymentFlagContext);
-  const { updateUser,user } = useContext(UserContext);
+  const { updateUser, user } = useContext(UserContext);
   const [currentDay, setCurrentDay] = useState();
   const [currentMONTH, setCurrentMONTH] = useState();
   const [currentDayNumber, setCurrentDayNumber] = useState();
   const [currentYear, setCurrentYear] = useState();
   const [currentHour, setCurrentHour] = useState();
   const [currentMinute, setCurrentMinute] = useState();
- const {token} = useContext(TokenContext)
+  const { token } = useContext(TokenContext)
 
   //
   const [menuVisible, setMenuVisible] = useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const slideAnim = useState(new Animated.Value(-height * 0.15))[0];
-  const toggleMenu = () => {
-    if (menuVisible) {
-      Animated.timing(slideAnim, {
-        toValue: -height * 0.15,
-        duration: 300,
-        useNativeDriver: false,
-      }).start(() => setMenuVisible(false));
-    } else {
-      setMenuVisible(true);
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start();
-    }
-  };
+
 
 
   const handleLogoutPress = async () => {
     try {
       // Firebase Authentication'dan çıkış yap
       await auth().signOut();
-  
+
       // AsyncStorage'dan token'ı sil (eğer kullanıyorsanız)
-     
-  
+
+
       // Çıkış modalını kapat
       setLogoutModalVisible(false);
-  
+
       // Login sayfasına yönlendir
       navigation.navigate('login');
     } catch (error) {
@@ -93,7 +83,7 @@ export default function HomeScreen({ navigation }) {
       Alert.alert('Hata', 'Çıkış yaparken bir sorun oluştu.');
     }
   };
-  
+
 
   useEffect(() => {
     const updateTime = () => {
@@ -139,15 +129,15 @@ export default function HomeScreen({ navigation }) {
           const value = currentUser.uid;
           setUserToken(value);
           const userDocRef = firestore().collection('users').doc(value);
-          
+
           // Belge anlık görüntüsünü alıyoruz
           const userDoc = await userDocRef.get();
-          
+
           if (userDoc.exists) {
             const userData = userDoc.data();
             updateUser({ ...userData });
             setFlag(false)
-              console.log(user,"heyyyy");
+            console.log(user, "heyyyy");
           } else {
             console.log('Belge bulunamadı.');
           }
@@ -156,27 +146,19 @@ export default function HomeScreen({ navigation }) {
         console.error('Error fetching user data:', error);
       }
     };
-  
+
     fetchUserData();
     if (flag) fetchUserData();
   }, [flag]);
-  
 
 
 
-  const handleNotificationPress = () => {
-    Alert.alert('Bildirimler', 'Henüz yeni bir bildiriminiz yok.');
-  };
-
-  const handleMailPress = () => {
-   navigation.navigate("ChatScreen")
-  };
 
 
 
   return (
     <ImageBackground
-      source={Background.primary}
+      source={Background.Home}
       style={styles.backgroundImage}
       resizeMode="cover"
     >
@@ -185,95 +167,14 @@ export default function HomeScreen({ navigation }) {
           <MyNavbar navigation={navigation} />
 
           <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <View style={styles.iconContainer}>
-              <TouchableOpacity
-                style={[styles.circleButton, { backgroundColor: '#E1BEE7' }]}
-                onPress={handleMailPress}
-              >
-                <Ionicons name="mail-outline" size={width * 0.1} color="#4A00E0" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.circleButton, { backgroundColor: '#C5CAE9' }]}
-                onPress={toggleMenu}
-              >
-                <Ionicons name="settings-outline" size={width * 0.1} color="#303F9F" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.circleButton, { backgroundColor: '#B2EBF2' }]}
-                onPress={handleNotificationPress}
-              >
-                <Ionicons name="notifications-outline" size={width * 0.1} color="#00BCD4" />
-              </TouchableOpacity>
 
+         <HomeProfil/>
 
-
-
-
+            <View style={styles.svgContainer}>
+              <CustomBackground />
             </View>
-            {menuVisible && (
-              <Animated.View
-                style={[
-                  styles.menu,
-                  {
-                    transform: [{ translateY: slideAnim }],
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  onPress={() => setLogoutModalVisible(true)}
-                  style={styles.menuItem}
-                >
-                  <Ionicons name="exit-outline" size={width * 0.06} color="#4A00E0" />
-                  <Text style={styles.menuItemText}>Çıkış Yap</Text>
-                </TouchableOpacity>
-              </Animated.View>
-            )}
-            <Modal
-              visible={logoutModalVisible}
-              transparent={true}
-              animationType="slide" // Daha yumuşak bir geçiş için "slide" animasyonu
-              onRequestClose={() => setLogoutModalVisible(false)}
-            >
-              <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                  <Ionicons
-                    name="alert-circle-outline"
-                    size={width * 0.15}
-                    color="#FF5722"
-                    style={{ marginBottom: 15 }}
-                  />
-                  <Text style={styles.modalText}>Çıkış yapmak istediğinize emin misiniz?</Text>
-                  <View style={styles.modalButtons}>
-                    <TouchableOpacity
-                      style={[styles.modalButton, styles.cancelButton]}
-                      onPress={() => setLogoutModalVisible(false)}
-                    >
-                      <Ionicons name="close-circle" size={width * 0.05} color="#FFF" />
-                      <Text style={styles.cancelButtonText}>Vazgeç</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={[styles.modalButton, styles.confirmButton]}
-                      onPress={handleLogoutPress}
-                    >
-                      <Ionicons name="checkmark-circle" size={width * 0.05} color="#FFF" />
-                      <Text style={styles.confirmButtonText}>Çıkış Yap</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </Modal>
 
 
-
-            <View style={styles.infoSection}>
-              <Text style={[styles.infoTitle, { fontFamily: fonts.bold }]}>
-                Bebeğiniz Geleceğini Şekillendirin
-              </Text>
-              <Text style={[styles.infoText, { fontFamily: fonts.regular }]}>
-                Eğitim planlarımızla bebeğinizin gelişimini izleyin ve daha sağlıklı bir uyku düzeni
-                geliştirmesine yardımcı olun.
-              </Text>
-            </View>
 
             {/* Katalog Bileşeni Eklendi */}
             <View style={{
@@ -321,9 +222,6 @@ export default function HomeScreen({ navigation }) {
                 <MyFlatlist sharedAnimationValue={sharedAnimationValue} type="exercise" navigation={navigation} />
               </View>
             </View>
-            <TouchableOpacity onPress={()=>navigation.navigate("SeeGoogle")} style={{borderWidth:1}}>
-              <Text>hey</Text>
-            </TouchableOpacity>
 
           </ScrollView>
         </View>
@@ -348,25 +246,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     paddingVertical: height * 0.02,
   },
-  infoSection: {
-    marginVertical: height * 0.02,
-    paddingHorizontal: width * 0.05,
-    paddingVertical: height * 0.02,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 15,
-  },
-  infoTitle: {
-    fontSize: 24,
-    color: '#004085',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  infoText: {
-    fontSize: 16,
-    color: '#003366',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
+
   sectionContainer: {
     marginVertical: height * 0.02,
     paddingLeft: width * 0.04,
@@ -379,7 +259,7 @@ const styles = StyleSheet.create({
   sectionTitletwo: {
     fontSize: 15,
     color: '#003366',
-    marginRight:width*0.05
+    marginRight: width * 0.05
   },
   flatListWrapper: {
     borderRadius: 15,
@@ -516,5 +396,28 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontWeight: 'bold',
   },
-
+  svgContainer: {
+    
+    flex: 1,
+    marginVertical: width * 0.04,
+    marginHorizontal: width * 0.04,
+  },
+  textContainer: {
+    position: 'absolute',
+    top: '35%',
+    width: '80%',
+    alignItems: 'center',
+  },
+  infoTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  infoText: {
+    fontSize: 16,
+    color: '#555',
+    textAlign: 'center',
+  },
 });

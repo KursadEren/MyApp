@@ -35,17 +35,12 @@ export default function RegisterScreen({ navigation }) {
       Alert.alert('Hata', 'Şifreler eşleşmiyor!');
       return;
     }
-
+  
     try {
       // Kullanıcıyı Firebase Authentication ile kaydet
-      const userCredential = await auth().createUserWithEmailAndPassword(
-        email,
-        password
-      ).then(() => {
-        console.log('User account created & signed in!');
-      })
-      const user = userCredential.user;
-
+      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+      const user = userCredential.user; // user bilgilerini al
+  
       // Kullanıcı bilgilerini Firestore'a kaydet
       const userData = {
         username: userName || '',
@@ -54,22 +49,26 @@ export default function RegisterScreen({ navigation }) {
         last_login: new Date(),
         admin: false,
         isActive: true,
-        phone: phone,
+        phone: phone || '',
       };
-
-      await firestore.collection('users').doc(user.uid).set(userData);
-
+  
+      await firestore().collection('users').doc(user.uid).set(userData);
+  
       Alert.alert('Başarılı', 'Kullanıcı başarıyla kaydedildi!');
-      navigation.goBack();
+      navigation.goBack(); // Kullanıcı başarıyla kaydedildikten sonra geri dön
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
         Alert.alert('Hata', 'Bu e-posta adresi zaten kullanılıyor.');
+      } else if (error.code === 'auth/invalid-email') {
+        Alert.alert('Hata', 'Geçersiz e-posta adresi.');
+      } else if (error.code === 'auth/weak-password') {
+        Alert.alert('Hata', 'Şifre çok zayıf.');
       } else {
         Alert.alert('Hata', error.message);
       }
     }
   };
-
+  
   return (
     <ImageBackground
       source={Background.primary}

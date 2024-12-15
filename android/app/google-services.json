@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "555123565715",
+    "project_id": "ebeveyn-app-51ce9",
+    "storage_bucket": "ebeveyn-app-51ce9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555123565715:android:13f759365606c10c08d966",
+        "android_client_info": {
+          "package_name": "com.mervecakir"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjowB1Rx6LnD6J2ZJsw5ATuEL00gRO6fI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555123565715:android:e872b51460988bd008d966",
+        "android_client_info": {
+          "package_name": "com.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjowB1Rx6LnD6J2ZJsw5ATuEL00gRO6fI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

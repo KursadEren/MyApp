@@ -9,9 +9,15 @@ export const FontsProvider = ({children}) => {
 
   // Font isimleri
   const fonts = {
-    regular: 'BlenderPro-Thin', // Font ismi dosya adı olmadan
+    book: 'BlenderPro-Book', // Font ismi dosya adı olmadan
     bold: 'BlenderPro-Bold',
+    Heavy: 'BlenderPro-Heavy', // Font ismi dosya adı olmadan
+    Medium: 'BlenderPro-Medium',
+    thin: 'BlenderPro-Thin',
+    baby: 'Hellobaby',
+    Winter: "Winter Minie"
   };
+
   const fontsSize = {
     Bold: 24,
     Text: 20,

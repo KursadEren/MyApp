@@ -14,7 +14,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useFocusEffect } from '@react-navigation/native';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export default function SubsUserScreen() {
