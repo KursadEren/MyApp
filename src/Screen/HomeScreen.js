@@ -65,25 +65,7 @@ export default function HomeScreen({ navigation }) {
 
 
 
-  const handleLogoutPress = async () => {
-    try {
-      // Firebase Authentication'dan çıkış yap
-      await auth().signOut();
-
-      // AsyncStorage'dan token'ı sil (eğer kullanıyorsanız)
-
-
-      // Çıkış modalını kapat
-      setLogoutModalVisible(false);
-
-      // Login sayfasına yönlendir
-      navigation.navigate('login');
-    } catch (error) {
-      console.error('Çıkış işlemi sırasında hata:', error);
-      Alert.alert('Hata', 'Çıkış yaparken bir sorun oluştu.');
-    }
-  };
-
+  
 
   useEffect(() => {
     const updateTime = () => {
@@ -200,7 +182,9 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.colon}>:</Text>
                 <Text style={styles.timeText}>{currentMinute}</Text>
               </View>
+              <View>
               <SubscriptionCalendar sharedAnimationValue={sharedAnimationValue} />
+              </View>
             </View>
 
             <View style={styles.sectionContainer}>

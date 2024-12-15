@@ -1,21 +1,69 @@
 import React from 'react';
-import { TouchableOpacity, View, Text, Image } from 'react-native';
+import { TouchableOpacity, View, Text, Image, Dimensions } from 'react-native';
 
-const VideoItem = ({ item, fonts, setSelectedVideo, styles }) => (
+const { width } = Dimensions.get('window');
+
+const VideoItem = ({ item, fonts, setSelectedVideo }) => (
   <TouchableOpacity
-    style={styles.videoCardContainer}
+    style={{
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 15,
+      backgroundColor: '#FFFFFF',
+      borderRadius: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3, // Android için gölge
+      width: width * 0.9,
+      alignSelf: 'center',
+    }}
     onPress={() => setSelectedVideo(item)}
   >
-    <View style={styles.videoCard}>
-      <Image source={item.image} style={styles.videoImage} />
-      <View style={styles.textContainer}>
-        <Text style={[styles.videoTitle, { fontFamily: fonts.Bold }]} numberOfLines={1}>
-          {item.title}
-        </Text>
-        <Text style={[styles.videoDescription, { fontFamily: fonts.Regular }]}>
-          {item.duration} | {item.description}
-        </Text>
-      </View>
+    {/* Sol taraftaki simge */}
+    <View
+      style={{
+        backgroundColor: '#F8EAF4',
+        borderRadius: 50,
+        padding: 10,
+        marginRight: 15,
+      }}
+    >
+      <Image
+        source={require('../../assets/img/HomeContent/click2.png')}
+        style={{
+          width: 30,
+          height: 30,
+          resizeMode: 'contain',
+        }}
+      />
+    </View>
+
+    {/* Metin Alanı */}
+    <View style={{ flex: 1 }}>
+      <Text
+        style={{
+          fontFamily: fonts.Bold,
+          fontSize: 16,
+          color: '#8A6D98',
+          marginBottom: 5,
+        }}
+        numberOfLines={1}
+      >
+        {item.title}
+      </Text>
+      <Text
+        style={{
+          fontFamily: fonts.Regular,
+          fontSize: 14,
+          color: '#6B7280',
+        }}
+      >
+        {item.duration} | {item.description}
+      </Text>
     </View>
   </TouchableOpacity>
 );

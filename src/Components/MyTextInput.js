@@ -1,49 +1,50 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, TextInput, StyleSheet, Dimensions } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import { FontsContext } from "../Context/FontsContext";
 
 const { width, height } = Dimensions.get("window");
 
+
+
+
 const MyTextInput = ({ placeholder, value, onChangeText, secureTextEntry }) => {
+  const{fonts } = useContext(FontsContext)
   return (
     <View style={styles.outerContainer}>
-      {/* İç gölge efekti için gradient */}
-      <LinearGradient
-        colors={["#e3e3e3","#f8f8f8", "#fff"]} // Gradient tonları iç gölgeyi simüle eder
-        style={styles.innerContainer}
-        start={{ x: 1, y: 0.1 }}
-        end={{ x: 1, y: 0.7 }}
-      >
-        <View style={styles.innerShadow}>
+      <View style={styles.innerContainer}>
           <TextInput
-            style={styles.input}
+            style={[styles.input,{ fontFamily:fonts.baby,}]}
             placeholder={placeholder}
             value={value}
+            
             onChangeText={onChangeText}
             secureTextEntry={placeholder.toLowerCase().includes("password") ? secureTextEntry : false}
             placeholderTextColor="#B0C4CC"
           />
         </View>
-      </LinearGradient>
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   outerContainer: {
-    width: width * 0.8,
-    height: height * 0.075,
-    alignSelf: "center",
-    borderRadius: 25,
-    backgroundColor: "#e3e3e3",
-    overflow: "hidden", // Taşan içeriği gizler
-    marginVertical: height * 0.01,
+   
+    backgroundColor: '#e3e3e3',
+    borderRadius: 30,
+    marginRight: 10,
+    height:height*0.07,
+    marginVertical:height*0.02
   },
   innerContainer: {
-    flex: 1,
-    borderRadius: 25,
-    justifyContent: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "white", 
+       
+        borderRadius: 100, 
+        marginTop: 3,
+        marginRight: 2,
+        height:height*0.07,
+        justifyContent:"center",
    
   },
   innerShadow: {
@@ -51,9 +52,10 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginTop: height*0.01, // İç gölge için boşluk
     backgroundColor: "#FFFFFF",
-    width: width * 0.85,
-    marginRight:width*0.1,
-    left:0,
+    width: width * 0.9,
+    marginRight:5,
+    marginTop:5,
+   
   },
   input: {
     flex: 1,
@@ -62,6 +64,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: "transparent",
     color: "#3E3E3E", // Yazı rengi
+  
   },
 });
 
