@@ -39,6 +39,7 @@ const CatalogItem = ({ item, fonts, navigation, styles }) => {
           alignItems: 'flex-start',
         }}
       >
+        
         <Image 
           source={item.iconImage} 
           style={{

@@ -27,6 +27,7 @@
     "react-native-gesture-handler": "^2.21.2",
     "react-native-get-random-values": "^1.11.0",
     "react-native-linear-gradient": "^2.8.3",
+    "react-native-modal-datetime-picker": "^18.0.0",
     "react-native-pdf": "^6.7.5",
     "react-native-reanimated": "^3.16.3",
     "react-native-safe-area-context": "^5.0.0",

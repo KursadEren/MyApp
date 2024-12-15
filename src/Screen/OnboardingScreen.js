@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Dimensions,Image } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5"
 import { ColorsContext } from "../Context/ColorsContext";
 
@@ -21,11 +21,11 @@ const OnboardingScreen = ({ navigation }) => {
       >
         {/* Devam Butonu */}
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: colors.primary }]}
+          style={[styles.button, ]}
           onPress={handleNext}
         >
 
-          <Icon name="chevron-right" size={width * 0.06} color="#FFF" />
+       <Image source={require('../assets/img/ok.png')} style={styles.arrowBottom} />
         </TouchableOpacity>
       </ImageBackground>
     </View>
@@ -47,12 +47,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 30,
-    marginBottom: 50, // Alt boşluk
-    alignSelf: "center", // Ortada yer alacak
+      
+      marginBottom:height*0.19
+   
   },
+  arrowBottom:{ width: width*0.5, height: height*0.09, resizeMode: 'contain' },
   buttonText: {
     fontSize: 16,
     color: "#FFF",
