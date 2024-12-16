@@ -1,18 +1,23 @@
-import { View, StyleSheet, ScrollView, SafeAreaView, StatusBar, Platform,Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  StatusBar,
+  Platform,
+  Alert,
+} from 'react-native';
 import Card from '../Components/Card';
 import AdminNavbar from '../Components/AdminNavbar';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import auth from "@react-native-firebase/auth"
-import firestore from "@react-native-firebase/firestore"
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import { Dimensions } from 'react-native';
-
 
 const { width } = Dimensions.get('window');
 
 export default function AdminHomeScreen({ navigation }) {
-  const [users, setUsers] = useState([]);
-  
+  const [usersWithSubscriptions, setUsersWithSubscriptions] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -24,28 +29,41 @@ export default function AdminHomeScreen({ navigation }) {
         }
         const currentUserId = currentUser.uid;
 
-        // 'users' koleksiyonuna referans alıyoruz
         const usersCollectionRef = firestore().collection('users');
-
-        // Tüm kullanıcıları çekiyoruz
         const usersSnapshot = await usersCollectionRef.get();
 
         const userList = [];
 
-        usersSnapshot.forEach(doc => {
+        for (const doc of usersSnapshot.docs) {
           if (doc.id !== currentUserId) {
             const userData = doc.data();
+            const userId = doc.id;
+
+            // Kullanıcının 'subscriptions' alt koleksiyonunu çekiyoruz
+            const subscriptionsRef = usersCollectionRef
+              .doc(userId)
+              .collection('subscriptions');
+            const subscriptionsSnapshot = await subscriptionsRef.get();
+
+            const subscriptions = [];
+            subscriptionsSnapshot.forEach((subscriptionDoc) => {
+              subscriptions.push({
+                id: subscriptionDoc.id,
+                ...subscriptionDoc.data(),
+              });
+            });
+
+            // Kullanıcı verilerini ve subscriptions'ı ekle
             userList.push({
-              id: doc.id,
+              id: userId,
               ...userData,
+              subscriptions,
             });
           }
-        });
+        }
 
-        setUsers(userList);
-
-        await AsyncStorage.setItem('@userDataList', JSON.stringify(userList));
-        console.log('Kullanıcı verileri AsyncStorage\'a kaydedildi');
+        setUsersWithSubscriptions(userList);
+        console.log('Kullanıcı ve abonelik verileri yüklendi:', userList);
       } catch (error) {
         console.error('Kullanıcılar alınırken hata oluştu:', error);
         Alert.alert('Hata', 'Kullanıcılar alınırken bir hata oluştu.');
@@ -54,6 +72,7 @@ export default function AdminHomeScreen({ navigation }) {
 
     fetchUsers();
   }, []);
+
   return (
     <SafeAreaView style={styles.Container}>
       <AdminNavbar navigation={navigation} />
@@ -67,14 +86,19 @@ export default function AdminHomeScreen({ navigation }) {
             cardWidth={(width / 2) - 30}
             cardHeight={150}
           />
-          <Card
-            title="Users"
-            iconName="people-outline"
-            navigation={navigation}
-            targetScreen="SubsUserScreen"
-            cardWidth={(width / 2) - 30}
-            cardHeight={150}
-          />
+         <Card
+  title="Users"
+  iconName="people-outline"
+  navigation={navigation}
+  targetScreen="SubsUserScreen"
+  cardWidth={(width / 2) - 30}
+  cardHeight={150}
+  onPress={() => {
+    console.log('Navigating with users:', usersWithSubscriptions); // Debug için log ekleyin
+    navigation.navigate('SubsUserScreen', { users: usersWithSubscriptions });
+  }}
+/>
+
         </View>
         <View style={styles.CardContainer}>
           <Card

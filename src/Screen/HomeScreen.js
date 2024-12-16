@@ -100,32 +100,32 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     startGradientAnimation();
   }, [sharedAnimationValue]);
+  const fetchUserData = async () => {
+    try {
+      const currentUser = auth().currentUser;
+      if (currentUser) {
+        const value = currentUser.uid;
+      
+        const userDocRef = firestore().collection('users').doc(value);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const currentUser = auth().currentUser;
-        if (currentUser) {
-          const value = currentUser.uid;
-        
-          const userDocRef = firestore().collection('users').doc(value);
+        // Belge anlık görüntüsünü alıyoruz
+        const userDoc = await userDocRef.get();
 
-          // Belge anlık görüntüsünü alıyoruz
-          const userDoc = await userDocRef.get();
-
-          if (userDoc.exists) {
-            const userData = userDoc.data();
-            updateUser({ ...userData });
-            setFlag(false)
-            console.log(user, "heyyyy");
-          } else {
-            console.log('Belge bulunamadı.');
-          }
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          updateUser({ ...userData });
+          setFlag(false)
+          console.log(user, "heyyyy");
+        } else {
+          console.log('Belge bulunamadı.');
         }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+  useEffect(() => {
+   
 
     fetchUserData();
     if (flag) fetchUserData();
@@ -186,17 +186,7 @@ export default function HomeScreen({ navigation }) {
               <Text style={[styles.sectionTitle, { fontFamily: fonts.bold }]}>
                 Planlar
               </Text>
-              <View style={styles.planHeader}>
-                <Text style={[styles.sectionTitletwo, { fontFamily: fonts.regular }]}>
-                  <Icon name="power-sleep" size={20} color="#003366" />
-                  Bebeğiniz için en iyileri
-                </Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Plans')}>
-                  <Text style={[styles.sectionTitletwo, { fontFamily: fonts.regular }]}>
-                    Tümünü Göster
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              
               <View style={styles.flatListWrapper}>
                 <MyFlatlist sharedAnimationValue={sharedAnimationValue} type="exercise" navigation={navigation} />
               </View>
@@ -247,7 +237,7 @@ const styles = StyleSheet.create({
   flatListWrapper: {
     borderRadius: 15,
     backgroundColor: 'rgba(52, 52, 52, 0)',
-    marginBottom: height * 0.09,
+    
   },
   calendarContainer: {
     marginTop: height * 0.03,
