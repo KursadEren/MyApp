@@ -1,27 +1,96 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, ImageBackground } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, TouchableOpacity, ImageBackground, Dimensions, Image } from 'react-native';
+import { ColorsContext } from '../../Context/ColorsContext';
 
-const ExerciseItem = ({ item, navigation, fonts, styles }) => (
-  <View style={styles.cardContainer}>
-    {item.subscription_duration === 12 && (
-      <View style={styles.badgeContainer}>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Bebeğiniz için en iyisi</Text>
-        </View>
-      </View>
-    )}
-    <TouchableOpacity
-      style={styles.exerciseCard}
-      onPress={() => navigation.navigate('Payment', { data: item, navigation })}
-    >
+const { width, height } = Dimensions.get("window");
+
+const ExerciseItem = ({ item, navigation, fonts, styles }) => {
+  const localImages = {
+    '5.png': require('../../assets/img/Planlar/5.png'),
+    '6.png': require('../../assets/img/Planlar/6.png'),
+    '7.png': require('../../assets/img/Planlar/7.png'),
+    '9.png': require('../../assets/img/Planlar/9.png'),
+    '8.png': require('../../assets/img/Planlar/8.png'),
+    '10.png': require('../../assets/img/Planlar/10.png'),
+    '11.png': require('../../assets/img/Planlar/11.png'),
+    '12.png': require('../../assets/img/Planlar/12.png'),
+  };
+
+  const { colors } = useContext(ColorsContext);
+
+  const imageSource =
+    typeof item.image === 'string' && item.image.startsWith('http')
+      ? { uri: item.image }
+      : localImages[item.image];
+
+  const IMAGE_RATIO = 3 / 2;
+
+  const splitTitle = item.title.split(' ');
+  const firstPart = splitTitle.slice(0, 2).join(' ');
+  const secondPart = splitTitle.slice(2).join(' ');
+
+  return (
+    <View style={{ borderRadius: 15, overflow: 'hidden' }}>
       <ImageBackground
-        source={require('../../assets/img/5.jpeg')}
-        style={styles.backgroundImage}
-        resizeMode="cover"
-        imageStyle={{ borderTopLeftRadius: 15, borderTopRightRadius: 15 }}
-      />
-    </TouchableOpacity>
-  </View>
-);
+        source={imageSource}
+        style={{
+          width: width * 0.9,
+          height: height * 0.5 / IMAGE_RATIO,
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius:30
+        }}
+        resizeMode="contain"
+      >
+        {/* Sol alt köşe */}
+        <TouchableOpacity  onPress={() => navigation.navigate('Payment', { data: item })} 
+            style={{ position: 'absolute',
+            bottom:0,
+            left: width*0.04,
+            width: width * 0.2,
+            height: width * 0.2,
+            resizeMode: 'contain',}}>
+        <Image
+          source={require("../../assets/img/HomeContent/play.png")}
+          style={{
+            position: 'absolute',
+            bottom:0,
+            left: 0,
+            width: width * 0.2,
+            height: width * 0.2,
+            resizeMode: 'contain',
+          }}
+        />
+        </TouchableOpacity>
+        {/* Sağ alt köşe */}
+        
+      </ImageBackground>
+
+      <View style={{ alignItems: 'center', margin: width * 0.05 }}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: 'bold',
+            fontFamily: fonts.Heavy,
+            marginBottom: height * 0.01,
+            color: "#502051",
+          }}
+        >
+          {firstPart}
+        </Text>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: '600',
+            fontFamily: fonts.Heavy,
+            color: "#502051",
+          }}
+        >
+          {secondPart}
+        </Text>
+      </View>
+    </View>
+  );
+};
 
 export default ExerciseItem;

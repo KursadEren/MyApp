@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import YoutubeVideo from './YoutubeVideo';
 import { ColorsContext } from '../Context/ColorsContext';
-import { SubscriptionsContext } from '../Context/SubsCriptionsContext';
 import { FontsContext } from '../Context/FontsContext';
 import { BackgroundContext } from '../Context/BackGround';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -79,6 +78,83 @@ const videoData = [
     youtubeUrl: 'https://www.youtube.com/embed/f2xGxd9xPYA',
   },
 ];
+const subscriptions = [
+  {
+    id: '1',
+    title: '5 AYLIK UYKU PROGRAMI',
+    description: '5 AYLIK UYKU PROGRAMI.',
+    image: '5.png',
+    price: 500,
+    subscription_duration: 5,
+    subs_id: 1,
+  },
+  {
+    id: '2',
+    title: '6 AYLIK UYKU PROGRAMI',
+    description: '6 AYLIK UYKU PROGRAMI.',
+    image: '6.png',
+    price: 800,
+    subscription_duration: 6,
+    subs_id: 2,
+  },
+  {
+    id: '3',
+    title: '7 AYLIK UYKU PROGRAMI',
+    description: '7 AYLIK UYKU PROGRAMI.',
+    image: '7.png',
+    price: 900,
+    subscription_duration: 7,
+    subs_id: 3,
+  },
+  {
+    id: '4',
+    title: '8 AYLIK UYKU PROGRAMI',
+    description: '8 AYLIK UYKU PROGRAMI.',
+    image: '8.png',
+    price: 1000,
+    subscription_duration: 8,
+    subs_id: 4,
+  },
+  {
+    id: '5',
+    title: '9 AYLIK UYKU PROGRAMI',
+    description: '9 AYLIK UYKU PROGRAMI.',
+    image: '9.png',
+    price: 1100,
+    subscription_duration: 9,
+    subs_id: 5,
+  },
+  {
+    id: '6',
+    title: '10 AYLIK UYKU PROGRAMI',
+    description: '10 AYLIK UYKU PROGRAMI.',
+    image: '10.png',
+    price: 1200,
+    subscription_duration: 10,
+    subs_id: 6,
+  },
+  {
+    id: '7',
+    title: '11 AYLIK UYKU PROGRAMI',
+    description: 'BEBEĞİNİZİN UYKU DÜZENİNİ OPTİMİZE ETMEK İÇİN 11 AYLIK PLAN.',
+    image: '11.png',
+    price: 1300,
+    subscription_duration: 11,
+    subs_id: 7,
+  },
+  {
+    id: '8',
+    title: '12 AYLIK UYKU PROGRAMI',
+    description: 'UZUN VADELİ UYKU ALIŞKANLIKLARI İÇİN 12 AYLIK DETAYLI PROGRAM.',
+    image: '12.png',
+    price: 1500,
+    subscription_duration: 12,
+    subs_id: 8,
+  },
+];
+
+
+
 
 const catalogData = [
   {
@@ -109,7 +185,7 @@ const catalogData = [
 
 export default function MyFlatlist({ type, navigation, admin = false, sharedAnimationValue }) {
   const { colors } = useContext(ColorsContext);
-  const { subscriptions } = useContext(SubscriptionsContext);
+  
   const { fonts } = useContext(FontsContext);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const { Background } = useContext(BackgroundContext)
@@ -180,7 +256,7 @@ export default function MyFlatlist({ type, navigation, admin = false, sharedAnim
             keyExtractor={(item) => item.id}
             horizontal
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.flatListContent}
+            contentContainerStyle={[styles.flatListContent,{}]}
           />
         ) : (
           <FlatList
@@ -191,7 +267,7 @@ export default function MyFlatlist({ type, navigation, admin = false, sharedAnim
             keyExtractor={(item) => item.id}
             horizontal
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.flatListContent}
+            contentContainerStyle={[styles.flatListContent,{}]}
           />
         )
       ) : (
@@ -250,7 +326,7 @@ const styles = StyleSheet.create({
     marginRight: width * 0.04,
   },
   exerciseCard: {
-    flex: 1,
+    
   },
   contentContainer: {
     width: '100%',
@@ -337,7 +413,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  flatListContent: {},
+ 
   cardContainer: {
     borderRadius: 15,
     overflow: 'hidden',

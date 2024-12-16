@@ -1,0 +1,52 @@
+
+  const handlePayment = async () => {
+    if (!data.subs_id || !data.price || !data.subscription_duration) {
+      Alert.alert('Hata', 'Eksik bilgi gönderildi.');
+      return;
+    }
+  
+    try {
+      const currentUser = auth().currentUser;
+  
+      if (!currentUser) {
+        Alert.alert('Hata', "Kullanıcı oturumu bulunamadı.");
+        return;
+      }
+  
+      const userId = currentUser.uid;
+  
+      const transactionId = uuid.v4(); // UUID oluşturma
+      const subscriptionStart = firestore.Timestamp.now();
+      const currentDate = new Date();
+      currentDate.setMonth(
+        currentDate.getMonth() + parseInt(data.subscription_duration),
+      );
+      const subscriptionEnd = firestore.Timestamp.fromDate(currentDate);
+  
+      const subscriptionData = {
+        amount_paid: data.price,
+        is_active: true,
+        subs_id: data.subs_id,
+        subscription_start: subscriptionStart,
+        subscription_end: subscriptionEnd,
+        transaction_id: transactionId,
+        packet_name: data.packet_name,
+      };
+  
+      // Kullanıcının referansını alıyoruz
+      const userRef = firestore().collection('users').doc(userId);
+  
+      // Kullanıcının altındaki 'subscriptions' koleksiyonuna ekleme yapıyoruz
+      const subscriptionsRef = userRef.collection('subscriptions');
+  
+      // Yeni aboneliği 'subscriptions' koleksiyonuna ekliyoruz
+      await subscriptionsRef.add(subscriptionData);
+  
+      Alert.alert('Başarılı', 'Abonelik alındı.');
+      setFlag(true);
+      navigation.goBack();
+    } catch (error) {
+      console.error('Abonelik oluşturulurken bir hata oluştu:', error);
+      Alert.alert('Hata', 'Sunucuya bağlanırken bir sorun oluştu.');
+    }
+  };

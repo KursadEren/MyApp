@@ -14,6 +14,8 @@ import { ColorsContext } from '../Context/ColorsContext';
 
 const { width, height } = Dimensions.get('window');
 
+import auth from '@react-native-firebase/auth';
+
 export default function MyNavbar({ navigation }) {
   const { colors = { text: '#FFF' } } = useContext(ColorsContext) || {};
   const [menuVisible, setMenuVisible] = useState(false);
@@ -29,9 +31,23 @@ export default function MyNavbar({ navigation }) {
     }).start();
   };
 
-  const handleLogoutPress = () => {
-    setLogoutModalVisible(false);
-    // Çıkış işlemini burada gerçekleştirin
+  const handleLogoutPress = async () => {
+    try {
+      // Firebase Authentication'dan çıkış yap
+      await auth().signOut();
+  
+      // AsyncStorage'dan token'ı sil (eğer kullanıyorsanız)
+     
+  
+      // Çıkış modalını kapat
+      setLogoutModalVisible(false);
+  
+      // Login sayfasına yönlendir
+      navigation.navigate('login');
+    } catch (error) {
+      console.error('Çıkış işlemi sırasında hata:', error);
+      Alert.alert('Hata', 'Çıkış yaparken bir sorun oluştu.');
+    }
   };
 
   return (
@@ -102,7 +118,7 @@ export default function MyNavbar({ navigation }) {
           ]}
         >
           <TouchableOpacity
-            onPress={() => setLogoutModalVisible(true)}
+            onPress={handleLogoutPress}
             style={styles.menuItem}
           >
             <Ionicons name="exit-outline" size={width * 0.06} color="#4A00E0" />
@@ -112,40 +128,7 @@ export default function MyNavbar({ navigation }) {
       )}
 
       {/* Çıkış Modal */}
-      <Modal
-        visible={logoutModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setLogoutModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Ionicons
-              name="alert-circle-outline"
-              size={width * 0.15}
-              color="#FF5722"
-              style={{ marginBottom: 15 }}
-            />
-            <Text style={styles.modalText}>Çıkış yapmak istediğinize emin misiniz?</Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => setLogoutModalVisible(false)}
-              >
-                <Ionicons name="close-circle" size={width * 0.05} color="#FFF" />
-                <Text style={styles.cancelButtonText}>Vazgeç</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.confirmButton]}
-                onPress={handleLogoutPress}
-              >
-                <Ionicons name="checkmark-circle" size={width * 0.05} color="#FFF" />
-                <Text style={styles.confirmButtonText}>Çıkış Yap</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+     
     </View>
   );
 }

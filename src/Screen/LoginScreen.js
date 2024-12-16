@@ -19,6 +19,8 @@ import { SubscriptionsContext } from '../Context/SubsCriptionsContext';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserContext } from '../Context/UserContext';
+import { PaymentFlagContext } from '../Context/PaymentFlag';
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,13 +32,14 @@ export default function LoginScreen({ navigation }) {
   const { Background } = useContext(BackgroundContext);
   const { setToken, token } = useContext(TokenContext);
   const { fetchSubscriptions } = useContext(SubscriptionsContext);
-
+  const {setFlag} = useContext(PaymentFlagContext)
+ const {updateUser} = useContext(UserContext)
   const fetchUserData = async () => {
     try {
       const currentUser = auth().currentUser;
       if (currentUser) {
         const value = currentUser.uid;
-        setUserToken(value);
+        
         const userDocRef = firestore().collection('users').doc(value);
 
         // Belge anlık görüntüsünü alıyoruz
@@ -46,7 +49,7 @@ export default function LoginScreen({ navigation }) {
           const userData = userDoc.data();
           updateUser({ ...userData });
           setFlag(false)
-          console.log(user, "heyyyy");
+          
         } else {
           console.log('Belge bulunamadı.');
         }
@@ -90,9 +93,7 @@ export default function LoginScreen({ navigation }) {
               navigation.navigate("Home");
             }
 
-            // Token'ı güncelle (gerekirse)
-            const idTokenResult = await currentUser.getIdTokenResult();
-            setToken(idTokenResult.token);
+           
           } else {
             console.log('Firestore\'da kullanıcı dokümanı bulunamadı.');
             Alert.alert('Hata', 'Kullanıcı verileri bulunamadı.');
@@ -154,9 +155,7 @@ export default function LoginScreen({ navigation }) {
         } else {
           await fetchUserData();
           console.log('Kullanıcı normal, HomeScreen\'e yönlendiriliyor.');
-          navigation.navigate('MyTabs', {
-            screen: 'HomeScreen',
-          });
+          navigation.navigate("Home");
         }
       } else {
         console.log('Firestore\'da kullanıcı dokümanı bulunamadı.');

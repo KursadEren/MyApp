@@ -117,16 +117,13 @@ export default function RegisterScreen({ navigation }) {
               onChangeText={text => setPhone(text)}
               iconName="call-outline"
             />
+            <View style={{flex:1, alignItems:"center"}}>
             <MyButton
               title="Register"
               onPress={handleRegister}
               backgroundColor={colors.login}
             />
-            <MyButton
-              title="Back to Login"
-              onPress={() => navigation.goBack()}
-              backgroundColor={colors.login}
-            />
+            </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -140,6 +137,7 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
+    marginTop:width*0.1
   },
   keyboardView: {
     flex: 1,
@@ -147,7 +145,7 @@ const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    
     paddingHorizontal: width * 0.05,
   },
 });

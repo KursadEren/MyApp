@@ -10,7 +10,7 @@ export const BackgroundProvider = ({children}) => {
   // Görsel kaynakları
   const Background = {
     primary: require('../assets/img/GirisArkaplan.jpg'),
-    Home:require('../assets/img/HomeContent/background.png')
+    Home:require('../assets/img/HomeContent/AppBackGround.jpg')
   };
 
   // Görüntü yükleme işlemi
