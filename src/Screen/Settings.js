@@ -43,7 +43,7 @@ function calculateAgeAndMonths(birthDateString) {
   };
 }
 
-export default function Settings() {
+export default function Settings({navigation}) {
   const { fonts } = useContext(FontsContext);
   const { colors } = useContext(ColorsContext);
   const { user } = useContext(UserContext);
@@ -157,12 +157,12 @@ export default function Settings() {
         <View style={styles.buttonContainer}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              {renderButtonWithText(() => console.log('Button 1 pressed'), require('../assets/img/ok.png'), "Profil")}
+              {renderButtonWithText(() => navigation.navigate("Profile"), require('../assets/img/ok.png'), "Profil")}
             </View>
           </View>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              {renderButtonWithText(() => console.log('Button 2 pressed'), require('../assets/img/ok.png'), "SSS & DESTEK")}
+              {renderButtonWithText(() =>navigation.navigate("Destek"), require('../assets/img/ok.png'), "SSS & DESTEK")}
             </View>
           </View>
         </View>

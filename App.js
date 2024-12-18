@@ -33,6 +33,7 @@ import OnboardingScreen from './src/Screen/OnboardingScreen';
 import Payment2 from './src/Screen/Payment2';
 import SleepScheduler from './src/Screen/SleepSchulder';
 import Settings from './src/Screen/Settings';
+import Destek from './src/Screen/Destek';
 
 const Stack = createNativeStackNavigator();
 
@@ -146,6 +147,7 @@ function App() {
                         <Stack.Screen name="AdminChatScreen" component={AdminChatScreen} />
                         <Stack.Screen name="Sleep" component={SleepScheduler} />
                         <Stack.Screen name="Settings" component={Settings} />
+                        <Stack.Screen name="Destek" component={Destek} />
                       </Stack.Navigator>
                     </SubscriptionsProvider>
                   </ColorsProvider>
