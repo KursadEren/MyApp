@@ -55,7 +55,7 @@ export default function MyNavbar({ navigation }) {
       {/* Ayarlar İkonu */}
       <TouchableOpacity
         style={[styles.iconButton, { backgroundColor: '#C5CAE9' }]} // Ayarlar için özelleştirilmiş stil
-        onPress={toggleMenu}
+        onPress={()=>navigation.navigate("Settings")}
       >
         <Image
           source={require('../assets/img/navbar/ayarlar.png')}
