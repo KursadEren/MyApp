@@ -1,12 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.myapp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- İzinler -->
+    <!-- Gerekli İzinler -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".MainApplication"
@@ -17,30 +17,45 @@
         android:theme="@style/AppTheme"
         android:supportsRtl="true">
 
-        <!-- Meta-data etiketi ile çakışmayı çözmek için tools:replace ekleyin -->
+        <!-- Varsayılan Bildirim Kanalı -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="default"
+            android:value="sleep_channel"
             tools:replace="android:value" />
 
-        <!-- Notifee Servisi -->
+        <!-- Firebase Messaging Servisi -->
         <service
-            android:name="io.invertase.notifee.BackgroundService"
-            android:exported="false">
+            android:name="com.google.firebase.messaging.FirebaseMessagingService"
+            android:exported="true"
+            tools:replace="android:exported">
             <intent-filter>
-                <action android:name="io.invertase.notifee.BackgroundEvent" />
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
+        <!-- Notifee Arka Plan Servisi -->
+        <service
+            android:name="app.notifee.core.ForegroundService"
+            android:exported="false" />
+
+        <!-- Uygulama Boot Tamamlandıktan Sonra Bildirimleri Yeniden Zamanla -->
+        <receiver
+            android:name="app.notifee.core.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.REBOOT" />
+            </intent-filter>
+        </receiver>
+
         <!-- MainActivity -->
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
+            android:exported="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="true">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

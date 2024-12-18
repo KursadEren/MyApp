@@ -14,7 +14,7 @@ const GoogleDriveFiles = () => {
   const fetchFiles = async () => {
     try {
       const url =
-        "https://www.googleapis.com/drive/v3/files?q=%271urHJTw7acsf9bAiGFjGDj6vB1lcq3JPJ%27+in+parents&fields=files(id,name,mimeType)&key=AIzaSyCz_82EXsHNOg9UR1twDnt5368_kWr6KFI";
+       
       console.log('Fetching from URL:', url); // Debugging
       const response = await axios.get(url);
       setFiles(response.data.files || []);

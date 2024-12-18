@@ -1,26 +1,39 @@
 #import "AppDelegate.h"
-
+#import "RNFBMessagingModule.h"
+#import <Firebase.h> // Firebase'i ekleyin
 #import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [FIRApp configure];
-  self.moduleName = @"MyApp";
-  // You can add your custom initial props in the dictionary below.
-  // They will be passed down to the ViewController used by React Native.
-  self.initialProps = @{};
+  // Firebase başlatması
+  if ([FIRApp defaultApp] == nil) {
+    [FIRApp configure];
+  }
+  
+  // RNFBMessaging ile başlangıç props'unu ekleme
+  self.initialProps = [RNFBMessagingModule addCustomPropsToUserProps:nil withLaunchOptions:launchOptions];
 
-  return [super application:application didFinishLaunchingWithOptions:launchOptions];
+  // React Native kök view ayarı
+  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[self bridge]
+                                                   moduleName:@"MyApp"
+                                            initialProperties:self.initialProps];
+
+  // RootView arka plan rengi
+  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0 green:1.0 blue:1.0 alpha:1];
+
+  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  UIViewController *rootViewController = [UIViewController new];
+  rootViewController.view = rootView;
+  self.window.rootViewController = rootViewController;
+  [self.window makeKeyAndVisible];
+
+  return YES;
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
-{
-  return [self bundleURL];
-}
-
-- (NSURL *)bundleURL
 {
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
-
+import auth from '@react-native-firebase/auth'
 export const SubscriptionsContext = createContext();
 
 // Firestore'dan abonelik verilerini çekme fonksiyonu

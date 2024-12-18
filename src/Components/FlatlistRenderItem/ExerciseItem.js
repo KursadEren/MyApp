@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
-import { View, Text, TouchableOpacity, ImageBackground, Dimensions, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, Dimensions, Image, Alert } from 'react-native';
 import { ColorsContext } from '../../Context/ColorsContext';
+import { UserContext } from '../../Context/UserContext';
 
 const { width, height } = Dimensions.get("window");
 
@@ -17,7 +18,7 @@ const ExerciseItem = ({ item, navigation, fonts, styles }) => {
   };
 
   const { colors } = useContext(ColorsContext);
-
+  const {user} = useContext(UserContext)
   const imageSource =
     typeof item.image === 'string' && item.image.startsWith('http')
       ? { uri: item.image }
@@ -28,6 +29,29 @@ const ExerciseItem = ({ item, navigation, fonts, styles }) => {
   const splitTitle = item.title.split(' ');
   const firstPart = splitTitle.slice(0, 2).join(' ');
   const secondPart = splitTitle.slice(2).join(' ');
+
+  const handleData = () => {
+    if (!user.subscriptions || user.subscriptions.length === 0) {
+      console.log("Abonelik bulunamadı, ödeme ekranına yönlendirme");
+      navigation.navigate('Payment', { data: item });
+      return;
+    }
+  
+    // Aktif abonelik kontrolü
+    const hasActiveSubscription = user.subscriptions.some(sub => sub.is_active === true);
+  
+    if (hasActiveSubscription) {
+      console.log("Aktif abonelik bulundu");
+      Alert.alert('başarısız', 'aboneliğiniz mevcut');
+    } else {
+      console.log("Aktif abonelik bulunamadı, ödeme ekranına yönlendirme");
+      navigation.navigate('Payment', { data: item });
+    }
+  };
+  
+  
+   
+  
 
   return (
     <View style={{ borderRadius: 15, overflow: 'hidden' }}>
@@ -43,7 +67,7 @@ const ExerciseItem = ({ item, navigation, fonts, styles }) => {
         resizeMode="contain"
       >
         {/* Sol alt köşe */}
-        <TouchableOpacity  onPress={() => navigation.navigate('Payment', { data: item })} 
+        <TouchableOpacity  onPress={() => handleData()} 
             style={{ position: 'absolute',
             bottom:0,
             left: width*0.04,

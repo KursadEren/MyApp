@@ -1,52 +1,33 @@
-
-  const handlePayment = async () => {
-    if (!data.subs_id || !data.price || !data.subscription_duration) {
-      Alert.alert('Hata', 'Eksik bilgi gönderildi.');
-      return;
-    }
-  
-    try {
-      const currentUser = auth().currentUser;
-  
-      if (!currentUser) {
-        Alert.alert('Hata', "Kullanıcı oturumu bulunamadı.");
-        return;
-      }
-  
-      const userId = currentUser.uid;
-  
-      const transactionId = uuid.v4(); // UUID oluşturma
-      const subscriptionStart = firestore.Timestamp.now();
-      const currentDate = new Date();
-      currentDate.setMonth(
-        currentDate.getMonth() + parseInt(data.subscription_duration),
-      );
-      const subscriptionEnd = firestore.Timestamp.fromDate(currentDate);
-  
-      const subscriptionData = {
-        amount_paid: data.price,
-        is_active: true,
-        subs_id: data.subs_id,
-        subscription_start: subscriptionStart,
-        subscription_end: subscriptionEnd,
-        transaction_id: transactionId,
-        packet_name: data.packet_name,
-      };
-  
-      // Kullanıcının referansını alıyoruz
-      const userRef = firestore().collection('users').doc(userId);
-  
-      // Kullanıcının altındaki 'subscriptions' koleksiyonuna ekleme yapıyoruz
-      const subscriptionsRef = userRef.collection('subscriptions');
-  
-      // Yeni aboneliği 'subscriptions' koleksiyonuna ekliyoruz
-      await subscriptionsRef.add(subscriptionData);
-  
-      Alert.alert('Başarılı', 'Abonelik alındı.');
-      setFlag(true);
-      navigation.goBack();
-    } catch (error) {
-      console.error('Abonelik oluşturulurken bir hata oluştu:', error);
-      Alert.alert('Hata', 'Sunucuya bağlanırken bir sorun oluştu.');
-    }
-  };
+UYKU ARALIKLARI
+6. AY
+2. SAAT SONRA 1.UYKU
+2.15 SAAT SONRA 2.UYKU
+2.15 SEKERLEME
+2.5 SAAT AKŞAM UYKUSUNA YATIRILICAKTIR.
+NOT: 7 AYDA İKİ UYKUYA HAZIR OLMADIĞINI DUSUNUYORSANIZ 6.AY TABLOSUNDAN
+DEVAM EDEBİLİRSİNİZ. BU DURUMDA 6.AY TABLOSUNA 15DK EKLEMENİZİ ÖNERİRİM.
+AYNI DURUM SEKİZİNCİ AY REGÜLASYON DÖNEMİNDE GEÇERLİ OLMAKTADIR.
+8.AY REGÜLASYONDA DA ETKİLENİRSE 7 AY TABLOSUNA GÖRE GİDİLEBİLİR
+7.VE 8. AYLARDA DURUMA GÖRE 18:00 BİTMEYE GÖRE AYARLI ŞEKERLEME EKLENEBİLİR.
+7. AY
+2.5 SAAT SONRA 1.UYKU
+2.5 SAAT SONRA 2.UYKU
+3 SAAT AKŞAM UYKUSUNA YATIRILICAKTIR.
+MERVE ÇAKIR ile SAĞLIKLI UYKU ALIŞKANLIĞI Sayfa 1
+8. AY
+2.5 SAAT SONRA 1.UYKU
+2.45 SAAT SONRA 2.UYKU
+3 SAAT AKŞAM UYKUSUNA YATIRILICAKTIR.
+9.AY
+3 SAAT SONRA 1.UYKU
+3 SAAT 15 DK. SONRA 2.UYKU
+3.5 SAAT AKŞAM UYKUSUNA YATIRILICAKTIR.
+11.AY
+3 SAAT 15 DK SONRA 1.UYKU
+3.5 SAAT SONRA 2.UYKUYA
+4 SAAT SONRA AKŞAM UYKUSUNA YATIRILICAKTIR.
+MERVE ÇAKIR ile SAĞLIKLI UYKU ALIŞKANLIĞI Sayfa 2
+12.AY
+3 SAAT 15 DK SONRA 1.UYKU
+3.5 SAAT SONRA 2.UYKUYA
+4 SAAT SONRA AKŞAM UYKUSUNA YATIRILICAKTIR.
