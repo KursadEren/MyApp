@@ -21,6 +21,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { BackgroundContext } from '../Context/BackGround';
 import { FontsContext } from '../Context/FontsContext';
 import { ColorsContext } from '../Context/ColorsContext';
+import { UserContext } from '../Context/UserContext';
 
 const { width, height } = Dimensions.get('window');
 
@@ -46,7 +47,7 @@ export default function SubscriptionCalendar() {
   const [infoModalVisible, setInfoModalVisible] = useState(false); // Bilgi modalının görünürlüğü
   const [birthDate, setBirthDate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
+  const {user} =useContext(UserContext)
   const { Background } = useContext(BackgroundContext);
 
   const todayDate = moment().format('YYYY-MM-DD');
@@ -56,15 +57,9 @@ export default function SubscriptionCalendar() {
   const { colors } = useContext(ColorsContext)
   useEffect(() => {
     const fetchChildren = async () => {
-      const currentUser = auth().currentUser;
-      if (!currentUser) return;
-      const userId = currentUser.uid;
-      const userRef = firestore().collection('users').doc(userId);
-      const userSnapshot = await userRef.get();
-      if (userSnapshot.exists) {
-        const userData = userSnapshot.data();
-        setChildren(userData.children || []);
-      }
+        
+        setChildren(user.children || []);
+      
     };
     fetchChildren();
   }, []);
