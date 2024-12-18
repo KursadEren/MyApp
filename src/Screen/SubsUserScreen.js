@@ -10,10 +10,11 @@ import {
   StatusBar,
   Platform,
   Alert,
+  Dimensions,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import firestore from '@react-native-firebase/firestore';
-
+ const{height} = Dimensions.get("window")
 export default function SubsUserScreen({ navigation }) {
   const [subscriptions, setSubscriptions] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
@@ -151,11 +152,11 @@ const styles = StyleSheet.create({
   sortControls: {
     flexDirection: 'row',
     marginBottom: 10,
+    height:height*0.0001,
   },
   button: {
     backgroundColor: '#4B0082',
-    paddingVertical: 8,
-    paddingHorizontal: 15,
+    justifyContent:"center",    paddingHorizontal: 15,
     borderRadius: 20,
     marginRight: 10,
   },
@@ -163,6 +164,8 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 14,
     fontWeight: 'bold',
+    alignSelf:"center",
+    justifyContent:"center"
   },
   card: {
     backgroundColor: '#FFF',

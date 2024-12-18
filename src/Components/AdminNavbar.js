@@ -20,7 +20,7 @@ const AdminNavbar = ({ navigation }) => {
   };
 
   return (
-    <View style={[styles.navbar, { backgroundColor: colors.primary }]}>
+    <View style={[styles.navbar, { backgroundColor: "#a68cd5", borderWidth:1 }]}>
       {/* Profile Button */}
       <TouchableOpacity
         style={styles.iconContainer}
@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 15,
     backgroundColor: '#4B0082',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+   
+    
   },
   iconContainer: {
     alignItems: 'center',
