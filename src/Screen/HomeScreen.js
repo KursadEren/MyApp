@@ -40,6 +40,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { TokenContext } from '../Context/UserToken';
 import HomeProfil from '../Components/HomeProfil';
+import { SubscriptionsContext } from '../Context/SubsCriptionsContext';
 
 const { height, width } = Dimensions.get('window');
 
@@ -55,7 +56,7 @@ export default function HomeScreen({ navigation }) {
   const [currentHour, setCurrentHour] = useState();
   const [currentMinute, setCurrentMinute] = useState();
   const { token } = useContext(TokenContext)
-
+  //const {fetchUserData} = useContext(UserContext)
   //
   const [menuVisible, setMenuVisible] = useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
@@ -81,6 +82,7 @@ export default function HomeScreen({ navigation }) {
     };
     console.log("token: ", token)
     updateTime();
+    //fetchSubscriptionData();
     const intervalId = setInterval(updateTime, 60000);
     return () => clearInterval(intervalId);
   }, []);
@@ -110,7 +112,7 @@ export default function HomeScreen({ navigation }) {
 
         // Belge anlık görüntüsünü alıyoruz
         const userDoc = await userDocRef.get();
-
+        console.log(userDoc);
         if (userDoc.exists) {
           const userData = userDoc.data();
           updateUser({ ...userData });
@@ -195,6 +197,13 @@ export default function HomeScreen({ navigation }) {
           </ScrollView>
         </View>
         <MyNavbar navigation={navigation} />
+        <View>
+          <TouchableOpacity onPress={()=> navigation.navigate("Sleep")}>
+            <Text>
+              Hey
+            </Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );

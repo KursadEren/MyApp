@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function messagesContext() {
+export default function Settings() {
   return (
     <View>
-      <Text>messagesContext</Text>
+      <Text>Settings</Text>
     </View>
   )
 }

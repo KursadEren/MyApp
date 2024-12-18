@@ -1,27 +1,24 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import {
   View,
   Text,
-  Button,
   Alert,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
 import { TokenContext } from '../Context/UserToken';
-
-
 import { PaymentFlagContext } from '../Context/PaymentFlag';
- // Import react-native-uuid
 import { ColorsContext } from '../Context/ColorsContext';
 import { FontsContext } from '../Context/FontsContext';
-import { LinearGradient } from 'react-native-linear-gradient';
+import LinearGradient from 'react-native-linear-gradient';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import uuid from 'react-native-uuid';
-const { width, height } = Dimensions.get('window');
 
-export default function Payment2({ route,navigation }) {
+const { width } = Dimensions.get('window');
+
+export default function Payment2({ route, navigation }) {
   const { data } = route.params;
   const { token } = useContext(TokenContext);
   const { setFlag } = useContext(PaymentFlagContext);
@@ -29,31 +26,34 @@ export default function Payment2({ route,navigation }) {
   const { fonts } = useContext(FontsContext);
 
   const handlePayment = async () => {
+    // Gerekli alanların kontrolü
     if (!data.subs_id || !data.price || !data.subscription_duration) {
       Alert.alert('Hata', 'Eksik bilgi gönderildi.');
       return;
     }
-  
+
     try {
       const currentUser = auth().currentUser;
-  
+
+      // Kullanıcı oturumunun kontrolü
       if (!currentUser) {
         Alert.alert('Hata', "Kullanıcı oturumu bulunamadı.");
         console.log('Hata: Oturum bulunamadı. auth().currentUser null döndü.');
         return;
       }
-  
+
       const userId = currentUser.uid;
-  
+
       const transactionId = uuid.v4(); // UUID oluşturma
       const subscriptionStart = firestore.Timestamp.now();
-  
-      // Burada 30 gün çarpımı ile süreyi gün olarak ekliyoruz
+
+      // Abonelik bitiş tarihini hesaplama (30 gün sonrası)
       const currentDate = new Date();
-      const totalDays = parseInt(data.subscription_duration) * 30; // Her paket için 30 gün baz alınıyor
+      const totalDays = 30; // Her paket için 30 gün baz alınıyor
       currentDate.setDate(currentDate.getDate() + totalDays); // Tarihe gün ekleme
       const subscriptionEnd = firestore.Timestamp.fromDate(currentDate);
-  
+
+      // Abonelik verisi
       const subscriptionData = {
         amount_paid: data.price,
         is_active: true,
@@ -61,23 +61,24 @@ export default function Payment2({ route,navigation }) {
         subscription_start: subscriptionStart,
         subscription_end: subscriptionEnd,
         transaction_id: transactionId,
-        packet_name: data.packet_name || "Bilinmeyen Paket",
+        packet_name: data.title || "Bilinmeyen Paket",
+        subscription_duration: data.subscription_duration,
+        // Eklemek istediğiniz diğer alanlar...
       };
-  
+
       console.log("Firestore'a eklenecek veri:", subscriptionData);
-  
-      // Kullanıcının referansını alıyoruz
+
+      // Kullanıcının belgesine referans alma
       const userRef = firestore().collection('users').doc(userId);
       console.log("Kullanıcı referansı alındı:", userRef.path);
-  
-      // Kullanıcının altındaki 'subscriptions' koleksiyonuna ekleme yapıyoruz
-      const subscriptionsRef = userRef.collection('subscriptions');
-      console.log("Koleksiyon referansı alındı: subscriptions");
-  
-      // Yeni aboneliği 'subscriptions' koleksiyonuna ekliyoruz
-      await subscriptionsRef.add(subscriptionData);
+
+      // Kullanıcının belgesindeki 'subscriptions' dizisine ekleme yapma
+      await userRef.update({
+        subscriptions: firestore.FieldValue.arrayUnion(subscriptionData)
+      });
+
       console.log("Abonelik Firestore'a başarıyla eklendi.");
-  
+
       Alert.alert('Başarılı', 'Abonelik alındı.');
       setFlag(true);
       navigation.navigate("Home");
@@ -94,12 +95,11 @@ export default function Payment2({ route,navigation }) {
       );
     }
   };
-  
-  
+
   return (
     <LinearGradient
       colors={['#4A00E0', '#8E2DE2']}
-      style={[styles.container]}
+      style={styles.container}
     >
       <View style={styles.contentContainer}>
         <Text style={[styles.title, { fontFamily: fonts.regular }]}>
