@@ -12,30 +12,51 @@ import {
   Alert,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import firestore from '@react-native-firebase/firestore';
 
-export default function SubsUserScreen({ route, navigation }) {
+export default function SubsUserScreen({ navigation }) {
   const [subscriptions, setSubscriptions] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
   const [sortBy, setSortBy] = useState('username');
+  const [loading, setLoading] = useState(true);
 
-  // Veriyi alıp kontrol ediyoruz
+  // Kullanıcıları ve abonelikleri Firestore'dan çek
   useEffect(() => {
-    const users = route?.params?.users || [];
-    if (users.length === 0) {
-      Alert.alert('Hata', 'Kullanıcı verisi bulunamadı!');
-      navigation.goBack(); // Önceki sayfaya yönlendir
-    } else {
-      setSubscriptions(users);
-    }
-  }, [route?.params?.users]);
+    const fetchUsers = async () => {
+      try {
+        const usersCollectionRef = firestore().collection('users');
+        const usersSnapshot = await usersCollectionRef.get();
+
+        if (usersSnapshot.empty) {
+          Alert.alert('Hata', 'Hiç kullanıcı bulunamadı.');
+          navigation.goBack(); // Önceki sayfaya yönlendir
+          return;
+        }
+
+        const userList = usersSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setSubscriptions(userList);
+      } catch (error) {
+        console.error('Kullanıcılar alınırken hata oluştu:', error);
+        Alert.alert('Hata', 'Kullanıcı verileri alınırken bir sorun oluştu.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const sortData = () => {
     let sortedData = [...subscriptions];
 
     sortedData.sort((a, b) => {
       if (sortBy === 'username') {
-        const usernameA = a.username.toLowerCase();
-        const usernameB = b.username.toLowerCase();
+        const usernameA = a.username?.toLowerCase() || '';
+        const usernameB = b.username?.toLowerCase() || '';
         return sortOrder === 'asc'
           ? usernameA.localeCompare(usernameB)
           : usernameB.localeCompare(usernameA);
@@ -59,6 +80,14 @@ export default function SubsUserScreen({ route, navigation }) {
     return sortedData;
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Yükleniyor...</Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.sortControls}>
@@ -81,30 +110,22 @@ export default function SubsUserScreen({ route, navigation }) {
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <View style={styles.userHeader}>
-              <MaterialIcons name="person" size={24} color="#4B0082" />
-              <Text style={styles.userName}>Kullanıcı Adı: {item.username}</Text>
-            </View>
-            <Text style={styles.userEmail}>E-posta: {item.email}</Text>
+            <Text style={styles.userName}>Kullanıcı Adı: {item.username || 'Bilinmiyor'}</Text>
+            <Text style={styles.userEmail}>E-posta: {item.email || 'Bilinmiyor'}</Text>
             <Text style={styles.subHeader}>Abonelikler:</Text>
             {item.subscriptions && item.subscriptions.length > 0 ? (
-              item.subscriptions.map((subscription, index) => {
-                const startDate = subscription.subscription_start
-                  ? new Date(subscription.subscription_start.seconds * 1000).toLocaleDateString()
-                  : 'N/A';
-                const endDate = subscription.subscription_end
-                  ? new Date(subscription.subscription_end.seconds * 1000).toLocaleDateString()
-                  : 'N/A';
-
-                return (
-                  <View key={index} style={styles.subscriptionContainer}>
-                    <Text style={styles.subscriptionDetail}>🎁 Paket: {subscription.packet_name}</Text>
-                    <Text style={styles.subscriptionDetail}>📅 Başlangıç: {startDate}</Text>
-                    <Text style={styles.subscriptionDetail}>📅 Bitiş: {endDate}</Text>
-                    <Text style={styles.subscriptionDetail}>💵 Fiyat: {subscription.amount_paid} TL</Text>
-                  </View>
-                );
-              })
+              item.subscriptions.map((subscription, index) => (
+                <View key={index} style={styles.subscriptionContainer}>
+                  <Text style={styles.subscriptionDetail}>🎁 Paket: {subscription.packet_name}</Text>
+                  <Text style={styles.subscriptionDetail}>
+                    📅 Başlangıç: {subscription.subscription_start?.seconds ? new Date(subscription.subscription_start.seconds * 1000).toLocaleDateString() : 'N/A'}
+                  </Text>
+                  <Text style={styles.subscriptionDetail}>
+                    📅 Bitiş: {subscription.subscription_end?.seconds ? new Date(subscription.subscription_end.seconds * 1000).toLocaleDateString() : 'N/A'}
+                  </Text>
+                  <Text style={styles.subscriptionDetail}>💵 Fiyat: {subscription.amount_paid} TL</Text>
+                </View>
+              ))
             ) : (
               <Text style={styles.subscriptionDetail}>Abonelik Yok</Text>
             )}
@@ -121,6 +142,11 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: '#F5F5F5',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 30 : 0,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   sortControls: {
     flexDirection: 'row',
@@ -144,11 +170,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 10,
     elevation: 3,
-  },
-  userHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
   },
   userName: {
     fontSize: 16,

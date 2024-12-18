@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState ,useContext} from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet,ImageBackground } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
+import { BackgroundContext } from '../Context/BackGround';
 
 const AdminConversationsScreen = ({ navigation }) => {
   const [conversations, setConversations] = useState([]);
-
+  const {Background} =useContext(BackgroundContext)
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('conversations')
@@ -80,6 +81,11 @@ const AdminConversationsScreen = ({ navigation }) => {
   };
 
   return (
+    <ImageBackground
+      source={Background.Home}
+      style={styles.backgroundImage}
+      resizeMode="cover"
+    >
     <View style={styles.container}>
       <FlatList
         data={conversations}
@@ -88,6 +94,7 @@ const AdminConversationsScreen = ({ navigation }) => {
         contentContainerStyle={styles.listContent}
       />
     </View>
+    </ImageBackground>
   );
 };
 
@@ -117,5 +124,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#999',
     marginTop: 5,
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
   },
 });

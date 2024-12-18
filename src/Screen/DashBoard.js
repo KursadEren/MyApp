@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, SafeAreaView ,StatusBar,Platform} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, SafeAreaView, StatusBar, Platform } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import firestore from '@react-native-firebase/firestore';
 
 export default function DashBoard() {
   const [report, setReport] = useState(null);
@@ -10,27 +10,38 @@ export default function DashBoard() {
   useEffect(() => {
     const generateReport = async () => {
       try {
-        const storedData = await AsyncStorage.getItem('@userDataList');
-        const users = storedData ? JSON.parse(storedData) : [];
-  
+        const usersCollectionRef = firestore().collection('users');
+        const usersSnapshot = await usersCollectionRef.get();
+
+        if (usersSnapshot.empty) {
+          console.error('Hiç kullanıcı bulunamadı.');
+          setLoading(false);
+          return;
+        }
+
+        const users = usersSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
         let totalSubscriptions = 0;
         let freeUsersCount = 0;
         let usersWithMultipleSubscriptions = 0;
         const packageCounts = {};
         const uniqueUsersWithSubscriptions = new Set();
-  
+
         users.forEach((user) => {
           const { subscriptions } = user;
-  
+
           if (subscriptions && subscriptions.length > 0) {
             totalSubscriptions += subscriptions.length;
             uniqueUsersWithSubscriptions.add(user.id);
-  
+
             subscriptions.forEach((subscription) => {
               const packageName = subscription.packet_name;
               packageCounts[packageName] = (packageCounts[packageName] || 0) + 1;
             });
-  
+
             if (subscriptions.length > 1) {
               usersWithMultipleSubscriptions += 1;
             }
@@ -38,7 +49,7 @@ export default function DashBoard() {
             freeUsersCount += 1;
           }
         });
-  
+
         const reportData = {
           totalSubscriptions,
           freeUsersCount,
@@ -46,18 +57,17 @@ export default function DashBoard() {
           uniqueUsersWithSubscriptionsCount: uniqueUsersWithSubscriptions.size,
           packageCounts,
         };
-  
+
         setReport(reportData);
       } catch (error) {
-        console.error('Error generating report:', error);
+        console.error('Rapor oluşturulurken hata:', error);
       } finally {
         setLoading(false);
       }
     };
-  
+
     generateReport();
   }, []);
-  
 
   if (loading) {
     return (

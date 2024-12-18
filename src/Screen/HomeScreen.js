@@ -198,11 +198,7 @@ export default function HomeScreen({ navigation }) {
         </View>
         <MyNavbar navigation={navigation} />
         <View>
-          <TouchableOpacity onPress={()=> navigation.navigate("Sleep")}>
-            <Text>
-              Hey
-            </Text>
-          </TouchableOpacity>
+          
         </View>
       </SafeAreaView>
     </ImageBackground>
