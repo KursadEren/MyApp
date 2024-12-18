@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,14 +8,18 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ImageBackground
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { BackgroundContext } from '../Context/BackGround';
+import { FontsContext } from '../Context/FontsContext';
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState('');
-
+  const {Background} =useContext(BackgroundContext)
+  const {fonts} = useContext(FontsContext)
   useEffect(() => {
     const currentUser = auth().currentUser;
     if (!currentUser) return;
@@ -97,7 +101,7 @@ const ChatScreen = () => {
           isUserMessage ? styles.userMessage : styles.adminMessage,
         ]}
       >
-        <Text style={styles.messageText}>{item.text}</Text>
+        <Text style={[styles.messageText,{fontFamily:fonts.bold}]}>{item.text}</Text>
         <Text style={styles.messageTimestamp}>
           {item.timestamp
             ? new Date(item.timestamp.toDate()).toLocaleTimeString()
@@ -108,6 +112,11 @@ const ChatScreen = () => {
   };
 
   return (
+    <ImageBackground
+      source={Background.Home}
+      style={styles.backgroundImage}
+      resizeMode="cover"
+    >
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.select({ ios: 'padding', android: undefined })}
@@ -129,6 +138,7 @@ const ChatScreen = () => {
         <Button title="Gönder" onPress={sendMessage} />
       </View>
     </KeyboardAvoidingView>
+    </ImageBackground>
   );
 };
 
@@ -138,8 +148,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+  },
   messagesList: {
     padding: 10,
+    
   },
   messageContainer: {
     marginVertical: 5,
@@ -156,7 +171,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF', // Beyaz
   },
   messageText: {
-    fontSize: 16,
+    fontSize: 20,
+    
   },
   messageTimestamp: {
     fontSize: 10,

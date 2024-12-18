@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,14 +9,16 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+  ImageBackground
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
+import { BackgroundContext } from '../Context/BackGround';
 
 const AdminChatScreen = ({ route }) => {
   const { userId,userName } = route.params;
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState('');
-
+  const {Background} =useContext(BackgroundContext)
   useEffect(() => {
     const conversationId = userId;
 
@@ -99,6 +101,11 @@ const AdminChatScreen = ({ route }) => {
   };
 
   return (
+    <ImageBackground
+      source={Background.Home}
+      style={styles.backgroundImage}
+      resizeMode="cover"
+    >
     <SafeAreaView style={{flexGrow:1}}>
     <KeyboardAvoidingView
       style={styles.container}
@@ -123,6 +130,7 @@ const AdminChatScreen = ({ route }) => {
       </View>
     </KeyboardAvoidingView>
     </SafeAreaView>
+    </ImageBackground>
   );
 };
 
@@ -131,6 +139,10 @@ export default AdminChatScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
   },
   chatTitle: {
     fontSize: 18,
