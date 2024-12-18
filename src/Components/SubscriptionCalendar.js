@@ -176,24 +176,26 @@ export default function SubscriptionCalendar() {
 
     // 44.hafta
     if (fortyFourWeekStart && fortyFourWeekEnd && dayMoment.isBetween(fortyFourWeekStart, fortyFourWeekEnd, null, '[]')) {
-      setModalContent('44. Hafta:\n\niçerik eklenecek');
+      setModalContent('44. hafta:  \n\n- Kategorize Etme: Nesneleri boyut, şekil veya türüne göre gruplar. İnsanları "tanıdık" ve "yabancı" olarak ayırt eder.\n- Neden-Sonuç: Düğmeye basarak oyuncaktan ses çıkmasını bekler.\n- Planlama ve Problem Çözme: Oyuncakları kutuya yerleştirme, üst üste dizme gibi görevlerde başarılıdır. Önceki denemelerini hatırlayıp uygular.');
+
       setInfoModalVisible(true);
       return;
     }
 
     // 40-41. haftalar
     if (fortyFortyOneStart && fortyFortyOneEnd && dayMoment.isBetween(fortyFortyOneStart, fortyFortyOneEnd, null, '[]')) {
-      setModalContent('40 - 41. Haftalar:\n\niçerik eklenecek');
+      setModalContent('40 - 41. Haftalar:\n\n- Kategorize Etme: Nesneleri boyut, şekil veya türüne göre gruplar. İnsanları "tanıdık" ve "yabancı" olarak ayırt eder.\n- Neden-Sonuç: Düğmeye basarak oyuncaktan ses çıkmasını bekler.\n- Planlama ve Problem Çözme: Oyuncakları kutuya yerleştirme, üst üste dizme gibi görevlerde başarılıdır. Önceki denemelerini hatırlayıp uygular.');
       setInfoModalVisible(true);
       return;
     }
-
-    // 22-23. hafta
+    
     if (twentyTwoWeekStart && twentyThreeWeekEnd && dayMoment.isBetween(twentyTwoWeekStart, twentyThreeWeekEnd, null, '[]')) {
-      setModalContent('22 - 23. Hafta:\n\niçerik eksik');
+      setModalContent('22 - 23. Hafta:\n\n- Sebep-sonuç: Hareketlerinin sonuçlarını anlamaya başlar. Örneğin, bir nesneyi salladığında ses çıkacağını öğrenir.\n- Keşif: Nesneleri detaylı incelemeye, dokularını ve şekillerini anlamaya çalışır.\n- Duygusal farkındalık: Tanıdık yüzlere mutluluk, yabancılara tedirginlik gösterebilir.\n- El-göz koordinasyonu: Nesnelere uzanma ve küçük objeleri tutma becerisi gelişir.\n- Yuvarlanma ve oturma: Yuvarlanabilir ve destekle oturmaya çalışabilir.\n- Ayak keşfi: Ayaklarıyla oynamaya başlayarak vücut farkındalığı kazanır.');
       setInfoModalVisible(true);
       return;
     }
+    
+    
 
     // 14-17. haftalar (4. Ay)
     if (fourthMonthStart && fourthMonthEnd && dayMoment.isBetween(fourthMonthStart, fourthMonthEnd, null, '[]')) {
@@ -362,15 +364,11 @@ export default function SubscriptionCalendar() {
       >
         {/* Üst Header */}
         <View style={styles.topHeader}>
-          <TouchableOpacity onPress={() => setCurrentIndex((prev) => Math.max(prev - 1, 0))}>
-            <Image source={require('../assets/img/HomeContent/takvimgeri.png')} style={styles.arrowTop} />
-          </TouchableOpacity>
-          <Text style={styles.childName}>
+          
+          <Text style={[styles.childName,{color:colors.login}]}>
             {currentChild ? currentChild.name : 'Çocuk Eklenmedi'}
           </Text>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Image source={require('../assets/img/HomeContent/takvimileri.png')} style={styles.arrowTop} />
-          </TouchableOpacity>
+         
         </View>
 
         {children.length === 0 ? (
@@ -415,7 +413,7 @@ export default function SubscriptionCalendar() {
           <TouchableOpacity onPress={() => setCurrentDate(currentDate.clone().subtract(1, 'month'))}>
             <Image source={require('../assets/img/HomeContent/takvimgeri.png')} style={styles.arrowBottom} />
           </TouchableOpacity>
-          <Text style={styles.monthText}>{currentDate.format('MMMM YYYY').toUpperCase()}</Text>
+          <Text style={[styles.monthText,{color:colors.login}]}>{currentDate.format('MMMM YYYY').toUpperCase()}</Text>
           <TouchableOpacity onPress={() => setCurrentDate(currentDate.clone().add(1, 'month'))}>
             <Image source={require('../assets/img/HomeContent/takvimileri.png')} style={styles.arrowBottom} />
           </TouchableOpacity>
@@ -423,40 +421,7 @@ export default function SubscriptionCalendar() {
       </ImageBackground>
 
       {/* Modal - Yeni Çocuk Ekle */}
-      <Modal animationType="slide" transparent visible={modalVisible}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Yeni Çocuk Ekle</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Çocuk Adı"
-              placeholderTextColor="#666"
-              value={childName}
-              onChangeText={setChildName}
-            />
-            <TouchableOpacity onPress={showDatePicker} style={styles.datePickerButton}>
-              <Text style={styles.datePickerText}>
-                {moment(birthDate).format('DD MMMM YYYY')}
-              </Text>
-            </TouchableOpacity>
-
-            <DateTimePickerModal
-              isVisible={isDatePickerVisible}
-              mode="date"
-              onConfirm={handleConfirm}
-              onCancel={hideDatePicker}
-            />
-
-            <TouchableOpacity style={styles.saveButton} onPress={addChild}>
-              <Text style={styles.saveButtonText}>Kaydet</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Text style={styles.cancelText}>Vazgeç</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
+    
       {/* Bilgi Modalı (Gün üzerine tıklanınca açılan) */}
       <Modal style={{
         flex: 1,
@@ -507,15 +472,15 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
   },
-  topHeader: { flexDirection: 'row', justifyContent: 'space-between', width: '80%', marginBottom: 10 },
-  childName: { fontSize: 18, fontWeight: '600', color: '#4A00E0' },
+  topHeader: { flexDirection: 'row', justifyContent: 'center', width: '80%', marginBottom: 20 },
+  childName: { fontSize: 18, fontWeight: '600',  },
   arrowTop: { width: 20, height: 20, resizeMode: 'contain' },
   arrowBottom: { width: 20, height: 20, resizeMode: 'contain' },
   weekHeader: { flexDirection: 'row', justifyContent: 'space-between', width: '90%' },
-  weekDay: { fontSize: 14, fontWeight: 'bold', color: '#4A00E0' },
+  weekDay: { fontSize: 14, fontWeight: 'bold', color: '#4a2053' },
   daysContainer: { flexDirection: 'row', flexWrap: 'wrap', width: '100%', justifyContent: 'space-between' },
   dayWrapper: { width: '14.285%', alignItems: 'center', marginVertical: 5 },
-  dayText: { fontSize: 14, color: '#4A00E0' },
+  dayText: { fontSize: 14, color: '#a77ea2' },
   notCurrentMonth: { color: '#ccc' },
   today: { backgroundColor: '#4A00E0', color: '#fff', borderRadius: 12, width: 24, height: 24, textAlign: 'center' },
   bottomHeader: { flexDirection: 'row', justifyContent: 'space-between', width: '80%', marginTop: 10 },

@@ -175,9 +175,9 @@ export default function HomeScreen({ navigation }) {
 
             <View style={styles.calendarContainer}>
               <View style={styles.clockContainer}>
-                <Text style={styles.timeText}>{currentHour}</Text>
-                <Text style={styles.colon}>:</Text>
-                <Text style={styles.timeText}>{currentMinute}</Text>
+                <Text style={[styles.timeText,{ fontFamily: fonts.bold,color:"#b865b6"}]}>ATAK HAFTALARI</Text>
+                
+              
               </View>
               <View>
               <SubscriptionCalendar sharedAnimationValue={sharedAnimationValue} />
@@ -258,9 +258,9 @@ const styles = StyleSheet.create({
     marginVertical: height * 0.02,
   },
   timeText: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#004085',
+    fontSize: 28,
+   
+    
   },
   colon: {
     fontSize: 40,
