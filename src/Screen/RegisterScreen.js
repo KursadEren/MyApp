@@ -16,7 +16,7 @@ import { FontsContext } from '../Context/FontsContext';
 import { ColorsContext } from '../Context/ColorsContext';
 import { BackgroundContext } from '../Context/BackGround';
 import auth from '@react-native-firebase/auth';
-import firestore from "@react-native-firebase/firestore"
+import firestore from '@react-native-firebase/firestore';
 
 const { width, height } = Dimensions.get('window');
 
@@ -35,12 +35,12 @@ export default function RegisterScreen({ navigation }) {
       Alert.alert('Hata', 'Şifreler eşleşmiyor!');
       return;
     }
-  
+
     try {
       // Kullanıcıyı Firebase Authentication ile kaydet
       const userCredential = await auth().createUserWithEmailAndPassword(email, password);
       const user = userCredential.user; // user bilgilerini al
-  
+
       // Kullanıcı bilgilerini Firestore'a kaydet
       const userData = {
         username: userName || '',
@@ -51,9 +51,9 @@ export default function RegisterScreen({ navigation }) {
         isActive: true,
         phone: phone || '',
       };
-  
+
       await firestore().collection('users').doc(user.uid).set(userData);
-  
+
       Alert.alert('Başarılı', 'Kullanıcı başarıyla kaydedildi!');
       navigation.goBack(); // Kullanıcı başarıyla kaydedildikten sonra geri dön
     } catch (error) {
@@ -68,7 +68,7 @@ export default function RegisterScreen({ navigation }) {
       }
     }
   };
-  
+
   return (
     <ImageBackground
       source={Background.primary}
@@ -117,7 +117,7 @@ export default function RegisterScreen({ navigation }) {
               onChangeText={text => setPhone(text)}
               iconName="call-outline"
             />
-            <View style={{flex:1, alignItems:"center"}}>
+            <View style={{flex:1, alignItems:'center'}}>
             <MyButton
               title="Register"
               onPress={handleRegister}
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    marginTop:width*0.1
+    marginTop:width * 0.1,
   },
   keyboardView: {
     flex: 1,
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
     justifyContent: 'center',
-    
+
     paddingHorizontal: width * 0.05,
   },
 });

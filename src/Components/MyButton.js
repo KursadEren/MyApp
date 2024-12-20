@@ -10,7 +10,7 @@ const MyButton = ({ onPress, title, backgroundColor }) => {
   const { colors } = useContext(ColorsContext);
   return (
     <TouchableOpacity
-      style={[styles.button,]}
+      style={[styles.button]}
       onPress={onPress}>
       <Image
         source={require('../assets/img/ok.png')} // Görsel yolu

@@ -5,7 +5,7 @@ import { BackgroundContext } from '../Context/BackGround';
 
 const AdminConversationsScreen = ({ navigation }) => {
   const [conversations, setConversations] = useState([]);
-  const {Background} =useContext(BackgroundContext)
+  const {Background} = useContext(BackgroundContext);
   useEffect(() => {
     const unsubscribe = firestore()
       .collection('conversations')

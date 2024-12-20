@@ -8,7 +8,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -18,11 +18,11 @@ import { FontsContext } from '../Context/FontsContext';
 const ChatScreen = () => {
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState('');
-  const {Background} =useContext(BackgroundContext)
-  const {fonts} = useContext(FontsContext)
+  const {Background} = useContext(BackgroundContext);
+  const {fonts} = useContext(FontsContext);
   useEffect(() => {
     const currentUser = auth().currentUser;
-    if (!currentUser) return;
+    if (!currentUser) {return;}
 
     const userId = currentUser.uid;
     const conversationId = userId;
@@ -48,7 +48,7 @@ const ChatScreen = () => {
 
   const sendMessage = async () => {
     const currentUser = auth().currentUser;
-    if (!currentUser) return;
+    if (!currentUser) {return;}
 
     const userId = currentUser.uid;
     const conversationId = userId;
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   },
   messagesList: {
     padding: 10,
-    
+
   },
   messageContainer: {
     marginVertical: 5,
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 20,
-    
+
   },
   messageTimestamp: {
     fontSize: 10,

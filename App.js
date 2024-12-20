@@ -66,7 +66,7 @@ async function requestUserPermission() {
     if (enabled) {
       console.log('iOS Bildirim izni verildi:', authStatus);
     } else {
-      Alert.alert("Bildirim İzni Gerekli", "Lütfen bildirim izni verin.");
+      Alert.alert('Bildirim İzni Gerekli', 'Lütfen bildirim izni verin.');
     }
   } else {
     try {
@@ -81,7 +81,7 @@ async function requestUserPermission() {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Android Bildirim izni verildi.');
       } else {
-        Alert.alert("Bildirim İzni Gerekli", "Lütfen bildirim izni verin.");
+        Alert.alert('Bildirim İzni Gerekli', 'Lütfen bildirim izni verin.');
       }
     } catch (err) {
       console.warn(err);
@@ -97,8 +97,8 @@ function App() {
   useEffect(() => {
     // Bildirim izinlerini iste
     requestUserPermission();
-    
-    
+
+
     // Firebase mesaj dinleyicisi (ön planda)
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       Alert.alert(
@@ -148,6 +148,7 @@ function App() {
                         <Stack.Screen name="Sleep" component={SleepScheduler} />
                         <Stack.Screen name="Settings" component={Settings} />
                         <Stack.Screen name="Destek" component={Destek} />
+
                       </Stack.Navigator>
                     </SubscriptionsProvider>
                   </ColorsProvider>

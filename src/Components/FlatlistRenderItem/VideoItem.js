@@ -25,7 +25,7 @@ const VideoItem = ({ item, fonts, setSelectedVideo }) => (
     onPress={() => setSelectedVideo(item)}
   >
     {/* Sol taraftaki simge */}
-    
+
       <Image
         source={require('../../assets/img/HomeContent/clickTers.png')}
         style={{
@@ -34,10 +34,10 @@ const VideoItem = ({ item, fonts, setSelectedVideo }) => (
           resizeMode: 'contain',
           right:-10,
           bottom:-10,
-          position:"absolute"
+          position:'absolute',
         }}
       />
-    
+
 
     {/* Metin Alanı */}
     <View style={{ flex: 1 }}>

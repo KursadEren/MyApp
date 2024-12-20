@@ -1,12 +1,12 @@
 import React, { createContext, useState, useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth'
+import auth from '@react-native-firebase/auth';
 export const SubscriptionsContext = createContext();
 
 // Firestore'dan abonelik verilerini çekme fonksiyonu
 export const fetchSubscriptions = async () => {
   try {
-    const subscriptionsSnapshot = await firestore().collection("subscriptions").get();
+    const subscriptionsSnapshot = await firestore().collection('subscriptions').get();
     console.log('Toplam abonelik sayısı: ', subscriptionsSnapshot.size);
 
     // Firestore'dan gelen verileri bir diziye dönüştürün

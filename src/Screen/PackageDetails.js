@@ -22,7 +22,7 @@ export default function PackageDetails({ route, navigation }) {
     useEffect(() => {
         console.log('Abonelikler güncellendi:', subscriptions);
     }, [subscriptions]);
-    
+
     const [isEditing, setIsEditing] = useState(false); // Düzenleme modunu kontrol eder
 
     // Değişiklikleri kaydetmek için bir fonksiyon

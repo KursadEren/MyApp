@@ -7,7 +7,7 @@ import {
   StatusBar,
   Platform,
   Alert,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import Card from '../Components/Card';
 import AdminNavbar from '../Components/AdminNavbar';
@@ -20,7 +20,7 @@ const { width } = Dimensions.get('window');
 
 export default function AdminHomeScreen({ navigation }) {
   const [usersWithSubscriptions, setUsersWithSubscriptions] = useState([]);
- const {Background} = useContext(BackgroundContext)
+ const {Background} = useContext(BackgroundContext);
  useEffect(() => {
   const fetchUsers = async () => {
     try {
@@ -44,7 +44,7 @@ export default function AdminHomeScreen({ navigation }) {
           const userId = doc.id;
 
           // Admin'i hariç tut
-          if (userId === currentUser.uid) return null;
+          if (userId === currentUser.uid) {return null;}
 
           return {
             id: userId,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    
+
   },
   cardWrapper: {
     flexDirection: 'row',

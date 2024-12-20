@@ -11,10 +11,10 @@ const HomeProfil = () => {
   const { fonts } = useContext(FontsContext);
 
   return (
-    <View style={{ 
+    <View style={{
       marginHorizontal: width * 0.02,
-      flexDirection: 'row', 
-      alignItems: 'center', 
+      flexDirection: 'row',
+      alignItems: 'center',
       padding: 20,
     }}>
       {/* Yazı balonu */}
@@ -23,15 +23,15 @@ const HomeProfil = () => {
         backgroundColor: '#e3e3e3',
         borderRadius: 30,
         marginRight: 10,
-        height: height * 0.07
+        height: height * 0.07,
       }}>
         <View style={{
-          backgroundColor: "white", 
-          borderRadius: 100, 
+          backgroundColor: 'white',
+          borderRadius: 100,
           marginTop: 3,
           marginRight: 2,
           height: height * 0.07,
-          justifyContent: "center",
+          justifyContent: 'center',
         }}>
           <Text style={{
             fontSize: 18,
@@ -39,7 +39,7 @@ const HomeProfil = () => {
             textAlign: 'center',
             fontFamily: fonts.baby,
             margin: 10,
-            paddingTop: width * 0.02
+            paddingTop: width * 0.02,
           }}>
             Merhaba {user?.username || ''}!
           </Text>

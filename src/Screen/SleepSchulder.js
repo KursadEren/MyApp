@@ -1,12 +1,13 @@
 // SleepScheduler.js
 
-import React, { useEffect, useRef, useState, useContext } from "react";
-import { View, Text, Button, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import notifee, { AndroidImportance, TriggerType, EventType } from "@notifee/react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { notificationsData } from "../../natifications"; // Doğru yolu kontrol edin
+import React, { useEffect, useRef, useState, useContext } from 'react';
+import { View, Text, Button, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import notifee, { AndroidImportance, TriggerType, EventType } from '@notifee/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { notificationsData } from '../../natifications'; // Doğru yolu kontrol edin
 
-import { UserContext } from "../Context/UserContext";
+import { UserContext } from '../Context/UserContext';
+
 
 const SleepScheduler = () => {
   const { user } = useContext(UserContext); // UserContext'ten user verisini al
@@ -27,21 +28,21 @@ const SleepScheduler = () => {
     try {
       const settings = await notifee.requestPermission();
       if (settings.authorizationStatus !== 1) {
-        console.warn("Bildirim izni verilmedi!");
+        console.warn('Bildirim izni verilmedi!');
         if (isMounted.current) {
-          Alert.alert("Uyarı", "Bildirim izinlerini etkinleştirmeniz gerekmektedir.");
+          Alert.alert('Uyarı', 'Bildirim izinlerini etkinleştirmeniz gerekmektedir.');
         }
         return;
       }
 
       await notifee.createChannel({
-        id: "sleep_channel",
-        name: "Uyku Planı Bildirimleri",
+        id: 'sleep_channel',
+        name: 'Uyku Planı Bildirimleri',
         importance: AndroidImportance.HIGH,
       });
-      console.log("Bildirim kanalı oluşturuldu.");
+      console.log('Bildirim kanalı oluşturuldu.');
     } catch (error) {
-      console.error("Bildirim izinlerini ayarlarken hata:", error);
+      console.error('Bildirim izinlerini ayarlarken hata:', error);
     }
   };
 
@@ -67,7 +68,7 @@ const SleepScheduler = () => {
   const processSubscriptionData = () => {
     if (!user || !user.subscriptions || user.subscriptions.length === 0) {
       if (isMounted.current) {
-        Alert.alert("Bilgi", "Aktif bir aboneliğiniz bulunmamaktadır.");
+        Alert.alert('Bilgi', 'Aktif bir aboneliğiniz bulunmamaktadır.');
       }
       return;
     }
@@ -76,44 +77,44 @@ const SleepScheduler = () => {
 
     if (latestActiveSubscription) {
       setSubscriptionDuration(latestActiveSubscription.subscription_duration);
-      console.log("En son aktif abonelik süresi:", latestActiveSubscription.subscription_duration);
+      console.log('En son aktif abonelik süresi:', latestActiveSubscription.subscription_duration);
     } else {
       if (isMounted.current) {
-        Alert.alert("Bilgi", "Aktif bir aboneliğiniz bulunmamaktadır.");
+        Alert.alert('Bilgi', 'Aktif bir aboneliğiniz bulunmamaktadır.');
       }
-      console.log("Aktif abonelik bulunamadı.");
+      console.log('Aktif abonelik bulunamadı.');
     }
   };
 
   // AsyncStorage'dan ilerlemeyi yükle
   const loadProgress = async () => {
     try {
-      const progress = await AsyncStorage.getItem("notification_progress");
-      const logs = await AsyncStorage.getItem("notification_logs");
+      const progress = await AsyncStorage.getItem('notification_progress');
+      const logs = await AsyncStorage.getItem('notification_logs');
 
-      if (progress !== null) nextNotificationIndex.current = parseInt(progress, 10);
-      if (logs) setNotificationLog(JSON.parse(logs));
+      if (progress !== null) {nextNotificationIndex.current = parseInt(progress, 10);}
+      if (logs) {setNotificationLog(JSON.parse(logs));}
 
-      console.log("Progress yüklendi:", nextNotificationIndex.current);
+      console.log('Progress yüklendi:', nextNotificationIndex.current);
       const currentMonthData = getCurrentMonthData();
       if (currentMonthData && nextNotificationIndex.current < currentMonthData.intervals.length) {
         scheduleNextNotification(currentMonthData.intervals[nextNotificationIndex.current].delayInMinutes);
       }
     } catch (error) {
-      console.error("Progress yüklenirken hata:", error);
+      console.error('Progress yüklenirken hata:', error);
     }
   };
 
   // AsyncStorage'ı temizle
   const clearStorage = async () => {
     try {
-      await AsyncStorage.removeItem("notification_progress");
-      await AsyncStorage.removeItem("notification_logs");
-      console.log("AsyncStorage temizlendi.");
+      await AsyncStorage.removeItem('notification_progress');
+      await AsyncStorage.removeItem('notification_logs');
+      console.log('AsyncStorage temizlendi.');
       setNotificationLog([]);
       nextNotificationIndex.current = 0;
     } catch (error) {
-      console.error("AsyncStorage temizlenirken hata:", error);
+      console.error('AsyncStorage temizlenirken hata:', error);
     }
   };
 
@@ -125,20 +126,20 @@ const SleepScheduler = () => {
   // Bildirimi tetikleme ve kaydetme
   const scheduleNextNotification = async (delayInMinutes) => {
     if (!subscriptionDuration) {
-      console.warn("Abonelik süresi belirlenmedi.");
+      console.warn('Abonelik süresi belirlenmedi.');
       return;
     }
 
     try {
       const currentMonthData = getCurrentMonthData();
       if (!currentMonthData) {
-        console.warn("Geçerli ayın bildirim verisi bulunamadı.");
+        console.warn('Geçerli ayın bildirim verisi bulunamadı.');
         return;
       }
 
       const currentInterval = currentMonthData.intervals[nextNotificationIndex.current];
       if (!currentInterval) {
-        console.warn("Geçerli aboneliğin tüm bildirimleri tamamlandı.");
+        console.warn('Geçerli aboneliğin tüm bildirimleri tamamlandı.');
         return;
       }
 
@@ -152,7 +153,7 @@ const SleepScheduler = () => {
           title: currentInterval.title,
           body: currentInterval.body,
           android: {
-            channelId: "sleep_channel",
+            channelId: 'sleep_channel',
             importance: AndroidImportance.HIGH,
           },
         },
@@ -166,10 +167,10 @@ const SleepScheduler = () => {
       ];
       setNotificationLog(newLog);
       nextNotificationIndex.current += 1;
-      await AsyncStorage.setItem("notification_progress", nextNotificationIndex.current.toString());
-      await AsyncStorage.setItem("notification_logs", JSON.stringify(newLog));
+      await AsyncStorage.setItem('notification_progress', nextNotificationIndex.current.toString());
+      await AsyncStorage.setItem('notification_logs', JSON.stringify(newLog));
     } catch (error) {
-      console.error("Bildirim zamanlanırken hata:", error);
+      console.error('Bildirim zamanlanırken hata:', error);
     }
   };
 
@@ -177,7 +178,7 @@ const SleepScheduler = () => {
   const onForegroundEvent = ({ type, detail }) => {
     if (type === EventType.PRESS) {
       const { notification } = detail;
-      console.log("Bildirim tıklandı:", notification);
+      console.log('Bildirim tıklandı:', notification);
 
       // Bir sonraki bildirimi zamanla
       const currentMonthData = getCurrentMonthData();
@@ -185,7 +186,7 @@ const SleepScheduler = () => {
         scheduleNextNotification(currentMonthData.intervals[nextNotificationIndex.current].delayInMinutes);
       } else {
         if (isMounted.current) {
-          Alert.alert("Bilgi", "Günün tüm bildirimleri tamamlandı.");
+          Alert.alert('Bilgi', 'Günün tüm bildirimleri tamamlandı.');
         }
       }
     }
@@ -194,12 +195,12 @@ const SleepScheduler = () => {
   // Başlatma fonksiyonu
   const handleNotificationClick = () => {
     if (!subscriptionDuration) {
-      Alert.alert("Hata", "Abonelik süresi belirlenmedi.");
+      Alert.alert('Hata', 'Abonelik süresi belirlenmedi.');
       return;
     }
 
     if (nextNotificationIndex.current >= getCurrentMonthData().intervals.length) {
-      Alert.alert("Bilgi", "Günün tüm bildirimleri zaten tamamlandı.");
+      Alert.alert('Bilgi', 'Günün tüm bildirimleri zaten tamamlandı.');
       return;
     }
     scheduleNextNotification(getCurrentMonthData().intervals[nextNotificationIndex.current].delayInMinutes);
@@ -207,7 +208,7 @@ const SleepScheduler = () => {
 
   // Kullanıcı eski bildirimlerini görüntüleyebilir
   const viewNotificationHistory = () => {
-    Alert.alert("Bildirim Logları", notificationLog.join("\n"));
+    Alert.alert('Bildirim Logları', notificationLog.join('\n'));
   };
 
   // Uygulama ilk çalıştığında kanal oluştur, abonelik verisini çek ve ilerlemeyi yükle
@@ -236,7 +237,7 @@ const SleepScheduler = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Uyku Aralıkları</Text>
-      <Text style={styles.subtitle}>Abonelik Süresi: {subscriptionDuration || "Yükleniyor..."}</Text>
+      <Text style={styles.subtitle}>Abonelik Süresi: {subscriptionDuration || 'Yükleniyor...'}</Text>
       <Button
         title="Bildirimleri Başlat"
         onPress={handleNotificationClick}
@@ -258,6 +259,41 @@ const SleepScheduler = () => {
         />
       </View>
 
+      <View style={{ marginTop: 10 }}>
+  <Button
+    title="5 Saniye Sonrasına Hizmet Çalışıyor Bildirimi Gönder"
+    onPress={async () => {
+      try {
+        const trigger = {
+          type: TriggerType.TIMESTAMP,
+          timestamp: Date.now() + 5 * 1000, // Şu andan itibaren 5 saniye sonrası
+        };
+
+        await notifee.createTriggerNotification(
+          {
+            title: 'Hizmet Çalışıyor',
+            body: 'Bu bildirim 5 saniye sonra gösterilecek.',
+            android: {
+              channelId: 'sleep_channel', // Doğru bir kanal ID'si
+              smallIcon: 'ic_launcher', // Küçük simge
+              importance: AndroidImportance.HIGH,
+              ongoing: true,
+            },
+          },
+          trigger
+        );
+
+        console.log('5 saniye sonrasına bildirim ayarlandı.');
+      } catch (error) {
+        console.error('Bildirim zamanlanırken hata:', error);
+      }
+    }}
+  />
+</View>
+
+
+
+
       <Text style={styles.logTitle}>Bildirim Logları:</Text>
       {notificationLog.map((log, index) => (
         <TouchableOpacity key={index}>
@@ -273,7 +309,7 @@ const styles = StyleSheet.create({
   title: { marginBottom: 10, fontSize: 24, fontWeight: 'bold' },
   subtitle: { marginBottom: 20, fontSize: 18 },
   logTitle: { marginTop: 20, fontSize: 18, fontWeight: 'bold' },
-  logText: { color: "blue", marginTop: 5 },
+  logText: { color: 'blue', marginTop: 5 },
 });
 
 export default SleepScheduler;

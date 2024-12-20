@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import { BackgroundContext } from '../Context/BackGround';
@@ -18,7 +18,7 @@ const AdminChatScreen = ({ route }) => {
   const { userId,userName } = route.params;
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState('');
-  const {Background} =useContext(BackgroundContext)
+  const {Background} = useContext(BackgroundContext);
   useEffect(() => {
     const conversationId = userId;
 

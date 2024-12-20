@@ -219,7 +219,7 @@ export default function LoginScreen({ navigation }) {
               </Text>
             </Text>
           </TouchableOpacity>
-          <View style={{ borderLeftWidth: 1, height: 12, borderColor: colors.login, marginHorizontal: 10 }}></View>
+          <View style={{ borderLeftWidth: 1, height: 12, borderColor: colors.login, marginHorizontal: 10 }} />
           <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={[styles.text, { color: colors.login }]}>
               Şifremi Unuttum
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: width * 0.8,
-    backgroundColor: "#e3e3e3",
+    backgroundColor: '#e3e3e3',
     borderTopRightRadius: 30,
     borderBottomLeftRadius: 30,
     alignItems: 'center',
@@ -317,21 +317,21 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 30,
     marginTop:5,
     marginRight:2,
-    
-    
+
+
     alignItems: 'center',
     justifyContent: 'space-evenly',
   },
   modalInnerContent: {
     alignItems: 'center',
-    justifyContent: "space-around",
+    justifyContent: 'space-around',
     marginTop:30,
     height: height * 0.3,
   },
   modalText: {
     fontSize: 25,
     textAlign: 'center',
-    
+
   },
   closeButton: {
     marginTop: 20,
@@ -340,20 +340,20 @@ const styles = StyleSheet.create({
     width: width * 0.3,
     borderRadius: 30,
     justifyContent: 'center',
-   
+
   },
   closeButtonInner: {
     borderWidth: 1,
-    borderColor: "#e3e3e3",
-    backgroundColor: "white",
+    borderColor: '#e3e3e3',
+    backgroundColor: 'white',
     height: '100%',
     borderRadius: 30,
     justifyContent: 'center',
     marginTop:5,
     marginRight:2,
     alignItems: 'center',
-    
-    
+
+
   },
   cancelText: {
     fontSize: 16,

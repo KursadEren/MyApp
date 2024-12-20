@@ -6,9 +6,9 @@ const statusBarHeight = Platform.OS === 'ios' ? 0 : StatusBar.currentHeight || 0
 const Payment = ({route ,navigation}) => {
   const { data } = route.params;
 
-  
-    
-  
+
+
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Arkaplan Görseli */}
@@ -53,7 +53,7 @@ const Payment = ({route ,navigation}) => {
       />
 
       {/* SATIN AL Butonu Görseli */}
-      <TouchableOpacity onPress={()=> navigation.navigate('Payment2', { data: data })} 
+      <TouchableOpacity onPress={()=> navigation.navigate('Payment2', { data: data })}
       activeOpacity={0.8} style={styles.buttonWrapper}>
         <Image
           source={require('../assets/img/Payment/satinal.png')} // Satın Al butonu
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#f0f0ff',
-    
+
   },
   backgroundImage: {
     position: 'absolute',
@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
   fullWidthImage: {
     width: width ,
     height: height * 0.2,
-    
-  
+
+
   },
   MerveCakir:{
     width: width * 0.9,

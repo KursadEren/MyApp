@@ -39,7 +39,7 @@ function calculateAgeAndMonths(birthDateString) {
   return {
     years,
     months,
-    totalMonths
+    totalMonths,
   };
 }
 
@@ -48,9 +48,9 @@ export default function Settings({navigation}) {
   const { colors } = useContext(ColorsContext);
   const { user } = useContext(UserContext);
   const { Background } = useContext(BackgroundContext);
-  
+
   const [childName, setChildName] = useState(
-    user && user.children && user.children.length > 0 ? user.children[0].name : "isim"
+    user && user.children && user.children.length > 0 ? user.children[0].name : 'isim'
   );
   const [weight, setWeight] = useState(
     user && user.children && user.children.length > 0 ? user.children[0].weight : 0
@@ -58,17 +58,17 @@ export default function Settings({navigation}) {
   const [height2, setHeight] = useState(
     user && user.children && user.children.length > 0 ? user.children[0].height : 0
   );
-  
+
   const [ageData, setAgeData] = useState({ years: 0, months: 0, totalMonths: 0 });
-  const [formattedDate, setFormattedDate] = useState("");
-  
+  const [formattedDate, setFormattedDate] = useState('');
+
   // Yaş hesaplama ve çocuk bilgilerini güncelleme
   useEffect(() => {
     if (user && user.children && user.children.length > 0) {
       setChildName(user.children[0].name); // İlk çocuğun ismini alır
       setWeight(user.children[0].weight);
       setHeight(user.children[0].height);
-      
+
       const birthDateString = user.children[0].birthDate; // Doğum tarihinin doğru alan adı olduğundan emin olun
       if (birthDateString) {
         const age = calculateAgeAndMonths(birthDateString);
@@ -76,11 +76,11 @@ export default function Settings({navigation}) {
         setFormattedDate(`${birthDateString}`); // İsteğe bağlı olarak formatlayabilirsiniz
       }
     } else {
-      setChildName("isim");
+      setChildName('isim');
       setWeight(0);
       setHeight(0);
       setAgeData({ years: 0, months: 0, totalMonths: 0 });
-      setFormattedDate("");
+      setFormattedDate('');
     }
   }, [user]);
 
@@ -113,7 +113,7 @@ export default function Settings({navigation}) {
                 width: width * 0.6,   // Ekran genişliğinin %60'ı
                 height: height * 0.22, // Ekran yüksekliğinin %22'si
                 resizeMode: 'contain', // Görselin oranlarını bozmadan boyutlandırır
-                flexDirection: "column",
+                flexDirection: 'column',
               }}
             >
               <Text style={{ color: colors.login, fontFamily: fonts.Heavy, fontSize: 30, flex: 0.8, marginHorizontal: width * 0.09, marginTop: height * 0.05 }}>
@@ -122,7 +122,7 @@ export default function Settings({navigation}) {
               <Text style={{ color: colors.login, fontFamily: fonts.Heavy, fontSize: 12, marginHorizontal: width * 0.09 }}>
                 {childName} {ageData.months} aylık
               </Text>
-              <View style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}>
+              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
                 <TouchableOpacity style={styles.infoBox}>
                   <View style={styles.infoInnerBox}>
                     <Text style={{ color: colors.login, fontFamily: fonts.Heavy }}>
@@ -147,7 +147,7 @@ export default function Settings({navigation}) {
                 left: -width * 0.05,
                 top: -height * 0.06,
                 resizeMode: 'contain',
-                position: "absolute",
+                position: 'absolute',
               }}
             />
           </View>
@@ -157,12 +157,12 @@ export default function Settings({navigation}) {
         <View style={styles.buttonContainer}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              {renderButtonWithText(() => navigation.navigate("Profile"), require('../assets/img/ok.png'), "Profil")}
+              {renderButtonWithText(() => navigation.navigate('Profile'), require('../assets/img/ok.png'), 'Profil')}
             </View>
           </View>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              {renderButtonWithText(() =>navigation.navigate("Destek"), require('../assets/img/ok.png'), "SSS & DESTEK")}
+              {renderButtonWithText(() =>navigation.navigate('Destek'), require('../assets/img/ok.png'), 'SSS & DESTEK')}
             </View>
           </View>
         </View>
@@ -175,8 +175,8 @@ const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
     resizeMode: 'cover',
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
     flex: 1,
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   button: {
-    justifyContent: "space-evenly",
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   buttonImage: {
@@ -228,9 +228,9 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   buttonWithTextContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: "flex-start",
+    justifyContent: 'flex-start',
     width: '100%', // Tam genişlik
     paddingHorizontal: 20, // Yanlardan boşluk
   },
@@ -238,8 +238,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
     color: '#000',
-    textAlign: "left",
-    flex: 0.9
+    textAlign: 'left',
+    flex: 0.9,
   },
   infoBox: {
     borderWidth: 1,
@@ -264,5 +264,5 @@ const styles = StyleSheet.create({
     marginRight: 0.5,
     alignItems: 'center',
     justifyContent: 'space-evenly',
-  }
+  },
 });

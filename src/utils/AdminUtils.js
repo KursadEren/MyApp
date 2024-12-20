@@ -1,4 +1,4 @@
-import firestore from "@react-native-firebase/firestore"
+import firestore from '@react-native-firebase/firestore';
 
 // Admin UID'sini alma fonksiyonu
 export const fetchAdminUID = async () => {

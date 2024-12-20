@@ -37,7 +37,7 @@ export default function Payment2({ route, navigation }) {
 
       // Kullanıcı oturumunun kontrolü
       if (!currentUser) {
-        Alert.alert('Hata', "Kullanıcı oturumu bulunamadı.");
+        Alert.alert('Hata', 'Kullanıcı oturumu bulunamadı.');
         console.log('Hata: Oturum bulunamadı. auth().currentUser null döndü.');
         return;
       }
@@ -61,7 +61,7 @@ export default function Payment2({ route, navigation }) {
         subscription_start: subscriptionStart,
         subscription_end: subscriptionEnd,
         transaction_id: transactionId,
-        packet_name: data.title || "Bilinmeyen Paket",
+        packet_name: data.title || 'Bilinmeyen Paket',
         subscription_duration: data.subscription_duration,
         // Eklemek istediğiniz diğer alanlar...
       };
@@ -70,18 +70,18 @@ export default function Payment2({ route, navigation }) {
 
       // Kullanıcının belgesine referans alma
       const userRef = firestore().collection('users').doc(userId);
-      console.log("Kullanıcı referansı alındı:", userRef.path);
+      console.log('Kullanıcı referansı alındı:', userRef.path);
 
       // Kullanıcının belgesindeki 'subscriptions' dizisine ekleme yapma
       await userRef.update({
-        subscriptions: firestore.FieldValue.arrayUnion(subscriptionData)
+        subscriptions: firestore.FieldValue.arrayUnion(subscriptionData),
       });
 
       console.log("Abonelik Firestore'a başarıyla eklendi.");
 
       Alert.alert('Başarılı', 'Abonelik alındı.');
       setFlag(true);
-      navigation.navigate("Home");
+      navigation.navigate('Home');
     } catch (error) {
       console.error('Abonelik oluşturulurken bir hata oluştu:', error);
       console.log('Hata Detayları:', {

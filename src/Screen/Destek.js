@@ -9,7 +9,7 @@ const { width, height } = Dimensions.get('window');
 export default function Destek() {
   const { fonts } = useContext(FontsContext);
   const { Background } = useContext(BackgroundContext);
-const {colors} = useContext(ColorsContext)
+const {colors} = useContext(ColorsContext);
   return (
     <ImageBackground
       source={Background.Home}
@@ -19,26 +19,26 @@ const {colors} = useContext(ColorsContext)
         <ScrollView>
       <View style={styles.container}>
         {/* Başlık */}
-        <Text style={[styles.title, { fontFamily: fonts.Heavy,color:colors.login ,color:"#a78fd3" }]}>AYARLAR</Text>
+        <Text style={[styles.title, { fontFamily: fonts.Heavy,color:colors.login ,color:'#a78fd3' }]}>AYARLAR</Text>
 
         {/* Bölümler */}
-        
+
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { fontFamily: fonts.Bold, }]}>Uygulama Tercihleri</Text>
+          <Text style={[styles.sectionTitle, { fontFamily: fonts.Bold }]}>Uygulama Tercihleri</Text>
           <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.optionContainer}>
-            <Text style={[styles.optionText, { fontFamily: fonts.Regular ,color:"#a78fd3" }]}>Dil</Text>
-            <Text style={[styles.optionValue, { fontFamily: fonts.Heavy ,color:"#a78fd3" }]}>Türkçe</Text>
+            <Text style={[styles.optionText, { fontFamily: fonts.Regular ,color:'#a78fd3' }]}>Dil</Text>
+            <Text style={[styles.optionValue, { fontFamily: fonts.Heavy ,color:'#a78fd3' }]}>Türkçe</Text>
           </TouchableOpacity>
           </View>
           <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.optionContainer}>
-            <Text style={[styles.optionText, { fontFamily: fonts.Regular,color:"#a78fd3"  }]}>Ölçü Birimi</Text>
+            <Text style={[styles.optionText, { fontFamily: fonts.Regular,color:'#a78fd3'  }]}>Ölçü Birimi</Text>
           </TouchableOpacity>
           </View>
           <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.optionContainer}>
-            <Text style={[styles.optionText, { fontFamily: fonts.Regular ,color:"#a78fd3" }]}>Bildirimler</Text>
+            <Text style={[styles.optionText, { fontFamily: fonts.Regular ,color:'#a78fd3' }]}>Bildirimler</Text>
           </TouchableOpacity>
           </View>
         </View>
@@ -47,26 +47,26 @@ const {colors} = useContext(ColorsContext)
           <Text style={[styles.sectionTitle, { fontFamily: fonts.Bold  }]}>Sorun Giderme</Text>
           <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.optionContainer}>
-            <Text style={[styles.optionText, { fontFamily: fonts.Regular ,color:"#a78fd3" }]}>Uygulama Bilgileri</Text>
+            <Text style={[styles.optionText, { fontFamily: fonts.Regular ,color:'#a78fd3' }]}>Uygulama Bilgileri</Text>
           </TouchableOpacity>
           </View>
           <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.optionContainer}>
-            <Text style={[styles.optionText, { fontFamily: fonts.Regular,color:"#a78fd3"  }]}>Bir Sorun Bildir</Text>
+            <Text style={[styles.optionText, { fontFamily: fonts.Regular,color:'#a78fd3'  }]}>Bir Sorun Bildir</Text>
           </TouchableOpacity>
         </View>
         </View>
-        
+
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { fontFamily: fonts.Bold  }]}>Yasal</Text>
           <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.optionContainer}>
-            <Text style={[styles.optionText, { fontFamily: fonts.Regular ,color:"#a78fd3" }]}>Şartlar ve Koşullar</Text>
+            <Text style={[styles.optionText, { fontFamily: fonts.Regular ,color:'#a78fd3' }]}>Şartlar ve Koşullar</Text>
           </TouchableOpacity>
           </View>
           <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.optionContainer}>
-            <Text style={[styles.optionText, { fontFamily: fonts.Regular,color:"#a78fd3"  }]}>Gizlilik Politikaları</Text>
+            <Text style={[styles.optionText, { fontFamily: fonts.Regular,color:'#a78fd3'  }]}>Gizlilik Politikaları</Text>
           </TouchableOpacity>
           </View>
         </View>
@@ -74,15 +74,15 @@ const {colors} = useContext(ColorsContext)
         {/* Butonlar */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button}>
-            <Text style={[styles.buttonText, { fontFamily: fonts.Bold, color:"#a78fd3" }]}>VERİLERİ SIFIRLA</Text>
+            <Text style={[styles.buttonText, { fontFamily: fonts.Bold, color:'#a78fd3' }]}>VERİLERİ SIFIRLA</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.button}>
-            <Text style={[styles.buttonText, { fontFamily: fonts.Bold,color:"#a78fd3"  }]}>ÇIKIŞ YAP</Text>
+            <Text style={[styles.buttonText, { fontFamily: fonts.Bold,color:'#a78fd3'  }]}>ÇIKIŞ YAP</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.button}>
-            <Text style={[styles.buttonText, { fontFamily: fonts.Bold ,color:"#a78fd3" }]}>HESABI SİL</Text>
+            <Text style={[styles.buttonText, { fontFamily: fonts.Bold ,color:'#a78fd3' }]}>HESABI SİL</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     marginBottom: height * 0.02,
-    width:width*0.9,
+    width:width * 0.9,
     backgroundColor: '#e3e3e3',
     borderRadius: 20,
   },

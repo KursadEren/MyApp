@@ -15,7 +15,7 @@ export const FontsProvider = ({children}) => {
     Medium: 'BlenderPro-Medium',
     thin: 'BlenderPro-Thin',
     baby: 'Hellobaby',
-    Winter: "Winter Minie"
+    Winter: 'Winter Minie',
   };
 
   const fontsSize = {
