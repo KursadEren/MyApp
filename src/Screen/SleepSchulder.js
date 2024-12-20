@@ -1,315 +1,289 @@
 // SleepScheduler.js
 
-import React, { useEffect, useRef, useState, useContext } from 'react';
-import { View, Text, Button, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import notifee, { AndroidImportance, TriggerType, EventType } from '@notifee/react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { notificationsData } from '../../natifications'; // Doğru yolu kontrol edin
-
-import { UserContext } from '../Context/UserContext';
-
+import React, { useState } from 'react';
+import { View, Button, StyleSheet, Alert, ScrollView, Text } from 'react-native';
+import notifee, { AndroidImportance, TimestampTrigger, TriggerType } from '@notifee/react-native';
+import firestore from '@react-native-firebase/firestore'; // Ensure you have installed and set up react-native-firebase
+import { notificationsData } from './notificationsData'; // Import your notifications data
 
 const SleepScheduler = () => {
-  const { user } = useContext(UserContext); // UserContext'ten user verisini al
-  const [notificationLog, setNotificationLog] = useState([]); // Bildirim logları
-  const nextNotificationIndex = useRef(0); // Hangi bildirimin gönderileceğini takip eder
-  const [subscriptionDuration, setSubscriptionDuration] = useState(null); // Kullanıcı abonelik süresi
-  const isMounted = useRef(true); // Mounted flag
+  const [loading, setLoading] = useState(false);
+  const [scheduledNotifications, setScheduledNotifications] = useState([]);
 
-  // Bileşen unmount olduğunda flag'i güncelle
-  useEffect(() => {
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
-
-  // Bildirim izni ve kanal oluşturma
-  const setupNotifications = async () => {
+  const scheduleAllNotifications = async () => {
+    setLoading(true);
     try {
-      const settings = await notifee.requestPermission();
-      if (settings.authorizationStatus !== 1) {
-        console.warn('Bildirim izni verilmedi!');
-        if (isMounted.current) {
-          Alert.alert('Uyarı', 'Bildirim izinlerini etkinleştirmeniz gerekmektedir.');
-        }
+      // 1. Fetch current user ID
+      const currentUser = await getCurrentUser();
+      if (!currentUser) {
+        Alert.alert('Error', 'User not authenticated.');
+        setLoading(false);
+        return;
+      }
+      const userId = currentUser.uid;
+
+      // 2. Fetch user subscriptions from Firestore
+      const userDoc = await firestore().collection('users').doc(userId).get();
+      const userData = userDoc.data();
+
+      if (!userData || !userData.subscription) {
+        Alert.alert('Error', 'No subscription data found.');
+        setLoading(false);
         return;
       }
 
-      await notifee.createChannel({
-        id: 'sleep_channel',
-        name: 'Uyku Planı Bildirimleri',
+      const activeSubscriptions = userData.subscription.filter(sub => sub.is_active);
+
+      if (activeSubscriptions.length === 0) {
+        Alert.alert('No Active Subscriptions', 'User has no active subscriptions.');
+        setLoading(false);
+        return;
+      }
+
+      // 3. Create notification channel
+      await createNotificationChannel();
+
+      // 4. Schedule daily 7:00 AM wake-up notification
+      await scheduleDailyWakeUpNotification(7, 0); // 7:00 AM
+
+      // 5. For each active subscription, schedule sleep and wake-up notifications
+      let allScheduled = [];
+
+      for (const sub of activeSubscriptions) {
+        const monthKey = sub.subscription_duration; // 6,7,8,9,11,12
+        const planData = notificationsData[monthKey];
+
+        if (!planData) {
+          console.warn(`No notification data for month: ${monthKey}`);
+          continue; // Skip if no data for this subscription duration
+        }
+
+        // Base time is today at 7:00 AM
+        const baseWakeTime = new Date();
+        baseWakeTime.setHours(7, 0, 0, 0); // 7:00 AM today
+
+        // If current time is past 7:00 AM, decide whether to schedule for today or next day
+        const now = new Date();
+        if (baseWakeTime <= now) {
+          // Optionally, you can adjust to next day if you prefer
+          // baseWakeTime.setDate(baseWakeTime.getDate() + 1);
+          // For this example, we'll schedule relative to today
+        }
+
+        // Initialize current time pointer
+        let currentTime = new Date(baseWakeTime);
+
+        for (let i = 0; i < planData.intervals.length; i++) {
+          const interval = planData.intervals[i];
+          currentTime = addMinutes(currentTime, interval.delayInMinutes);
+
+          // Schedule notification
+          const notification = await scheduleNotificationAtTime(
+            interval.title,
+            interval.body,
+            currentTime
+          );
+          if (notification) allScheduled.push(notification);
+
+          // If this is a wake-up notification, no further action needed
+          if (interval.title.toLowerCase().includes('uyandırma zamanı') || interval.title.toLowerCase().includes('uyanma zamanı')) {
+            continue;
+          }
+
+          // After sleep notification, schedule wake-up notification 2 hours later
+          let wakeTimeAfterSleep = addMinutes(currentTime, 120); // 2 hours later
+
+          // Special rule for 6th month: Ensure second wake-up is before 11:00 AM
+          if (planData.month === 6) {
+            // Determine if this is the second wake-up notification
+            // Since wake-up notifications are after sleep notifications, count how many wake-ups have been scheduled
+            const wakeUpCount = allScheduled.filter(n => n.title.toLowerCase().includes('uyanma zamanı')).length;
+
+            if (wakeUpCount === 2) { // Second wake-up
+              const elevenAM = new Date(currentTime);
+              elevenAM.setHours(11, 0, 0, 0); // 11:00 AM
+
+              if (wakeTimeAfterSleep > elevenAM) {
+                // Adjust to 10:59 AM
+                wakeTimeAfterSleep = new Date(currentTime);
+                wakeTimeAfterSleep.setHours(10, 59, 0, 0);
+              }
+            }
+          }
+
+          // Determine body text based on the preceding sleep notification
+          let wakeBody = '';
+          switch (interval.title) {
+            case '1. Uyku':
+              wakeBody = '1. uyku bitti.';
+              break;
+            case '2. Uyku':
+              wakeBody = '2. uyku bitti.';
+              break;
+            case 'Şekerleme':
+              wakeBody = 'Şekerleme bitti.';
+              break;
+            case 'Akşam Uykusu':
+              wakeBody = 'Akşam uykusu bitti.';
+              break;
+            default:
+              wakeBody = 'Uyanma zamanı geldi.';
+          }
+
+          // Schedule wake-up notification
+          const wakeNotification = await scheduleNotificationAtTime(
+            'Uyandırma Zamanı',
+            wakeBody,
+            wakeTimeAfterSleep
+          );
+          if (wakeNotification) allScheduled.push(wakeNotification);
+
+          // Update currentTime to wakeTimeAfterSleep for next iteration
+          currentTime = new Date(wakeTimeAfterSleep);
+        }
+      }
+
+      // Update state to display scheduled notifications
+      setScheduledNotifications(allScheduled);
+
+      Alert.alert('Başarılı', 'Tüm bildirimler planlandı.');
+    } catch (error) {
+      console.error('Error scheduling notifications:', error);
+      Alert.alert('Hata', 'Bildirimler planlanırken bir hata oluştu.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper function to get current user
+  const getCurrentUser = async () => {
+    // Implement your authentication logic here
+    // For example, using Firebase Auth:
+    // return firebase.auth().currentUser;
+    // Placeholder:
+    return { uid: 'exampleUserId' }; // Replace with actual user ID retrieval
+  };
+
+  // Helper function to create notification channel
+  const createNotificationChannel = async () => {
+    await notifee.createChannel({
+      id: 'daily_notification_channel',
+      name: 'Günlük Bildirimler',
+      importance: AndroidImportance.HIGH,
+    });
+  };
+
+  // Helper function to schedule a notification at a specific time
+  const scheduleNotificationAtTime = async (title, body, date) => {
+    // Ensure the scheduled time is in the future
+    const now = new Date();
+    if (date <= now) {
+      console.warn('Planlanan zaman geçmişte:', date);
+      return null;
+    }
+
+    const trigger = {
+      type: TriggerType.TIMESTAMP,
+      timestamp: date.getTime(),
+    };
+
+    const notification = {
+      title,
+      body,
+      android: {
+        channelId: 'daily_notification_channel',
         importance: AndroidImportance.HIGH,
-      });
-      console.log('Bildirim kanalı oluşturuldu.');
-    } catch (error) {
-      console.error('Bildirim izinlerini ayarlarken hata:', error);
-    }
-  };
-
-  // Kullanıcının en son aktif aboneliğini bulma
-  const getLatestActiveSubscription = (subscriptions) => {
-    if (!subscriptions || subscriptions.length === 0) {
-      return null;
-    }
-
-    // Aktif abonelikleri filtrele
-    const activeSubscriptions = subscriptions.filter(sub => sub.is_active === true);
-
-    if (activeSubscriptions.length === 0) {
-      return null;
-    }
-
-    // En son aboneliği seç (subscription_start'a göre sıralama)
-    activeSubscriptions.sort((a, b) => b.subscription_start.toMillis() - a.subscription_start.toMillis());
-    return activeSubscriptions[0];
-  };
-
-  // Kullanıcının abonelik verilerini işleme ve state'e set etme
-  const processSubscriptionData = () => {
-    if (!user || !user.subscriptions || user.subscriptions.length === 0) {
-      if (isMounted.current) {
-        Alert.alert('Bilgi', 'Aktif bir aboneliğiniz bulunmamaktadır.');
-      }
-      return;
-    }
-
-    const latestActiveSubscription = getLatestActiveSubscription(user.subscriptions);
-
-    if (latestActiveSubscription) {
-      setSubscriptionDuration(latestActiveSubscription.subscription_duration);
-      console.log('En son aktif abonelik süresi:', latestActiveSubscription.subscription_duration);
-    } else {
-      if (isMounted.current) {
-        Alert.alert('Bilgi', 'Aktif bir aboneliğiniz bulunmamaktadır.');
-      }
-      console.log('Aktif abonelik bulunamadı.');
-    }
-  };
-
-  // AsyncStorage'dan ilerlemeyi yükle
-  const loadProgress = async () => {
-    try {
-      const progress = await AsyncStorage.getItem('notification_progress');
-      const logs = await AsyncStorage.getItem('notification_logs');
-
-      if (progress !== null) {nextNotificationIndex.current = parseInt(progress, 10);}
-      if (logs) {setNotificationLog(JSON.parse(logs));}
-
-      console.log('Progress yüklendi:', nextNotificationIndex.current);
-      const currentMonthData = getCurrentMonthData();
-      if (currentMonthData && nextNotificationIndex.current < currentMonthData.intervals.length) {
-        scheduleNextNotification(currentMonthData.intervals[nextNotificationIndex.current].delayInMinutes);
-      }
-    } catch (error) {
-      console.error('Progress yüklenirken hata:', error);
-    }
-  };
-
-  // AsyncStorage'ı temizle
-  const clearStorage = async () => {
-    try {
-      await AsyncStorage.removeItem('notification_progress');
-      await AsyncStorage.removeItem('notification_logs');
-      console.log('AsyncStorage temizlendi.');
-      setNotificationLog([]);
-      nextNotificationIndex.current = 0;
-    } catch (error) {
-      console.error('AsyncStorage temizlenirken hata:', error);
-    }
-  };
-
-  // Şu anki aboneliğin bildirim verisini al
-  const getCurrentMonthData = () => {
-    return notificationsData[subscriptionDuration] || notificationsData[6]; // Abonelik süresine göre veya varsayılan 6. ay
-  };
-
-  // Bildirimi tetikleme ve kaydetme
-  const scheduleNextNotification = async (delayInMinutes) => {
-    if (!subscriptionDuration) {
-      console.warn('Abonelik süresi belirlenmedi.');
-      return;
-    }
-
-    try {
-      const currentMonthData = getCurrentMonthData();
-      if (!currentMonthData) {
-        console.warn('Geçerli ayın bildirim verisi bulunamadı.');
-        return;
-      }
-
-      const currentInterval = currentMonthData.intervals[nextNotificationIndex.current];
-      if (!currentInterval) {
-        console.warn('Geçerli aboneliğin tüm bildirimleri tamamlandı.');
-        return;
-      }
-
-      const trigger = {
-        type: TriggerType.TIMESTAMP,
-        timestamp: Date.now() + delayInMinutes * 60 * 1000, // Gelecek zamanı hesaplar
-      };
-
-      await notifee.createTriggerNotification(
-        {
-          title: currentInterval.title,
-          body: currentInterval.body,
-          android: {
-            channelId: 'sleep_channel',
-            importance: AndroidImportance.HIGH,
-          },
-        },
-        trigger
-      );
-
-      console.log(`${currentInterval.title} zamanlandı.`);
-      const newLog = [
-        ...notificationLog,
-        `${currentInterval.title} zamanlandı.`,
-      ];
-      setNotificationLog(newLog);
-      nextNotificationIndex.current += 1;
-      await AsyncStorage.setItem('notification_progress', nextNotificationIndex.current.toString());
-      await AsyncStorage.setItem('notification_logs', JSON.stringify(newLog));
-    } catch (error) {
-      console.error('Bildirim zamanlanırken hata:', error);
-    }
-  };
-
-  // Bildirim tıklama olayını dinleme
-  const onForegroundEvent = ({ type, detail }) => {
-    if (type === EventType.PRESS) {
-      const { notification } = detail;
-      console.log('Bildirim tıklandı:', notification);
-
-      // Bir sonraki bildirimi zamanla
-      const currentMonthData = getCurrentMonthData();
-      if (currentMonthData && nextNotificationIndex.current < currentMonthData.intervals.length) {
-        scheduleNextNotification(currentMonthData.intervals[nextNotificationIndex.current].delayInMinutes);
-      } else {
-        if (isMounted.current) {
-          Alert.alert('Bilgi', 'Günün tüm bildirimleri tamamlandı.');
-        }
-      }
-    }
-  };
-
-  // Başlatma fonksiyonu
-  const handleNotificationClick = () => {
-    if (!subscriptionDuration) {
-      Alert.alert('Hata', 'Abonelik süresi belirlenmedi.');
-      return;
-    }
-
-    if (nextNotificationIndex.current >= getCurrentMonthData().intervals.length) {
-      Alert.alert('Bilgi', 'Günün tüm bildirimleri zaten tamamlandı.');
-      return;
-    }
-    scheduleNextNotification(getCurrentMonthData().intervals[nextNotificationIndex.current].delayInMinutes);
-  };
-
-  // Kullanıcı eski bildirimlerini görüntüleyebilir
-  const viewNotificationHistory = () => {
-    Alert.alert('Bildirim Logları', notificationLog.join('\n'));
-  };
-
-  // Uygulama ilk çalıştığında kanal oluştur, abonelik verisini çek ve ilerlemeyi yükle
-  useEffect(() => {
-    const initialize = async () => {
-      await setupNotifications();
-      processSubscriptionData();
+      },
     };
 
-    initialize();
+    const notificationId = await notifee.createTriggerNotification(
+      notification,
+      trigger
+    );
 
-    // Abonelik verisi çekildikten sonra ilerlemeyi yükle
-    if (subscriptionDuration) {
-      loadProgress();
-    }
-  }, [subscriptionDuration, user]);
-
-  // Foreground event listener ekle
-  useEffect(() => {
-    const unsubscribe = notifee.onForegroundEvent(onForegroundEvent);
-    return () => {
-      unsubscribe();
+    return {
+      id: notificationId,
+      title,
+      body,
+      scheduledTime: date.toLocaleString(),
     };
-  }, [notificationLog, subscriptionDuration]);
+  };
+
+  // Helper function to schedule daily wake-up notification
+  const scheduleDailyWakeUpNotification = async (hour, minute) => {
+    const now = new Date();
+    let firstOccurrence = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
+
+    // If the time has already passed today, schedule for tomorrow
+    if (firstOccurrence <= now) {
+      firstOccurrence.setDate(firstOccurrence.getDate() + 1);
+    }
+
+    // Schedule the wake-up notification
+    const wakeNotification = await scheduleNotificationAtTime(
+      'Günaydın!',
+      'Saat 7:00, uyanma zamanı.',
+      firstOccurrence
+    );
+
+    return wakeNotification;
+  };
+
+  // Utility function to add minutes to a date
+  const addMinutes = (date, minutes) => {
+    return new Date(date.getTime() + minutes * 60000);
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Uyku Aralıkları</Text>
-      <Text style={styles.subtitle}>Abonelik Süresi: {subscriptionDuration || 'Yükleniyor...'}</Text>
       <Button
-        title="Bildirimleri Başlat"
-        onPress={handleNotificationClick}
-        disabled={!subscriptionDuration}
+        title={loading ? 'Planlanıyor...' : 'Tüm Bildirimleri Planla'}
+        onPress={scheduleAllNotifications}
+        disabled={loading}
       />
-
-      <View style={{ marginTop: 10 }}>
-        <Button
-          title="AsyncStorage Temizle"
-          color="red"
-          onPress={clearStorage}
-        />
-      </View>
-
-      <View style={{ marginTop: 10 }}>
-        <Button
-          title="Bildirim Geçmişini Görüntüle"
-          onPress={viewNotificationHistory}
-        />
-      </View>
-
-      <View style={{ marginTop: 10 }}>
-  <Button
-    title="5 Saniye Sonrasına Hizmet Çalışıyor Bildirimi Gönder"
-    onPress={async () => {
-      try {
-        const trigger = {
-          type: TriggerType.TIMESTAMP,
-          timestamp: Date.now() + 5 * 1000, // Şu andan itibaren 5 saniye sonrası
-        };
-
-        await notifee.createTriggerNotification(
-          {
-            title: 'Hizmet Çalışıyor',
-            body: 'Bu bildirim 5 saniye sonra gösterilecek.',
-            android: {
-              channelId: 'sleep_channel', // Doğru bir kanal ID'si
-              smallIcon: 'ic_launcher', // Küçük simge
-              importance: AndroidImportance.HIGH,
-              ongoing: true,
-            },
-          },
-          trigger
-        );
-
-        console.log('5 saniye sonrasına bildirim ayarlandı.');
-      } catch (error) {
-        console.error('Bildirim zamanlanırken hata:', error);
-      }
-    }}
-  />
-</View>
-
-
-
-
-      <Text style={styles.logTitle}>Bildirim Logları:</Text>
-      {notificationLog.map((log, index) => (
-        <TouchableOpacity key={index}>
-          <Text style={styles.logText}>{log}</Text>
-        </TouchableOpacity>
-      ))}
+      <ScrollView style={styles.scrollView}>
+        <Text style={styles.header}>Planlanmış Bildirimler:</Text>
+        {scheduledNotifications.map((notif, index) => (
+          <View key={index} style={styles.notificationItem}>
+            <Text style={styles.notificationTitle}>{notif.title}</Text>
+            <Text>{notif.body}</Text>
+            <Text style={styles.notificationTime}>{notif.scheduledTime}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 20, flex: 1 },
-  title: { marginBottom: 10, fontSize: 24, fontWeight: 'bold' },
-  subtitle: { marginBottom: 20, fontSize: 18 },
-  logTitle: { marginTop: 20, fontSize: 18, fontWeight: 'bold' },
-  logText: { color: 'blue', marginTop: 5 },
+  container: {
+    flex: 1,
+    padding: 16,
+    marginTop: 50,
+  },
+  scrollView: {
+    marginTop: 20,
+  },
+  header: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  notificationItem: {
+    marginBottom: 15,
+    padding: 10,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 8,
+  },
+  notificationTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  notificationTime: {
+    marginTop: 5,
+    fontStyle: 'italic',
+    color: '#555',
+  },
 });
 
 export default SleepScheduler;

@@ -24,6 +24,7 @@ import CatalogItem from './FlatlistRenderItem/CatalogItem';
 import ExerciseItem from './FlatlistRenderItem/ExerciseItem';
 import AdminExerciseItem from './FlatlistRenderItem/AdminExerciseItem';
 import VideoItem from './FlatlistRenderItem/VideoItem';
+import Memnuniyet from './FlatlistRenderItem/Memnuniyet';
 
 
 const { width, height } = Dimensions.get('window');
@@ -76,6 +77,23 @@ const videoData = [
     description: 'Başlangıç düzeyi',
     image: require('../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png'),
     youtubeUrl: 'https://www.youtube.com/embed/f2xGxd9xPYA',
+  },
+];
+const MemnuniyetItem = [
+  
+  {
+    id: '1',
+   
+    image: require('../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png'),
+
+  },
+  {
+    id: '2',
+    image: require('../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png'),
+  },
+  {
+    id: '3',
+    image: require('../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png'), 
   },
 ];
 const subscriptions = [
@@ -258,7 +276,18 @@ export default function MyFlatlist({ type, navigation, admin = false, sharedAnim
             showsVerticalScrollIndicator={false}
             contentContainerStyle={[styles.flatListContent,{}]}
           />
-        ) : (
+        ) : type === 'Memnuniyet' ? (
+          <FlatList
+            data={MemnuniyetItem}
+            renderItem={({ item }) => (
+              <Memnuniyet item={item} fonts={fonts} navigation={navigation} styles={styles} width={width} />
+            )}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsVerticalScrollIndicator={false}
+          
+          />
+        ) :(
           <FlatList
             data={subscriptions}
             renderItem={({ item }) => (

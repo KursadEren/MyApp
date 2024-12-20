@@ -1,6 +1,3 @@
-// App.js
-
-import React from 'react';
 import { AppRegistry } from 'react-native';
 import notifee, { EventType, TriggerType, AndroidImportance } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
