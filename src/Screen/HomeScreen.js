@@ -186,6 +186,15 @@ export default function HomeScreen({ navigation }) {
 
             <View style={styles.sectionContainer}>
               <Text style={[styles.sectionTitle, { fontFamily: fonts.bold }]}>
+                Memnuniyet
+              </Text>
+
+              <View style={styles.flatListWrapper}>
+                <MyFlatlist sharedAnimationValue={sharedAnimationValue} type="Memnuniyet" navigation={navigation} />
+              </View>
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={[styles.sectionTitle, { fontFamily: fonts.bold }]}>
                 Planlar
               </Text>
 
