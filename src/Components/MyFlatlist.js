@@ -185,10 +185,10 @@ const catalogData = [
 
 export default function MyFlatlist({ type, navigation, admin = false, sharedAnimationValue }) {
   const { colors } = useContext(ColorsContext);
-  
+
   const { fonts } = useContext(FontsContext);
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const { Background } = useContext(BackgroundContext)
+  const { Background } = useContext(BackgroundContext);
 
   const startGradientAnimation = () => {
     Animated.loop(
@@ -206,7 +206,7 @@ export default function MyFlatlist({ type, navigation, admin = false, sharedAnim
   }, [subscriptions]);
 
   const splitVideoDataIntoChunks = () => {
-    const chunkSize = 5; 
+    const chunkSize = 5;
     const chunks = [];
     for (let i = 0; i < videoData.length; i += chunkSize) {
       chunks.push(videoData.slice(i, i + chunkSize));
@@ -298,7 +298,7 @@ export default function MyFlatlist({ type, navigation, admin = false, sharedAnim
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover', 
+    resizeMode: 'cover',
     width: '100%',
     height: '100%',
   },
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   flatListContentVideo: {
-    borderColor: "white"
+    borderColor: 'white',
   },
   descriptionContainer: {
     borderRadius: 15,
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     height: height * 0.5,
     width: width * 0.9,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderColor: "#8E2DE2",
+    borderColor: '#8E2DE2',
     alignItems: 'center',
   },
   chunkContainer: {},
@@ -322,11 +322,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     marginBottom: 15,
-    borderColor: "white",
+    borderColor: 'white',
     marginRight: width * 0.04,
   },
   exerciseCard: {
-    
+
   },
   contentContainer: {
     width: '100%',
@@ -364,13 +364,13 @@ const styles = StyleSheet.create({
     paddingRight: width * 0.06,
   },
   videoTitle: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
   },
   videoDescription: {
-    color: "#fff"
+    color: '#fff',
   },
   modalContainer: {
     flex: 1,
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     left: 10,
-    zIndex: 10, 
+    zIndex: 10,
   },
   badge: {
     backgroundColor: '#FF5733',
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
- 
+
   cardContainer: {
     borderRadius: 15,
     overflow: 'hidden',
@@ -431,13 +431,13 @@ const styles = StyleSheet.create({
   },
   // Catalog Item boyutları büyütüldü
   catalogCardContainer: {
-    height:height*0.3,
+    height:height * 0.3,
     width: width * 0.5, // Kartı daha da büyüttük
     marginHorizontal: width * 0.02,
     alignItems: 'center',
   },
   catalogBackgroundImage: {
-    width: width*0.5,
+    width: width * 0.5,
     aspectRatio: 2,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',

@@ -17,7 +17,7 @@ export default function SetSubscription({ navigation }) {
       description: 'Bu, yeni bir abonelik paketidir.',
       subscription_duration: 6, // Örnek süre
       price:6,
-      image:""
+      image:'',
     };
 
     addToSubscriptions(newSubscription); // Context'e yeni öğe eklenir
@@ -49,7 +49,7 @@ export default function SetSubscription({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight+15 : 0,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 15 : 0,
   },
   redContainer: {
     backgroundColor: 'white', // Kırmızı arka plan

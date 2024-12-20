@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -6,35 +6,35 @@ import {
   StyleSheet,
   ImageBackground,
   Dimensions,
-} from "react-native";
-import MyTextInput from "../Components/MyTextInput";
-import MyButton from "../Components/MyButton";
-import { ColorsContext } from "../Context/ColorsContext";
-import { FontsContext } from "../Context/FontsContext";
-import { BackgroundContext } from "../Context/BackGround";
-import auth from "@react-native-firebase/auth"
-const { width, height } = Dimensions.get("window");
+} from 'react-native';
+import MyTextInput from '../Components/MyTextInput';
+import MyButton from '../Components/MyButton';
+import { ColorsContext } from '../Context/ColorsContext';
+import { FontsContext } from '../Context/FontsContext';
+import { BackgroundContext } from '../Context/BackGround';
+import auth from '@react-native-firebase/auth';
+const { width, height } = Dimensions.get('window');
 
 export default function ForgotPasswordScreen({ navigation }) {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const { colors } = useContext(ColorsContext);
   const { fonts } = useContext(FontsContext);
   const { Background } = useContext(BackgroundContext);
 
   const handlePasswordReset = async () => {
     if (!email) {
-      Alert.alert("Hata", "Lütfen bir e-posta adresi girin.");
+      Alert.alert('Hata', 'Lütfen bir e-posta adresi girin.');
       return;
     }
     try {
       await sendPasswordResetEmail(auth, email);
       Alert.alert(
-        "Başarılı",
-        "Şifre sıfırlama bağlantısı e-postanıza gönderildi."
+        'Başarılı',
+        'Şifre sıfırlama bağlantısı e-postanıza gönderildi.'
       );
       navigation.goBack(); // İşlem sonrası Login ekranına döner
     } catch (error) {
-      Alert.alert("Hata", error.message);
+      Alert.alert('Hata', error.message);
     }
   };
 
@@ -67,18 +67,18 @@ export default function ForgotPasswordScreen({ navigation }) {
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
-    resizeMode: "cover",
+    resizeMode: 'cover',
   },
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: width * 0.05,
   },
   title: {
     fontSize: width * 0.06,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: height * 0.03,
-    color: "#003366",
+    color: '#003366',
   },
 });

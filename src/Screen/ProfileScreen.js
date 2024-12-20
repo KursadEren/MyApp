@@ -159,7 +159,7 @@ export default function ProfileScreen() {
   };
 
   const formatDate = (date) => {
-    if (!date) return 'Tarih Seçiniz';
+    if (!date) {return 'Tarih Seçiniz';}
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
@@ -205,7 +205,7 @@ export default function ProfileScreen() {
               placeholder="Bebeğinizin Adı"
               value={child.name}
               onChangeText={(text) => setChild({ ...child, name: text })}
-              placeholderTextColor={"#a990db"}
+              placeholderTextColor={'#a990db'}
             />
           </View>
         </View>
@@ -219,7 +219,7 @@ export default function ProfileScreen() {
               value={child.height}
               onChangeText={(text) => setChild({ ...child, height: text })}
               keyboardType="numeric"
-              placeholderTextColor={"#a990db"}
+              placeholderTextColor={'#a990db'}
             />
           </View>
         </View>
@@ -233,7 +233,7 @@ export default function ProfileScreen() {
               value={child.weight}
               onChangeText={(text) => setChild({ ...child, weight: text })}
               keyboardType="numeric"
-              placeholderTextColor={"#a990db"}
+              placeholderTextColor={'#a990db'}
             />
           </View>
         </View>
@@ -277,7 +277,7 @@ export default function ProfileScreen() {
                         alignItems: 'center',
                         justifyContent: 'space-evenly',
                         borderWidth:1,
-                        
+
                       }}>
                       <Text
                         style={[
@@ -311,7 +311,7 @@ export default function ProfileScreen() {
                         marginRight: 1,
                         alignItems: 'center',
                         justifyContent: 'space-evenly',
-                        borderWidth:1
+                        borderWidth:1,
                       }}>
                       <Text
                         style={[
@@ -342,7 +342,7 @@ export default function ProfileScreen() {
                         marginRight: 1,
                         alignItems: 'center',
                         justifyContent: 'space-evenly',
-                        borderWidth:1
+                        borderWidth:1,
                       }}>
                       <Text
                         style={[
@@ -569,17 +569,17 @@ const styles = StyleSheet.create({
     width: width * 0.8,
     justifyContent: 'center',
     alignItems: 'center',
-    borderTopRightRadius: width*0.1,
-    borderBottomLeftRadius: width*0.1,
+    borderTopRightRadius: width * 0.1,
+    borderBottomLeftRadius: width * 0.1,
   },
   modalContent2: {
     backgroundColor: 'white',
     width: '100%',
     height:'100%',
-    justifyContent:"center",
+    justifyContent:'center',
     alignItems: 'center',
-    borderTopRightRadius: width*0.1+5,
-    borderBottomLeftRadius: width*0.1+5,
+    borderTopRightRadius: width * 0.1 + 5,
+    borderBottomLeftRadius: width * 0.1 + 5,
     marginTop:10,
     marginRight:8,
   },

@@ -35,13 +35,13 @@ export default function MyNavbar({ navigation }) {
     try {
       // Firebase Authentication'dan çıkış yap
       await auth().signOut();
-  
+
       // AsyncStorage'dan token'ı sil (eğer kullanıyorsanız)
-     
-  
+
+
       // Çıkış modalını kapat
       setLogoutModalVisible(false);
-  
+
       // Login sayfasına yönlendir
       navigation.navigate('login');
     } catch (error) {
@@ -55,7 +55,7 @@ export default function MyNavbar({ navigation }) {
       {/* Ayarlar İkonu */}
       <TouchableOpacity
         style={[styles.iconButton, { backgroundColor: '#C5CAE9' }]} // Ayarlar için özelleştirilmiş stil
-        onPress={()=>navigation.navigate("Settings")}
+        onPress={()=>navigation.navigate('Settings')}
       >
         <Image
           source={require('../assets/img/navbar/ayarlar.png')}
@@ -66,7 +66,7 @@ export default function MyNavbar({ navigation }) {
       {/* Bildirim İkonu */}
       <TouchableOpacity
         style={[styles.iconButton, { backgroundColor: '#B2EBF2' }]} // Bildirim için özelleştirilmiş stil
-        onPress={() => navigation.navigate('Bildirim')}
+        onPress={() => navigation.navigate('Sleep')}
       >
         <Image
           source={require('../assets/img/navbar/bildirim.png')}
@@ -128,7 +128,7 @@ export default function MyNavbar({ navigation }) {
       )}
 
       {/* Çıkış Modal */}
-     
+
     </View>
   );
 }

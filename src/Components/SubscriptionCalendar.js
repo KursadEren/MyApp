@@ -9,7 +9,7 @@ import {
   ImageBackground,
   TextInput,
   Modal,
-  Image
+  Image,
 } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import firestore from '@react-native-firebase/firestore';
@@ -17,7 +17,7 @@ import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import 'moment/locale/tr';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { BackgroundContext } from '../Context/BackGround';
 import { FontsContext } from '../Context/FontsContext';
 import { ColorsContext } from '../Context/ColorsContext';
@@ -25,7 +25,7 @@ import { UserContext } from '../Context/UserContext';
 
 const { width, height } = Dimensions.get('window');
 
-LocaleConfig.locales['tr'] = {
+LocaleConfig.locales.tr = {
   monthNames: [
     'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
     'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
@@ -47,19 +47,19 @@ export default function SubscriptionCalendar() {
   const [infoModalVisible, setInfoModalVisible] = useState(false); // Bilgi modalının görünürlüğü
   const [birthDate, setBirthDate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const {user} =useContext(UserContext)
+  const {user} = useContext(UserContext);
   const { Background } = useContext(BackgroundContext);
 
   const todayDate = moment().format('YYYY-MM-DD');
   const [currentDate, setCurrentDate] = useState(moment());
 
-  const { fonts } = useContext(FontsContext)
-  const { colors } = useContext(ColorsContext)
+  const { fonts } = useContext(FontsContext);
+  const { colors } = useContext(ColorsContext);
   useEffect(() => {
     const fetchChildren = async () => {
-        
+
         setChildren(user.children || []);
-      
+
     };
     fetchChildren();
   }, []);
@@ -188,14 +188,14 @@ export default function SubscriptionCalendar() {
       setInfoModalVisible(true);
       return;
     }
-    
+
     if (twentyTwoWeekStart && twentyThreeWeekEnd && dayMoment.isBetween(twentyTwoWeekStart, twentyThreeWeekEnd, null, '[]')) {
       setModalContent('22 - 23. Hafta:\n\n- Sebep-sonuç: Hareketlerinin sonuçlarını anlamaya başlar. Örneğin, bir nesneyi salladığında ses çıkacağını öğrenir.\n- Keşif: Nesneleri detaylı incelemeye, dokularını ve şekillerini anlamaya çalışır.\n- Duygusal farkındalık: Tanıdık yüzlere mutluluk, yabancılara tedirginlik gösterebilir.\n- El-göz koordinasyonu: Nesnelere uzanma ve küçük objeleri tutma becerisi gelişir.\n- Yuvarlanma ve oturma: Yuvarlanabilir ve destekle oturmaya çalışabilir.\n- Ayak keşfi: Ayaklarıyla oynamaya başlayarak vücut farkındalığı kazanır.');
       setInfoModalVisible(true);
       return;
     }
-    
-    
+
+
 
     // 14-17. haftalar (4. Ay)
     if (fourthMonthStart && fourthMonthEnd && dayMoment.isBetween(fourthMonthStart, fourthMonthEnd, null, '[]')) {
@@ -364,11 +364,11 @@ export default function SubscriptionCalendar() {
       >
         {/* Üst Header */}
         <View style={styles.topHeader}>
-          
+
           <Text style={[styles.childName,{color:colors.login}]}>
             {currentChild ? currentChild.name : 'Çocuk Eklenmedi'}
           </Text>
-         
+
         </View>
 
         {children.length === 0 ? (
@@ -421,27 +421,27 @@ export default function SubscriptionCalendar() {
       </ImageBackground>
 
       {/* Modal - Yeni Çocuk Ekle */}
-    
+
       {/* Bilgi Modalı (Gün üzerine tıklanınca açılan) */}
       <Modal style={{
         flex: 1,
         backgroundColor: '#FFFFFF',
 
-        backgroundColor: "#e3e3e3",
+        backgroundColor: '#e3e3e3',
       }} visible={infoModalVisible} transparent animationType="fade" onRequestClose={() => setInfoModalVisible(false)}>
         {modalContent ? (
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <View style={{ backgroundColor: "white", height: height * 0.4, borderTopRightRadius:30,borderBottomLeftRadius:30, marginTop: 5, marginRight: 3, alignItems: "center", justifyContent: "space-evenly" }}>
+              <View style={{ backgroundColor: 'white', height: height * 0.4, borderTopRightRadius:30,borderBottomLeftRadius:30, marginTop: 5, marginRight: 3, alignItems: 'center', justifyContent: 'space-evenly' }}>
                 <Text style={{ marginVertical: 10, fontSize: 16, textAlign: 'left', fontFamily: fonts.bold, color: colors.login }}>{modalContent}</Text>
                 <TouchableOpacity style={{
                   backgroundColor: '#FFFFFF',
                   borderRadius: 30,
-                  backgroundColor: "#e3e3e3",
+                  backgroundColor: '#e3e3e3',
                   height: height * 0.07,
                   width: width * 0.3,
                 }} onPress={() => { setModalContent(''); setInfoModalVisible(false); }}>
-                  <View style={{ borderWidth: 1, borderColor: "#e3e3e3", backgroundColor: "white", height: height * 0.07, borderRadius:30, marginTop: 3, marginRight: 1, alignItems: "center", justifyContent: "space-evenly" }}>
+                  <View style={{ borderWidth: 1, borderColor: '#e3e3e3', backgroundColor: 'white', height: height * 0.07, borderRadius:30, marginTop: 3, marginRight: 1, alignItems: 'center', justifyContent: 'space-evenly' }}>
                     <Text style={[styles.cancelText,{fontFamily:fonts.baby,color:colors.login}]}>Kapat</Text>
                   </View>
                 </TouchableOpacity>
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   topHeader: { flexDirection: 'row', justifyContent: 'center', width: '80%', marginBottom: 20 },
-  childName: { fontSize: 18, fontWeight: '600',  },
+  childName: { fontSize: 18, fontWeight: '600'  },
   arrowTop: { width: 20, height: 20, resizeMode: 'contain' },
   arrowBottom: { width: 20, height: 20, resizeMode: 'contain' },
   weekHeader: { flexDirection: 'row', justifyContent: 'space-between', width: '90%' },
@@ -498,9 +498,9 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: '#FFFFFF',
     borderTopRightRadius:30,borderBottomLeftRadius:30,
-    backgroundColor: "#e3e3e3",
+    backgroundColor: '#e3e3e3',
     height: height * 0.406,
-    width: width * 0.8
+    width: width * 0.8,
   },
   modalTitle: { fontSize: 18, fontWeight: 'bold', color: '#4A00E0', textAlign: 'center', marginBottom: 10 },
   input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5, padding: 10, marginBottom: 10 },

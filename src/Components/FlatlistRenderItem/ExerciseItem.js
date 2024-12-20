@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, ImageBackground, Dimensions, Image, Alert
 import { ColorsContext } from '../../Context/ColorsContext';
 import { UserContext } from '../../Context/UserContext';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 
 const ExerciseItem = ({ item, navigation, fonts, styles }) => {
   const localImages = {
@@ -18,7 +18,7 @@ const ExerciseItem = ({ item, navigation, fonts, styles }) => {
   };
 
   const { colors } = useContext(ColorsContext);
-  const {user} = useContext(UserContext)
+  const {user} = useContext(UserContext);
   const imageSource =
     typeof item.image === 'string' && item.image.startsWith('http')
       ? { uri: item.image }
@@ -32,26 +32,26 @@ const ExerciseItem = ({ item, navigation, fonts, styles }) => {
 
   const handleData = () => {
     if (!user.subscriptions || user.subscriptions.length === 0) {
-      console.log("Abonelik bulunamadı, ödeme ekranına yönlendirme");
+      console.log('Abonelik bulunamadı, ödeme ekranına yönlendirme');
       navigation.navigate('Payment', { data: item });
       return;
     }
-  
+
     // Aktif abonelik kontrolü
     const hasActiveSubscription = user.subscriptions.some(sub => sub.is_active === true);
-  
+
     if (hasActiveSubscription) {
-      console.log("Aktif abonelik bulundu");
+      console.log('Aktif abonelik bulundu');
       Alert.alert('başarısız', 'aboneliğiniz mevcut');
     } else {
-      console.log("Aktif abonelik bulunamadı, ödeme ekranına yönlendirme");
+      console.log('Aktif abonelik bulunamadı, ödeme ekranına yönlendirme');
       navigation.navigate('Payment', { data: item });
     }
   };
-  
-  
-   
-  
+
+
+
+
 
   return (
     <View style={{ borderRadius: 15, overflow: 'hidden' }}>
@@ -62,20 +62,20 @@ const ExerciseItem = ({ item, navigation, fonts, styles }) => {
           height: height * 0.5 / IMAGE_RATIO,
           justifyContent: 'center',
           alignItems: 'center',
-          borderRadius:30
+          borderRadius:30,
         }}
         resizeMode="contain"
       >
         {/* Sol alt köşe */}
-        <TouchableOpacity  onPress={() => handleData()} 
+        <TouchableOpacity  onPress={() => handleData()}
             style={{ position: 'absolute',
             bottom:0,
-            left: width*0.04,
+            left: width * 0.04,
             width: width * 0.2,
             height: width * 0.2,
-            resizeMode: 'contain',}}>
+            resizeMode: 'contain'}}>
         <Image
-          source={require("../../assets/img/HomeContent/play.png")}
+          source={require('../../assets/img/HomeContent/play.png')}
           style={{
             position: 'absolute',
             bottom:0,
@@ -87,7 +87,7 @@ const ExerciseItem = ({ item, navigation, fonts, styles }) => {
         />
         </TouchableOpacity>
         {/* Sağ alt köşe */}
-        
+
       </ImageBackground>
 
       <View style={{ alignItems: 'center', margin: width * 0.05 }}>
@@ -97,7 +97,7 @@ const ExerciseItem = ({ item, navigation, fonts, styles }) => {
             fontWeight: 'bold',
             fontFamily: fonts.Heavy,
             marginBottom: height * 0.01,
-            color: "#502051",
+            color: '#502051',
           }}
         >
           {firstPart}
@@ -107,7 +107,7 @@ const ExerciseItem = ({ item, navigation, fonts, styles }) => {
             fontSize: 24,
             fontWeight: '600',
             fontFamily: fonts.Heavy,
-            color: "#502051",
+            color: '#502051',
           }}
         >
           {secondPart}

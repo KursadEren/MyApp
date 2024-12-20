@@ -4,7 +4,7 @@ export const sendNotification = async (token, title, body, data = {}) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `key=YOUR_SERVER_KEY`,
+          Authorization: 'key=YOUR_SERVER_KEY',
         },
         body: JSON.stringify({
           to: token,
@@ -15,14 +15,13 @@ export const sendNotification = async (token, title, body, data = {}) => {
           data,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Bildirim gönderilemedi');
       }
-  
+
       console.log('Bildirim gönderildi');
     } catch (error) {
       console.error('Bildirim gönderim hatası:', error);
     }
   };
-  

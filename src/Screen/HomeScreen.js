@@ -15,9 +15,9 @@ import {
   Alert,
   Modal,
   Button,
-  Image
+  Image,
 } from 'react-native';
-import CustomBackground from "../Components/CustomBackGround"
+import CustomBackground from '../Components/CustomBackGround';
 import Svg, { Path, Defs, LinearGradient, Stop, Filter, FeDropShadow } from 'react-native-svg';
 import { ColorsContext } from '../Context/ColorsContext';
 import MyNavbar from '../Components/MyNavbar';
@@ -28,7 +28,7 @@ import { BackgroundContext } from '../Context/BackGround';
 import { UserContext } from '../Context/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
-import auth from "@react-native-firebase/auth"
+import auth from '@react-native-firebase/auth';
 
 
 
@@ -37,7 +37,7 @@ import { PaymentFlagContext } from '../Context/PaymentFlag';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { TokenContext } from '../Context/UserToken';
 import HomeProfil from '../Components/HomeProfil';
 import { SubscriptionsContext } from '../Context/SubsCriptionsContext';
@@ -55,7 +55,7 @@ export default function HomeScreen({ navigation }) {
   const [currentYear, setCurrentYear] = useState();
   const [currentHour, setCurrentHour] = useState();
   const [currentMinute, setCurrentMinute] = useState();
-  const { token } = useContext(TokenContext)
+  const { token } = useContext(TokenContext);
   //const {fetchUserData} = useContext(UserContext)
   //
   const [menuVisible, setMenuVisible] = useState(false);
@@ -64,7 +64,7 @@ export default function HomeScreen({ navigation }) {
 
 
 
-  
+
 
   useEffect(() => {
     const updateTime = () => {
@@ -80,7 +80,7 @@ export default function HomeScreen({ navigation }) {
       setCurrentHour(hours);
       setCurrentMinute(minutes);
     };
-    console.log("token: ", token)
+    console.log('token: ', token);
     updateTime();
     //fetchSubscriptionData();
     const intervalId = setInterval(updateTime, 60000);
@@ -107,7 +107,7 @@ export default function HomeScreen({ navigation }) {
       const currentUser = auth().currentUser;
       if (currentUser) {
         const value = currentUser.uid;
-      
+
         const userDocRef = firestore().collection('users').doc(value);
 
         // Belge anlık görüntüsünü alıyoruz
@@ -116,8 +116,8 @@ export default function HomeScreen({ navigation }) {
         if (userDoc.exists) {
           const userData = userDoc.data();
           updateUser({ ...userData });
-          setFlag(false)
-          console.log(user, "heyyyy");
+          setFlag(false);
+          console.log(user, 'heyyyy');
         } else {
           console.log('Belge bulunamadı.');
         }
@@ -127,10 +127,10 @@ export default function HomeScreen({ navigation }) {
     }
   };
   useEffect(() => {
-   
+
 
     fetchUserData();
-    if (flag) fetchUserData();
+    if (flag) {fetchUserData();}
   }, [flag]);
 
 
@@ -146,7 +146,7 @@ export default function HomeScreen({ navigation }) {
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          
+
 
           <ScrollView contentContainerStyle={styles.scrollContainer}>
 
@@ -169,15 +169,15 @@ export default function HomeScreen({ navigation }) {
               <Text style={[styles.sectionTitle, { fontFamily: fonts.Winter }]}>
                 Motivasyon Videoları
               </Text>
-              
+
               <MyFlatlist sharedAnimationValue={sharedAnimationValue} type="youtube" navigation={navigation} />
             </View>
 
             <View style={styles.calendarContainer}>
               <View style={styles.clockContainer}>
-                <Text style={[styles.timeText,{ fontFamily: fonts.bold,color:"#b865b6"}]}>ATAK HAFTALARI</Text>
-                
-              
+                <Text style={[styles.timeText,{ fontFamily: fonts.bold,color:'#b865b6'}]}>ATAK HAFTALARI</Text>
+
+
               </View>
               <View>
               <SubscriptionCalendar sharedAnimationValue={sharedAnimationValue} />
@@ -188,7 +188,7 @@ export default function HomeScreen({ navigation }) {
               <Text style={[styles.sectionTitle, { fontFamily: fonts.bold }]}>
                 Planlar
               </Text>
-              
+
               <View style={styles.flatListWrapper}>
                 <MyFlatlist sharedAnimationValue={sharedAnimationValue} type="exercise" navigation={navigation} />
               </View>
@@ -197,9 +197,7 @@ export default function HomeScreen({ navigation }) {
           </ScrollView>
         </View>
         <MyNavbar navigation={navigation} />
-        <View>
-          
-        </View>
+        <View />
       </SafeAreaView>
     </ImageBackground>
   );
@@ -225,24 +223,24 @@ const styles = StyleSheet.create({
   sectionContainer: {
     marginVertical: height * 0.02,
     paddingLeft: width * 0.04,
-   
+
   },
   sectionTitle: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#b865b6',
-    alignSelf:"center",
-    marginVertical:height*0.02
+    alignSelf:'center',
+    marginVertical:height * 0.02,
   },
   sectionTitletwo: {
     fontSize: 15,
     color: '#003366',
-    marginRight: width * 0.05
+    marginRight: width * 0.05,
   },
   flatListWrapper: {
     borderRadius: 15,
     backgroundColor: 'rgba(52, 52, 52, 0)',
-    
+
   },
   calendarContainer: {
     marginTop: height * 0.03,
@@ -259,8 +257,8 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 28,
-   
-    
+
+
   },
   colon: {
     fontSize: 40,
@@ -375,7 +373,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   svgContainer: {
-    
+
     flex: 1,
     marginVertical: width * 0.04,
     marginHorizontal: width * 0.04,

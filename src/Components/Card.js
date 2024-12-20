@@ -19,7 +19,7 @@ export default function Card({ title, iconName, navigation, targetScreen, cardWi
       style={[
         styles.CardContainer,
         {
-          backgroundColor: "#a68cd5",
+          backgroundColor: '#a68cd5',
           width: cardWidth || width * 0.4, // Default olarak ekranın %40'ı genişlik
           height: cardHeight || height * 0.2, // Default olarak ekranın %20'si yükseklik
           shadowColor:colors.login,
@@ -28,8 +28,8 @@ export default function Card({ title, iconName, navigation, targetScreen, cardWi
       ]}
       onPress={handlePress}
     >
-      <Icon name={iconName} size={fontSize || width * 0.1} color={"white"} />
-      <Text style={[styles.CardText, { fontSize: fontSize || width * 0.05, color: "white"}]}>
+      <Icon name={iconName} size={fontSize || width * 0.1} color={'white'} />
+      <Text style={[styles.CardText, { fontSize: fontSize || width * 0.05, color: 'white'}]}>
         {title}
       </Text>
     </TouchableOpacity>
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 15,
     marginVertical: 10,
-    
+
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
