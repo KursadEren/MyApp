@@ -148,3 +148,51 @@
 
 ### userToken 
 - Bu kısımda HomeScrende çağrılır ve kullanıcı token'ı tutulur.
+
+
+## - #Screen
+
+
+# AdminChatScreen
+!!! mesaj bildirimi için fonksiyon eklenmiştir !!!
+
+`AdminChatScreen`, bir admin ile belirli bir kullanıcı arasında sohbet yönetimi için tasarlanmış bir React Native bileşenidir. Gerçek zamanlı mesajlaşma için Firebase Firestore ile entegredir.
+
+## Özellikler
+
+- Gerçek zamanlı olarak sohbet mesajlarını görüntüler.
+- Admin olarak belirli bir kullanıcıya mesaj gönderme.
+- Mesaj geçmişini alma ve görüntüleme.
+- Kullanıcı dostu, şık bir sohbet arayüzü.
+- Klavyeye duyarlı tasarım ile sorunsuz giriş deneyimi.
+
+---
+
+## Kurulum
+
+1. Firebase entegrasyonu yapılmış bir React Native projeniz olduğundan emin olun.
+2. Projenize `@react-native-firebase/firestore` paketini ekleyin:
+   ```bash
+   npm install @react-native-firebase/firestore
+
+
+
+# AdminConversationsScreen
+
+`AdminConversationsScreen`, admin kullanıcıların tüm mevcut sohbetleri listelemesini ve kullanıcılarla bireysel sohbet başlatmasını sağlayan bir React Native bileşenidir. Firebase Firestore ile gerçek zamanlı veri senkronizasyonu sağlar.
+
+## Özellikler
+
+- Tüm mevcut sohbetleri sıralı şekilde listeleme.
+- Her sohbet için kullanıcı adını, kullanıcı ID'sini ve son mesajı gösterir.
+- Bir kullanıcıya tıklanarak bireysel sohbete geçiş yapılabilir.
+- Gerçek zamanlı veri güncellemeleri ile sohbet listesi dinamik olarak yenilenir.
+
+---
+
+## Kurulum
+
+1. Firebase entegrasyonu yapılmış bir React Native projeniz olduğundan emin olun.
+2. Projenize `@react-native-firebase/firestore` paketini ekleyin:
+   ```bash
+   npm install @react-native-firebase/firestore
