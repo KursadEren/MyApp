@@ -1,7 +1,7 @@
  !!! En Aşşağı Kısımda Eklenecekler listesi mevcut !!!
 
 # kullanılan paketler 
-
+```
 "dependencies": {
     "@notifee/react-native": "^9.1.3",
     "@react-native-async-storage/async-storage": "^2.1.0",
@@ -34,6 +34,7 @@
     "react-native-video": "^6.8.2",
     "react-native-webview": "^13.12.4"
 },
+``````
 
 # ** Bu bilgilendirme Component kısmında başlayıp sırası ile aşağıya doğru iner. Alfabetik olarak bütün dosyaları içeriğini anlatır ** 
 
@@ -62,7 +63,7 @@
 - bu kısımda flatlist kullanıldı, bizim oluşturduğumuz Component kullanılmadı içerisinde kendi tasarımı mevcut 
 
 <!-- Örnek DropDown (yerel görsel henüz tanımlı değilse alt="" yapabilirsiniz) -->
-<img src="Readme/DropDown.png" alt="DropDown" width="200" height="300" />
+<img src="Readme/CustomDropDown.png" alt="DropDown" width="200" height="300" />
 
 <!-- Burada external (örnek) bir resim kullanılıyor ise: 
 <img src="https://example.com/image.png" alt="Görsel Açıklaması" width="200" height="300" />
