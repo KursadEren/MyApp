@@ -1,3 +1,5 @@
+ !!! En Aşşağı Kısımda Eklenecekler listesi mevcut !!!
+
 # kullanılan paketler 
 
 "dependencies": {
