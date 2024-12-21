@@ -8,7 +8,7 @@ import messaging from '@react-native-firebase/messaging';
 import { ColorsProvider } from './src/Context/ColorsContext';
 import { FontsProvider } from './src/Context/FontsContext';
 import { BackgroundProvider } from './src/Context/BackGround';
-import { TransactionProvider } from './src/Context/TransactionContext';
+
 import { UserProvider } from './src/Context/UserContext';
 import { PaymentFlagProvider } from './src/Context/PaymentFlag';
 import SubscriptionsProvider from './src/Context/SubsCriptionsContext';
@@ -117,7 +117,7 @@ function App() {
 
   return (
     <NavigationContainer>
-      <TransactionProvider>
+     
         <PaymentFlagProvider>
           <UserProvider>
             <TokenProvider>
@@ -157,7 +157,7 @@ function App() {
             </TokenProvider>
           </UserProvider>
         </PaymentFlagProvider>
-      </TransactionProvider>
+     
     </NavigationContainer>
   );
 }

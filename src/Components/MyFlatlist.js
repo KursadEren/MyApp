@@ -80,22 +80,10 @@ const videoData = [
   },
 ];
 const MemnuniyetItem = [
-  
-  {
-    id: '1',
-   
-    image: require('../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png'),
-
-  },
-  {
-    id: '2',
-    image: require('../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png'),
-  },
-  {
-    id: '3',
-    image: require('../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png'), 
-  },
-];
+  { id: '1', image: require('../assets/img/memnuniyet/memnuniyet1.png') },
+  { id: '2', image:require('../assets/img/memnuniyet/memnuniyet2.png') },
+  { id: '3', image: require('../assets/img/memnuniyet/memnuniyet3.png') },
+]
 const subscriptions = [
   {
     id: '1',
@@ -253,7 +241,18 @@ export default function MyFlatlist({ type, navigation, admin = false, sharedAnim
         </View>
       </Modal>
 
-      {type === 'catalog' ? (
+      {type === 'Memnuniyet' ? (
+          <FlatList
+            data={MemnuniyetItem}
+            renderItem={({ item }) => (
+              <Memnuniyet item={item} navigation={navigation} fonts={fonts} styles={styles} />
+            )}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsVerticalScrollIndicator={false}
+          
+          />
+        ) :type === 'catalog' ? (
         <FlatList
           data={catalogData}
           renderItem={({ item }) => (
@@ -276,18 +275,7 @@ export default function MyFlatlist({ type, navigation, admin = false, sharedAnim
             showsVerticalScrollIndicator={false}
             contentContainerStyle={[styles.flatListContent,{}]}
           />
-        ) : type === 'Memnuniyet' ? (
-          <FlatList
-            data={MemnuniyetItem}
-            renderItem={({ item }) => (
-              <Memnuniyet item={item} fonts={fonts} navigation={navigation} styles={styles} width={width} />
-            )}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsVerticalScrollIndicator={false}
-          
-          />
-        ) :(
+        ) : (
           <FlatList
             data={subscriptions}
             renderItem={({ item }) => (

@@ -6,7 +6,7 @@ import { FontsContext } from '../Context/FontsContext';
 
 const { width, height } = Dimensions.get('window');
 
-const HomeProfil = () => {
+const HomeProfil = ({type}) => {
   const { user } = useContext(UserContext);
   const { fonts } = useContext(FontsContext);
 
@@ -17,7 +17,9 @@ const HomeProfil = () => {
       alignItems: 'center',
       padding: 20,
     }}>
-      {/* Yazı balonu */}
+      {type === "profil" ?(
+         <></>
+      ):(
       <View style={{
         flex: 1,
         backgroundColor: '#e3e3e3',
@@ -44,9 +46,12 @@ const HomeProfil = () => {
             Merhaba {user?.username || ''}!
           </Text>
         </View>
+        
       </View>
+      
+      )}
 
-      <View>
+<View>
         <FontAwesome name="user-circle" size={70} color="#003366" />
       </View>
     </View>

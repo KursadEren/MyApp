@@ -167,7 +167,7 @@ export default function HomeScreen({ navigation }) {
             </View>
             <View style={styles.sectionContainer}>
               <Text style={[styles.sectionTitle, { fontFamily: fonts.Winter }]}>
-                Motivasyon Videoları
+                Motivasyon
               </Text>
 
               <MyFlatlist sharedAnimationValue={sharedAnimationValue} type="youtube" navigation={navigation} />
@@ -189,9 +189,9 @@ export default function HomeScreen({ navigation }) {
                 Memnuniyet
               </Text>
 
-              <View style={styles.flatListWrapper}>
-                <MyFlatlist sharedAnimationValue={sharedAnimationValue} type="Memnuniyet" navigation={navigation} />
-              </View>
+         
+                <MyFlatlist sharedAnimationValue={sharedAnimationValue} type='Memnuniyet' navigation={navigation} />
+        
             </View>
             <View style={styles.sectionContainer}>
               <Text style={[styles.sectionTitle, { fontFamily: fonts.bold }]}>

@@ -1,79 +1,150 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# kullanılan paketler 
 
-# Getting Started
+"dependencies": {
+    "@notifee/react-native": "^9.1.3",
+    "@react-native-async-storage/async-storage": "^2.1.0",
+    "@react-native-community/cli": "^15.1.2",
+    "@react-native-community/datetimepicker": "^8.2.0",
+    "@react-native-firebase/app": "^21.6.1",
+    "@react-native-firebase/auth": "^21.6.1",
+    "@react-native-firebase/firestore": "^21.6.1",
+    "@react-native-firebase/messaging": "^21.6.1",
+    "@react-native-picker/picker": "^2.10.2",
+    "@react-navigation/bottom-tabs": "^7.0.12",
+    "@react-navigation/native": "^7.0.7",
+    "@react-navigation/native-stack": "^7.1.8",
+    "axios": "^1.7.8",
+    "moment": "^2.30.1",
+    "react": "18.3.1",
+    "react-native": "^0.76.5",
+    "react-native-calendars": "^1.1286.0",
+    "react-native-gesture-handler": "^2.21.2",
+    "react-native-get-random-values": "^1.11.0",
+    "react-native-linear-gradient": "^2.8.3",
+    "react-native-modal-datetime-picker": "^18.0.0",
+    "react-native-pdf": "^6.7.5",
+    "react-native-reanimated": "^3.16.5",
+    "react-native-safe-area-context": "^5.0.0",
+    "react-native-screens": "^4.3.0",
+    "react-native-svg": "^15.10.1",
+    "react-native-uuid": "^2.0.3",
+    "react-native-vector-icons": "^10.2.0",
+    "react-native-video": "^6.8.2",
+    "react-native-webview": "^13.12.4"
+},
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+# ** Bu bilgilendirme Component kısmında başlayıp sırası ile aşağıya doğru iner. Alfabetik olarak bütün dosyaları içeriğini anlatır ** 
 
-## Step 1: Start the Metro Server
+<!-- Admin sayfası görseli -->
+<img src="Readme/AdminHome.png" alt="Admin sayfası" width="200" height="300" />
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## podfile'a notifee için gerekli target eklendi. ios tarafında sadece developer hesabı açılınca bildirim için sertifika eklenecek
 
-To start Metro, run the following command from the _root_ of your React Native project:
+### - #Components
 
-```bash
-# using npm
-npm start
+#### Admin navbar  
+- profile kısmı boş admin için özelleştirecek bir kısım yok isteğe göre kaldırılabilir 
+- admin mesajlaşma kısmı şuan aktif olarak çalışıyor kullanıcıların sıralandığı ve en son mesaj atanın gösterildiği kısım mevcut 
+- çıkış yap kısmı kullanıcın token'ını unutması için kaydediyoruz ve hızlı giriş yapıyoruz 
 
-# OR using Yarn
-yarn start
-```
+#### Card 
+- admin kısmında yönlendirmelerin tasarımını içeriyor, sade tutuldu 
 
-## Step 2: Start your Application
+#### CustomBackGround
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+- bu kısım kullanıcının HomeScreen ekranında bulunan bilgilendirme yazısı
 
-### For Android
+<img src="Readme/CustomBackground.png" alt="Bilgilendirme yazısı" width="200" height="300" />
+  
+#### CustomDropdown 
+- bu kısımda flatlist kullanıldı, bizim oluşturduğumuz Component kullanılmadı içerisinde kendi tasarımı mevcut 
 
-```bash
-# using npm
-npm run android
+<!-- Örnek DropDown (yerel görsel henüz tanımlı değilse alt="" yapabilirsiniz) -->
+<img src="Readme/DropDown.png" alt="DropDown" width="200" height="300" />
 
-# OR using Yarn
-yarn android
-```
+<!-- Burada external (örnek) bir resim kullanılıyor ise: 
+<img src="https://example.com/image.png" alt="Görsel Açıklaması" width="200" height="300" />
+-->
 
-### For iOS
+#### HomeProfil
+- home kısmında bulunan profil, merhaba yazısı ve kullanıcı profil kısmında kullanılan profil iconunu içerir 
 
-```bash
-# using npm
-npm run ios
+#### MyButton 
+- uygulama ekranında açılan ilk kısım ve giriş yap / kayıt ol
+- aynı zamanda kullanıcı kısmında bulunan SSS & destek ve profil butonlarında bulunur 
 
-# OR using Yarn
-yarn ios
-```
+#### MyFlatlist
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+##### FlatlistRenderItem Dizini
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+- **AdminExerciseItem**: Aslında admin tarafında planları otomatik değiştirmek için kullanılacaktı ama kaldırıldı 
+- **CatalogItem**: Bu bilgilendirme yazısından sonra altta kullanılan youtube, bütün planlar ve instagram yönlendirme için yapılan kısmı içerir
+- **ExerciseItem**: İsim yanıltmasın, normalde bu kısım Planların olduğu kullanıcı kısmının HomeScreen'inin en altında bulunan Flatlist öğesi ve bütün planları içerir
+- **Memnuniyet**: Bu kısım ExerciseItem'ın hemen üstünde bulunan, sadece görselleri sıralamak için
+- **VideoItem**: Youtube videolarının gösterileceği kısım. Bu kısımlar özellikle youtube tarafından çekilmedi, linkleri MyFlatlist kısmında tutuluyor, diğer kısımlarda statik olarak tasarlandı 
 
-## Step 3: Modifying your App
+- #Eklenmesi gereken kısım: premium içerik videolarının olduğu kısım eklenecek. O da FirebaseStorageden çekilebilir.
+    
+<!-- Planlar.png -->
+<img src="Readme/Planlar.png" alt="Planlar" width="200" height="300" />
 
-Now that you have successfully run the app, let's modify it.
+<!-- CatalogItem.png -->
+<img src="Readme/CatalogItem.png" alt="CatalogItem" width="200" height="300" />
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+<!-- memnuniyet.png -->
+<img src="Readme/memnuniyet.png" alt="memnuniyet" width="200" height="300" />
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+<!-- Motivasyon.png -->
+<img src="Readme/Motivasyon.png" alt="Motivasyon" width="200" height="300" />
 
-## Congratulations! :tada:
+### MyNavbar
+- bu kısım aslında BottomBar olacak ama ismi değiştirilmedi; bu kısımda sırasıyla ayarlar, bildirim, home, mesaj ve profil kısımları bulunmakta
 
-You've successfully run and modified your React Native App. :partying_face:
+### MyTextInput
+- bu kısımlar Register ve Login Kısmında kullanıldı, başka bir yerde kullanılmadı
 
-### Now what?
+### SubsCriptionCalender
+- Bu kısımda kişinin çocuğunun Atak Haftaları için işlem yapılır ve bu kısım HomeScreen de gösterilir. İçerik olarak:
+    - 48. hafta
+    - 44. hafta
+    - 40-41. haftalar
+    - 14-17. haftalar (4. Ay)
+    - 36.hafta
+    - 8.ay (33-36 haftalar)
+    - 29.hafta
+    - 26.hafta
+    - 11. hafta
+    - 7. hafta
+    - 4.-5. hafta (ilk farkındalık atağı)
+    - Doğum günü kontrolü
+    - ve diğer normal günler bulunur. Bu el ile tasarlanmış olup sadece tıklandığı kısmın ne içeriyorsa onun içeriğini gönderir. Bu haftaların başlangıç tarihi kullanıcı profilden çocuğun doğum tarihi bilgilerini giriş yaparsa FireStore'a eklenir ve bu haftalarda bildirim gönderilir (şu an push notifications ayarlanmadı)
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+<img src="Readme/AtakHaftalari.png" alt="AtakHaftaları" width="200" height="300" />
+  
+### YoutubeVideo
+- bu kısımda VideoItem bileşeninde kullanılır. Aslında VideoItem'a tıklanınca açılan modalda kullanılır.
 
-# Troubleshooting
+---
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## - #Context
 
-# Learn More
+### BackGround context
+- Arka planda kullanılan resimleri içerir
 
-To learn more about React Native, take a look at the following resources:
+### ColorsContext 
+- Genel olarak kullanılan renk paketlerini içerir
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+### FontsContext
+- Genelde kullanılan fontları içerir
+
+### PaymentFlag
+- Bu kısım kullanıcı ödeme yaptıktan sonra HomeScreende Users Koleksiyonunun tekrar çağrılmasına yarar
+
+### SubsCriptionContext
+- Bütün Aylık Paketleri Firebaseden alır ama şu an kaldırıldı, hiçbir yerde kullanılmıyor. Paketler statik olarak eklendi.
+
+### UserContext
+- Kullanıcı bilgilerini çekip saklamak için bu kısım HomeScreende ya da login Screende çağrılıyor  
+
+### userToken 
+- Bu kısımda HomeScrende çağrılır ve kullanıcı token'ı tutulur.

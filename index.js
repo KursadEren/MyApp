@@ -1,58 +1,92 @@
 import { AppRegistry } from 'react-native';
-import notifee, { EventType, TriggerType, AndroidImportance } from '@notifee/react-native';
+import notifee, { EventType, TriggerType } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { notificationsData } from './natifications'; // Doğru yol olduğundan emin olun
+
 import App from './App';
 import { name as appName } from './app.json';
 
-// Arka plan olay handler'ını tanımlayın
+
+// notificationHandler.js
+
+// Arka plan bildirim olaylarını işleyen fonksiyon
 notifee.onBackgroundEvent(async ({ type, detail }) => {
-  if (type === EventType.PRESS) {
-    const { notification } = detail;
-    console.log('Arka planda bildirime tıklandı:', notification);
+  console.log('Arka plan bildirim etkinliği:', type);
 
-    try {
-      // İlerlemeyi AsyncStorage'dan yükle
-      const progress = await AsyncStorage.getItem('notification_progress');
-      let nextIndex = progress ? parseInt(progress, 10) : 0;
+  switch (type) {
+    case EventType.ACTION_PRESS:
+      console.log('Kullanıcı bildirimi tıkladı:', detail.notification);
 
-      const schedule = [2, 5, 8]; // Bildirim süreleri (saniye cinsinden)
+      // Bildirimle ilişkili abonelik süresini al
+      const { subscriptionDuration } = detail.notification.data || {};
 
-      if (nextIndex < schedule.length) {
-        const delayInSeconds = schedule[nextIndex];
-        const trigger = {
-          type: TriggerType.TIMESTAMP,
-          timestamp: Date.now() + delayInSeconds * 1000, // Gelecek zamanı hesaplar
-        };
-
-        await notifee.createTriggerNotification(
-          {
-            title: `Bildirim ${nextIndex + 1}`,
-            body: `${nextIndex + 1}. Uyku zamanı geldi.`,
-            android: {
-              channelId: 'sleep_channel',
-              importance: AndroidImportance.HIGH,
-            },
-          },
-          trigger
-        );
-
-        console.log(`Bildirim ${nextIndex + 1} zamanlandı (arka planda).`);
-
-        // Logları güncelle
-        const logs = await AsyncStorage.getItem('notification_logs');
-        const currentLogs = logs ? JSON.parse(logs) : [];
-        const newLog = [...currentLogs, `Bildirim ${nextIndex + 1} zamanlandı (arka planda).`];
-        await AsyncStorage.setItem('notification_logs', JSON.stringify(newLog));
-
-        // İlerlemeyi güncelle
-        nextIndex += 1;
-        await AsyncStorage.setItem('notification_progress', nextIndex.toString());
+      if (subscriptionDuration) {
+        // Mevcut bildirimin ardından gelen bildirimi planla
+        await scheduleNextNotification(subscriptionDuration);
       }
-    } catch (error) {
-      console.error('Arka planda bildirime tıklandığında hata:', error);
-    }
+      break;
+
+    case EventType.DISMISSED:
+      console.log('Bildirim kapatıldı:', detail.notification);
+      break;
+
+    default:
+      console.log('Başka bir olay gerçekleşti:', type);
   }
 });
+
+// Bir sonraki bildirimi planlamak için yardımcı fonksiyon
+const scheduleNextNotification = async (duration) => {
+  try {
+    const indexKey = `notificationIndex_${duration}`;
+    const currentIndexStr = await AsyncStorage.getItem(indexKey);
+    let currentIndex = currentIndexStr ? parseInt(currentIndexStr, 10) : 0;
+
+    const notificationsForDuration = notificationsData[duration]?.intervals;
+
+    if (!notificationsForDuration) {
+      console.warn(`Bildirim verisi bulunamadı: ${duration} ay`);
+      return;
+    }
+
+    if (currentIndex >= notificationsForDuration.length) {
+      console.log(`Tüm bildirimler planlandı: ${duration} ay`);
+      return;
+    }
+
+    const notification = notificationsForDuration[currentIndex];
+    const delayInMinutes = notification.delayInMinutes;
+    const triggerTime = Date.now() + delayInMinutes * 60 * 1000;
+
+    const trigger = {
+      type: TriggerType.TIMESTAMP,
+      timestamp: triggerTime,
+    };
+
+    await notifee.createTriggerNotification(
+      {
+        title: notification.title,
+        body: notification.body,
+        data: { subscriptionDuration: duration }, // Bildirimle ilişkili veri
+        android: {
+          channelId: 'default',
+          smallIcon: 'ic_launcher', // Bildirim simgesini özelleştirin
+        },
+      },
+      trigger
+    );
+
+    console.log(`Bildirim zamanlandı: ${notification.title} - ${new Date(triggerTime).toLocaleString()}`);
+
+    // Bildirim indeksini güncelle
+    currentIndex += 1;
+    await AsyncStorage.setItem(indexKey, currentIndex.toString());
+
+    console.log(`Sonraki bildirim planlandı: ${currentIndex} - ${duration} ay`);
+  } catch (error) {
+    console.error('Bir sonraki bildirim planlanırken hata oluştu:', error);
+  }
+};
 
 
 AppRegistry.registerComponent(appName, () => App);
