@@ -59,7 +59,7 @@ export default function SubscriptionCalendar() {
     const fetchChildren = async () => {
 
         setChildren(user.children || []);
-
+        AtakHaftalari();
     };
     fetchChildren();
   }, []);
@@ -143,6 +143,7 @@ export default function SubscriptionCalendar() {
     addWeekRange(fortyEightWeekStart, fortyEightWeekEnd, 'limegreen');
   }
 
+  
   // Bugün
   markedDates[todayDate] = {
     ...markedDates[todayDate],
@@ -354,6 +355,81 @@ export default function SubscriptionCalendar() {
 
   const days = generateCalendarDays();
   const weekDays = ['Pa', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'];
+
+
+
+   // [EK KOD] "Atak Haftaları"nı Firestore'a kaydedecek fonksiyon
+   const AtakHaftalari = async () => {
+    try {
+      // 1. Eğer currentChild veya birthDate yoksa çık
+      if (!currentChild || !currentChild.birthDate) {
+        Alert.alert('Uyarı', 'Lütfen önce bir çocuk ekleyiniz veya geçerli bir doğum tarihi olduğundan emin olun.');
+        return;
+      }
+
+      // 2. Bu kısımda haftaların başlangıç tarihlerini (ör. firstAttackStart, seventhWeekStart, vb.) toplayacağız.
+      //    Yukarıda tanımlanan değişkenler, if(currentChild...) bloğu içinde hesaplandıktan sonra kaybolur.
+      //    Bu nedenle, "0" kod değişikliği için, bu fonksiyonun en üstte tanımlanan 
+      //    firstAttackStart, seventhWeekStart gibi değişkenleri görmesi gerek. 
+      //    -> En basit çözüm: Onları 'global' tanıyalım ya da local scope'ta saklayalım.
+      //    Burada basitçe yaklaşıyoruz: "birthDateMoment" + 4 hafta = firstAttackStart, vb. Tekrar hesaplayacağız:
+
+      const birthDateMoment = moment(currentChild.birthDate, 'YYYY-MM-DD');
+      const firstAttackStartX = birthDateMoment.clone().add(4, 'weeks').format('YYYY-MM-DD');
+      const seventhWeekStartX = birthDateMoment.clone().add(7, 'weeks').format('YYYY-MM-DD');
+      const eleventhWeekStartX = birthDateMoment.clone().add(11, 'weeks').format('YYYY-MM-DD');
+      const fourthMonthStartX = birthDateMoment.clone().add(14, 'weeks').format('YYYY-MM-DD');
+      const twentyTwoWeekStartX = birthDateMoment.clone().add(22, 'weeks').format('YYYY-MM-DD');
+      const twentySixWeekStartX = birthDateMoment.clone().add(26, 'weeks').format('YYYY-MM-DD');
+      const twentyNineWeekStartX = birthDateMoment.clone().add(29, 'weeks').format('YYYY-MM-DD');
+      const eighthMonthStartX = birthDateMoment.clone().add(33, 'weeks').format('YYYY-MM-DD');
+      const thirtySixWeekStartX = birthDateMoment.clone().add(36, 'weeks').format('YYYY-MM-DD');
+      const fortyFortyOneStartX = birthDateMoment.clone().add(40, 'weeks').format('YYYY-MM-DD');
+      const fortyFourWeekStartX = birthDateMoment.clone().add(44, 'weeks').format('YYYY-MM-DD');
+      const fortyEightWeekStartX = birthDateMoment.clone().add(48, 'weeks').format('YYYY-MM-DD');
+
+      // Bir dizi yapalım:
+      const atakHaftalariDizisi = [
+        firstAttackStartX,
+        seventhWeekStartX,
+        eleventhWeekStartX,
+        fourthMonthStartX,
+        twentyTwoWeekStartX,
+        twentySixWeekStartX,
+        twentyNineWeekStartX,
+        eighthMonthStartX,
+        thirtySixWeekStartX,
+        fortyFortyOneStartX,
+        fortyFourWeekStartX,
+        fortyEightWeekStartX
+      ];
+
+      console.log('Konsolda Atak Haftaları Dizisi:', atakHaftalariDizisi);
+
+      // 3. Firestore’a kaydet
+      //    "users" koleksiyonunda, geçerli kullanıcının dokümanında "atakHaftalari" alanına bu diziyi ekle
+      const currentUser = auth().currentUser;
+      if(!currentUser) {
+        Alert.alert('Hata', 'Kullanıcı giriş yapmamış.');
+        return;
+      }
+      const userId = currentUser.uid;
+
+      await firestore()
+        .collection('users')
+        .doc(userId)
+        .update({
+          atakHaftalari: atakHaftalariDizisi
+        });
+      
+      Alert.alert('Başarılı', 'Atak Haftaları Firestore’a kaydedildi.');
+
+    } catch (error) {
+      console.error('Atak Haftaları kaydedilirken hata oluştu:', error);
+      Alert.alert('Hata', 'Atak Haftaları kaydedilirken bir hata oluştu.');
+    }
+  };
+  // [EK KOD] Sonu
 
   return (
     <View style={styles.container}>

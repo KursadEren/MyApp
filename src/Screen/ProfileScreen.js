@@ -21,6 +21,7 @@ import { UserContext } from '../Context/UserContext';
 import { BackgroundContext } from '../Context/BackGround';
 import { FontsContext } from '../Context/FontsContext';
 import { ColorsContext } from '../Context/ColorsContext';
+import HomeProfil from '../Components/HomeProfil';
 
 const { width, height } = Dimensions.get('window');
 
@@ -38,9 +39,7 @@ export default function ProfileScreen() {
     name: initialChild?.name || '',
     gender: initialChild?.gender || '',
     birthDate: initialChild?.birthDate ? new Date(initialChild.birthDate) : null,
-    estimatedBirthDate: initialChild?.estimatedBirthDate
-      ? new Date(initialChild.estimatedBirthDate)
-      : null,
+   
     height: initialChild?.height ? String(initialChild.height) : '', // cm cinsinden
     weight: initialChild?.weight ? String(initialChild.weight) : '', // kg cinsinden
   });
@@ -171,10 +170,12 @@ export default function ProfileScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         {/* Profil Resmi */}
         <View style={styles.profileImageContainer}>
-          <Image
+          {user?.photoUrl ? <Image
             source={user?.photoUrl ? { uri: user.photoUrl } : null}
             style={styles.profileImage}
-          />
+          />:(
+            <HomeProfil type="profil"/>
+          )}
         </View>
 
         {/* Kullanıcı Bilgileri */}
@@ -386,17 +387,7 @@ export default function ProfileScreen() {
           maximumDate={new Date()}
         />
 
-        {/* Tahmini Doğum Tarihi */}
-        <View style={styles.outerContainer}>
-          <View style={styles.innerContainer}>
-            <TouchableOpacity
-              style={styles.datePickerContainer}
-              onPress={() => setEstimatedDatePickerVisibility(true)}>
-              <Text style={styles.label}>Tahmini Doğum Tarihi</Text>
-              <Text style={styles.dateText}>{formatDate(child.estimatedBirthDate)}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+       
 
         <DateTimePickerModal
           isVisible={isEstimatedDatePickerVisible}
