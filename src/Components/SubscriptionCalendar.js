@@ -375,34 +375,107 @@ export default function SubscriptionCalendar() {
       //    Burada basitçe yaklaşıyoruz: "birthDateMoment" + 4 hafta = firstAttackStart, vb. Tekrar hesaplayacağız:
 
       const birthDateMoment = moment(currentChild.birthDate, 'YYYY-MM-DD');
-      const firstAttackStartX = birthDateMoment.clone().add(4, 'weeks').format('YYYY-MM-DD');
-      const seventhWeekStartX = birthDateMoment.clone().add(7, 'weeks').format('YYYY-MM-DD');
-      const eleventhWeekStartX = birthDateMoment.clone().add(11, 'weeks').format('YYYY-MM-DD');
-      const fourthMonthStartX = birthDateMoment.clone().add(14, 'weeks').format('YYYY-MM-DD');
-      const twentyTwoWeekStartX = birthDateMoment.clone().add(22, 'weeks').format('YYYY-MM-DD');
-      const twentySixWeekStartX = birthDateMoment.clone().add(26, 'weeks').format('YYYY-MM-DD');
-      const twentyNineWeekStartX = birthDateMoment.clone().add(29, 'weeks').format('YYYY-MM-DD');
-      const eighthMonthStartX = birthDateMoment.clone().add(33, 'weeks').format('YYYY-MM-DD');
-      const thirtySixWeekStartX = birthDateMoment.clone().add(36, 'weeks').format('YYYY-MM-DD');
-      const fortyFortyOneStartX = birthDateMoment.clone().add(40, 'weeks').format('YYYY-MM-DD');
-      const fortyFourWeekStartX = birthDateMoment.clone().add(44, 'weeks').format('YYYY-MM-DD');
-      const fortyEightWeekStartX = birthDateMoment.clone().add(48, 'weeks').format('YYYY-MM-DD');
 
-      // Bir dizi yapalım:
-      const atakHaftalariDizisi = [
-        firstAttackStartX,
-        seventhWeekStartX,
-        eleventhWeekStartX,
-        fourthMonthStartX,
-        twentyTwoWeekStartX,
-        twentySixWeekStartX,
-        twentyNineWeekStartX,
-        eighthMonthStartX,
-        thirtySixWeekStartX,
-        fortyFortyOneStartX,
-        fortyFourWeekStartX,
-        fortyEightWeekStartX
-      ];
+const firstAttackStartX = birthDateMoment.clone().add(4, 'weeks');
+const firstAttackEndX = firstAttackStartX.clone().add(1, 'week').subtract(1, 'day').format('YYYY-MM-DD');
+
+const seventhWeekStartX = birthDateMoment.clone().add(7, 'weeks');
+const seventhWeekEndX = seventhWeekStartX.clone().add(1, 'week').subtract(1, 'day').format('YYYY-MM-DD');
+
+const eleventhWeekStartX = birthDateMoment.clone().add(11, 'weeks');
+const eleventhWeekEndX = eleventhWeekStartX.clone().add(1, 'week').subtract(1, 'day').format('YYYY-MM-DD');
+
+const fourthMonthStartX = birthDateMoment.clone().add(14, 'weeks');
+const fourthMonthEndX = fourthMonthStartX.clone().add(4, 'weeks').subtract(1, 'day').format('YYYY-MM-DD');
+
+const twentyTwoWeekStartX = birthDateMoment.clone().add(22, 'weeks');
+const twentyTwoWeekEndX = twentyTwoWeekStartX.clone().add(2, 'weeks').subtract(1, 'day').format('YYYY-MM-DD');
+
+const twentySixWeekStartX = birthDateMoment.clone().add(26, 'weeks');
+const twentySixWeekEndX = twentySixWeekStartX.clone().add(2, 'weeks').subtract(1, 'day').format('YYYY-MM-DD');
+
+const twentyNineWeekStartX = birthDateMoment.clone().add(29, 'weeks');
+const twentyNineWeekEndX = twentyNineWeekStartX.clone().add(2, 'weeks').subtract(1, 'day').format('YYYY-MM-DD');
+
+const eighthMonthStartX = birthDateMoment.clone().add(33, 'weeks');
+const eighthMonthEndX = eighthMonthStartX.clone().add(3, 'weeks').subtract(1, 'day').format('YYYY-MM-DD');
+
+const thirtySixWeekStartX = birthDateMoment.clone().add(36, 'weeks');
+const thirtySixWeekEndX = thirtySixWeekStartX.clone().add(1, 'week').subtract(1, 'day').format('YYYY-MM-DD');
+
+const fortyFortyOneStartX = birthDateMoment.clone().add(40, 'weeks');
+const fortyFortyOneEndX = fortyFortyOneStartX.clone().add(2, 'weeks').subtract(1, 'day').format('YYYY-MM-DD');
+
+const fortyFourWeekStartX = birthDateMoment.clone().add(44, 'weeks');
+const fortyFourWeekEndX = fortyFourWeekStartX.clone().add(1, 'week').subtract(1, 'day').format('YYYY-MM-DD');
+
+const fortyEightWeekStartX = birthDateMoment.clone().add(48, 'weeks');
+const fortyEightWeekEndX = fortyEightWeekStartX.clone().add(1, 'week').subtract(1, 'day').format('YYYY-MM-DD');
+
+// Bir dizi yapalım:
+const atakHaftalariDizisi = [
+  {
+    name: 'firstdateatak',
+    start: firstAttackStartX.format('YYYY-MM-DD'),
+    end: firstAttackEndX
+  },
+  {
+    name: 'seventhweekatak',
+    start: seventhWeekStartX.format('YYYY-MM-DD'),
+    end: seventhWeekEndX
+  },
+  {
+    name: 'eleventhweekatak',
+    start: eleventhWeekStartX.format('YYYY-MM-DD'),
+    end: eleventhWeekEndX
+  },
+  {
+    name: 'fourthmonthatak',
+    start: fourthMonthStartX.format('YYYY-MM-DD'),
+    end: fourthMonthEndX
+  },
+  {
+    name: 'twentytwoweekatak',
+    start: twentyTwoWeekStartX.format('YYYY-MM-DD'),
+    end: twentyTwoWeekEndX
+  },
+  {
+    name: 'twentysixweekatak',
+    start: twentySixWeekStartX.format('YYYY-MM-DD'),
+    end: twentySixWeekEndX
+  },
+  {
+    name: 'twentynineweekatak',
+    start: twentyNineWeekStartX.format('YYYY-MM-DD'),
+    end: twentyNineWeekEndX
+  },
+  {
+    name: 'eighthmonthatak',
+    start: eighthMonthStartX.format('YYYY-MM-DD'),
+    end: eighthMonthEndX
+  },
+  {
+    name: 'thirtysixweekatak',
+    start: thirtySixWeekStartX.format('YYYY-MM-DD'),
+    end: thirtySixWeekEndX
+  },
+  {
+    name: 'fortyfortyoneatak',
+    start: fortyFortyOneStartX.format('YYYY-MM-DD'),
+    end: fortyFortyOneEndX
+  },
+  {
+    name: 'fortyfourweekatak',
+    start: fortyFourWeekStartX.format('YYYY-MM-DD'),
+    end: fortyFourWeekEndX
+  },
+  {
+    name: 'fortyeightweekatak',
+    start: fortyEightWeekStartX.format('YYYY-MM-DD'),
+    end: fortyEightWeekEndX
+  }
+];
+
 
       console.log('Konsolda Atak Haftaları Dizisi:', atakHaftalariDizisi);
 

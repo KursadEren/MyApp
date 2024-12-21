@@ -31,16 +31,20 @@ const ChatScreen = () => {
       .collection('conversations')
       .doc(conversationId)
       .collection('messages')
-      .orderBy('timestamp', 'asc')
+      .orderBy('timestamp', 'desc')
       .onSnapshot((querySnapshot) => {
         const messagesData = [];
+        let i= 0;
         querySnapshot.forEach((doc) => {
+          i++;
+          console.log(i);
           messagesData.push({
             id: doc.id,
             ...doc.data(),
           });
         });
         setMessages(messagesData);
+        console.log(messagesData)
       });
 
     return () => unsubscribe();
