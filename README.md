@@ -1283,14 +1283,64 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
 ```
 
 
-### **Eklenecekler**
+# **Proje Adı**
 
-// firebase'e push natification ile ilgili functions eklenecek ve bildirim gönderilmesi otomatik hale gelecek
-// firebase kısmında mesaj bildirimlerin kontrol edilmesi 
-// firebaseden atak haftaları için otomatik bildirm gönderilmesi başlangıç ve bitiş tarihleri firebase user koleksiyonun her kullanıcı için ayrı şekilde tutuluyor
-// ios tarafında bildirim göndermek kontrol edilmedi sertifika eklenip kontrol edilecek ve gerekli kısımlar için Info.plist dosyasına notifee için eklemler yapıldı aynı zamanda podfile dosyasına statik link olarak eklendi (sertifika olmadığından dolayı hata alınıyor ondan kaynaklı ios tarafı bildirimleri kontrol edilmedi)
-// Firebase Storage açılmadı bu video bileşenlerini göstermek için premium videoları eklemek için bunun için bir sayfa oluşturulöalı bunun için bir sayfa oluşturulmadı aynı zamanda youtube videolarını göstermek içinde bir api eklenmedi 
-// Catalog Itemda cardların içine içerik eklenmedi planlar için ayrılan kısımda planlar listelenmedi 
-// Kullanıcıların Chat kısmında kullanıcılar admin'e ulaşmadan sorularını bir bot'a soracak bottan ziyade sıkça sorulan sorular gibi cevapları girilecek 
+Bu proje, kullanıcıların abonelik tabanlı bir sağlık ve yaşam koçluğu uygulamasını kullanarak premium içeriklere, atak haftalarına, bildirimlere ve destek hizmetlerine erişim sağlamasını amaçlar.
 
+---
+
+## **Eksik ve Geliştirilecek Özellikler**
+
+### **Firebase Push Notification**
+- [ ] Firebase Functions ile bildirim gönderimi otomatik hale getirilecek.
+- [ ] Kullanıcıların abonelik başlangıç ve bitiş tarihleri baz alınarak bildirim gönderimi yapılacak.
+- [ ] Admin tarafından gönderilen mesajların ve bildirimlerin kontrol edilmesi sağlanacak.
+
+### **iOS Bildirim Yönetimi**
+- [ ] iOS cihazlarda bildirimler için gerekli sertifikalar oluşturulacak.
+- [ ] **Info.plist** ve **Podfile** dosyalarına yapılan notifee entegrasyonu test edilecek.
+- [ ] iOS cihazlarda bildirim işleyişi test edilecek ve hata alınması durumunda düzenlemeler yapılacak.
+
+### **Video İçerikleri ve Entegrasyon**
+- [ ] Premium içeriklerin Firebase Storage üzerinden yönetimi yapılacak.
+- [ ] Youtube API entegrasyonu ile ücretsiz içeriklerin listelenmesi sağlanacak.
+- [ ] Video içerikleri için ayrı bir sayfa tasarlanacak.
+
+### **Katalog ve Planlar**
+- [ ] Katalog kartlarının içerikleri (ör. açıklama, fiyat) doldurulacak.
+- [ ] Planların listeleneceği ve seçilebileceği bir sayfa tasarlanacak.
+
+### **Chat ve Destek**
+- [ ] Kullanıcıların admin'e ulaşmadan önce sıkça sorulan sorulara ulaşabileceği bir FAQ bölümü oluşturulacak.
+- [ ] Admin ve kullanıcı mesaj bildirimleri kontrol edilecek.
+
+### **Tasarım ve Component Yapısı**
+- [ ] Tekrarlanan bölümler (ör. modal, ayarlar) component olarak düzenlenecek.
+- [ ] UI tasarımları yeniden kullanılabilir hale getirilecek.
+
+---
+
+## **Test Edilecek ve Eksik Özellikler**
+1. **Firebase Bildirim Yönetimi**
+   - Firebase üzerinden atak haftaları ve abonelik bildirimleri kontrol edilecek.
+   - Mesaj gönderimi ve bildirim süreçleri test edilecek.
+
+2. **iOS Bildirim Sertifikası**
+   - iOS cihazlarda bildirimlerin doğru çalışması için gerekli sertifikalar oluşturulup test edilecek.
+
+3. **Video ve API Entegrasyonları**
+   - Firebase Storage ve Youtube API ile içeriklerin doğru şekilde çekilip gösterildiğinden emin olunacak.
+
+4. **Katalog ve Planlar**
+   - Kart içerikleri ve kullanıcı planlarının yönetimi için tasarlanan özellikler tamamlanacak.
+
+---
+
+## **Geliştirme Adımları**
+
+### **Başlarken**
+1. Projeyi klonlayın:
+   ```bash
+   git clone https://github.com/your-repo.git
+   cd your-repo
 
