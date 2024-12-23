@@ -1346,4 +1346,4 @@ Bu proje, kullanıcıların abonelik tabanlı bir sağlık ve yaşam koçluğu u
    ```bash
    git clone https://github.com/your-repo.git
    cd your-repo
-
+```
